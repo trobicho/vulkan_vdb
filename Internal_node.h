@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/02 20:38:22 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/06 17:52:00 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/11/11 10:46:35 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ class Internal_node: public Node<Value>
 		Value		pruning();
 		const Node<Value>
 					*do_get_interresting_node(s_vec3i v, Value &value) const;
+		void		do_mesh(Mesh &mesh) const;
 
 		static const int sLog2X = Log2X + Child::sLog2X,
 			sLog2Y = Log2Y + Child::sLog2Y,
@@ -47,6 +48,15 @@ class Internal_node: public Node<Value>
 		}
 		inline s_vec3i		do_get_child_slog() const {
 			return s_vec3i(Child::sLog2X, Child::sLog2Y, Child::sLog2Z);
+		}
+		inline s_vertex		get_pos_from_offset(unsigned int i) const
+		{
+			s_vertex	v;
+
+			v.pos.x = (float)(m_x + (i >> (Child::sLog2Y + Child::sLog2Z)));
+			v.pos.y = (float)(m_y + ((i >> (Child::sLog2Z)) & ((1 << Child::sLog2Y) - 1)));
+			v.pos.z = (float)(m_z + (i & ((1 << Child::sLog2Z) - 1)));
+			return (v);
 		}
 
 		union u_internal_data 
@@ -137,8 +147,7 @@ const Node<Value>	*Internal_node<Value, Child, Log2X, Log2Y, Log2Z>
 	return (this);
 }
 template <class Value, class Child, int Log2X, int Log2Y, int Log2Z>
-Value	Internal_node<Value, Child, Log2X, Log2Y, Log2Z>
-	::pruning()
+Value	Internal_node<Value, Child, Log2X, Log2Y, Log2Z>::pruning()
 {
 	Value	val;
 
@@ -160,4 +169,28 @@ Value	Internal_node<Value, Child, Log2X, Log2Y, Log2Z>
 		return (m_internal_data[0].value);
 	}
 	return (0);
+}
+
+template <class Value, class Child, int Log2X, int Log2Y, int Log2Z>
+void	Internal_node<Value, Child, Log2X, Log2Y, Log2Z>
+	::do_mesh(Mesh &mesh) const
+{
+	int		index;
+
+	for (int i = 0; i < sSize; i++)
+	{
+		if (m_value_mask[i] || m_child_mask[i])
+		{
+			s_vertex	v = get_pos_from_offset(i);
+
+			index = mesh.add_vertex_with_basic_index(v);
+			v.pos.x += (float)(1 << Child::sLog2X);
+			mesh.add_vertex_with_basic_index(v);
+			v.pos.z += (float)(1 << Child::sLog2Z);
+			mesh.add_vertex_with_basic_index(v);
+			v.pos.x -= (float)(1 << Child::sLog2X);
+			mesh.add_vertex_with_basic_index(v);
+			mesh.add_index(index);
+		}
+	}
 }

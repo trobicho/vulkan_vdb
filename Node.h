@@ -6,11 +6,13 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/04 06:38:12 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/05 07:44:12 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/11/11 08:57:02 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
+
+#include <Mesh.h>
 
 struct	s_vec3i
 {
@@ -41,6 +43,7 @@ class	Node
 		{
 			return (do_get_interresting_node(v, value));
 		}
+		inline void			mesh(Mesh &mesh) const {do_mesh(mesh);}
 
 	private:
 		virtual bool		do_is_leaf() const = 0;
@@ -51,4 +54,5 @@ class	Node
 		virtual Value		do_get_vox(int32_t x, int32_t y, int32_t z) const = 0;
 		virtual const Node<Value>
 							*do_get_interresting_node(s_vec3i v, Value &value) const = 0;
+		virtual void		do_mesh(Mesh &mesh) const = 0;
 };

@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/02 21:06:27 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/11 06:56:24 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/11/11 09:04:37 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,4 +50,10 @@ const Node_v
 void		Vdb_test::pruning()
 {
 	m_root_static.pruning();
+}
+
+void		Vdb_test::mesh(Mesh &mesh) const
+{
+	mesh.reset();
+	m_root_static.mesh(mesh);
 }

@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/02 20:39:09 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/11 07:13:44 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/11/11 09:58:00 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,6 +104,9 @@ int	main()
 	IMG_Quit();
 	my_vdb.pruning();
 	std::cout << "total of " << nb_vox << " voxels." << std::endl;
+	my_vdb.mesh(mesh);
+	std::cout << "total of " << mesh.get_nb_vertex() << " vertex." << std::endl;
+	std::cout << "total of " << mesh.get_nb_index() << " index." << std::endl;
 
 	My_vulkan	my_vulkan(win, mesh);
 

@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/02 20:38:57 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/06 17:43:49 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/11/11 08:58:49 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ class Leaf_node: public Node<Value>
 		Value		pruning();
 		const Node<Value>
 					*do_get_interresting_node(s_vec3i v, Value &value) const;
+		void		do_mesh(Mesh &mesh) const;
 
 		static const int sSize = 1 << (Log2X + Log2Y + Log2Z);
 		static const int sLog2X = Log2X, sLog2Y = Log2Y, sLog2Z = Log2Z;
@@ -108,4 +109,10 @@ Value		Leaf_node<Value, Log2X, Log2Y, Log2Z>
 		return (m_leaf_data[0]);
 	}
 	return (0);
+}
+
+template <class Value, int Log2X, int Log2Y, int Log2Z>
+void		Leaf_node<Value, Log2X, Log2Y, Log2Z>
+	::do_mesh(Mesh &mesh) const
+{
 }
