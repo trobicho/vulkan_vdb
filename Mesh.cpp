@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/11 07:00:55 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/11 09:57:29 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/11/12 11:49:24 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,9 +22,10 @@ void	Mesh::reset()
 	index_buffer.clear();
 }
 
-int		Mesh::add_vertex(s_vertex v)
+int		Mesh::add_vertex(s_vertex v, uint32_t idx)
 {
 	vertex_buffer.push_back(v);
+	index_buffer.push_back(idx);
 	return (vertex_buffer.size() - 1);
 }
 

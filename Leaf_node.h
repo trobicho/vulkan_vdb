@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/02 20:38:57 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/11 08:58:49 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/11/12 14:22:29 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,18 @@ class Leaf_node: public Node<Value>
 		}
 		inline s_vec3i		do_get_child_slog() const {
 			return s_vec3i(1, 1, 1);
+		}
+		inline s_vertex		get_pos_from_offset(unsigned int i) const
+		{
+			s_vertex	v;
+
+			uint32_t	x_of = (i >> (Log2Y + Log2Z));
+			uint32_t	y_of = (i >> (Log2Z)) & ((1 << Log2Y) - 1);
+			uint32_t	z_of = (i) & ((1 << Log2Z) - 1);
+			v.pos.x = (float)m_x + x_of;
+			v.pos.y = (float)m_y + y_of;
+			v.pos.z = (float)m_z + z_of;
+			return (v);
 		}
 
 		Value				m_leaf_data[sSize];	//direct access table
@@ -115,4 +127,55 @@ template <class Value, int Log2X, int Log2Y, int Log2Z>
 void		Leaf_node<Value, Log2X, Log2Y, Log2Z>
 	::do_mesh(Mesh &mesh) const
 {
+	uint32_t	v_idx[8];
+
+	for (int i = 0; i < sSize; i++)
+	{
+		if (m_value_mask[i]) 
+		{
+			s_vertex	v = get_pos_from_offset(i);
+
+			v.color = glm::vec3(1.0f, 1.0, 0.0);
+			v_idx[0] = mesh.add_vertex_with_basic_index(v);
+			v.pos.x += 1;
+			v_idx[1] = mesh.add_vertex_with_basic_index(v);
+			v.pos.z += 1;
+			v_idx[2] = mesh.add_vertex_with_basic_index(v);
+			v.pos.x -= 1;
+			v_idx[3] = mesh.add_vertex_with_basic_index(v);
+			mesh.add_index(v_idx[0]);
+			for (int a = 0; a < 4; a++)
+			{
+				v = mesh.vertex_buffer[v_idx[a]];
+				v.pos.y += 1;
+				v.color = glm::vec3(0, 0, 1.0);
+				v_idx[4 + a] = mesh.add_vertex_with_basic_index(v);
+			}
+			mesh.add_index(v_idx[7]);
+
+			mesh.add_index(v_idx[0]);
+			mesh.add_index(v_idx[1]);
+			mesh.add_index(v_idx[5]);
+			mesh.add_index(v_idx[4]);
+			mesh.add_index(v_idx[0]);
+
+			mesh.add_index(v_idx[1]);
+			mesh.add_index(v_idx[2]);
+			mesh.add_index(v_idx[6]);
+			mesh.add_index(v_idx[5]);
+			mesh.add_index(v_idx[1]);
+
+			mesh.add_index(v_idx[2]);
+			mesh.add_index(v_idx[3]);
+			mesh.add_index(v_idx[7]);
+			mesh.add_index(v_idx[6]);
+			mesh.add_index(v_idx[2]);
+			
+			mesh.add_index(v_idx[3]);
+			mesh.add_index(v_idx[0]);
+			mesh.add_index(v_idx[4]);
+			mesh.add_index(v_idx[7]);
+			mesh.add_index(v_idx[3]);
+		}
+	}
 }

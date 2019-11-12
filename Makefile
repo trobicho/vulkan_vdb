@@ -6,7 +6,7 @@
 #    By: trobicho <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/11/02 20:38:42 by trobicho          #+#    #+#              #
-#    Updated: 2019/11/11 07:14:42 by trobicho         ###   ########.fr        #
+#    Updated: 2019/11/12 07:36:45 by trobicho         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -40,6 +40,7 @@ SRCS_NAME	=	main.cpp \
 				gpu_pipeline.cpp \
 				shader.cpp \
 				validation_layer.cpp \
+				key_call.cpp \
 				Mesh.cpp
 
 HDRS_NAME	=	Vdb_test.h \
@@ -55,6 +56,7 @@ HDRS_NAME	=	Vdb_test.h \
 				gpu_pipeline.h \
 				shader.h \
 				validation_layer.h \
+				key_call.h \
 				Mesh.h
 
 OBJS_NAME	=	$(SRCS_NAME:.cpp=.o)

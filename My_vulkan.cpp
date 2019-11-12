@@ -6,7 +6,7 @@
 /*   By: trobicho <trobicho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/09 17:05:36 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/11 11:02:04 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/11/12 14:26:01 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,10 +19,10 @@
 #include <cstring>
 #include <cstdlib>
 #include <iostream>
-#include <glm/gtc/matrix_transform.hpp>
 #include <chrono>
 
-My_vulkan::My_vulkan(GLFWwindow *win, Mesh &mesh): m_win(win), m_mesh(mesh) //try catch
+My_vulkan::My_vulkan(GLFWwindow *win, Mesh &mesh, s_ubo &ubo):
+	m_win(win), m_mesh(mesh), m_ubo(ubo) //try catch
 {
 }
 
@@ -108,14 +108,11 @@ int		My_vulkan::update_uniform_buffer(uint32_t img_index)
 	time = std::chrono::duration<float,
 		 std::chrono::seconds::period>(current_time - start_time).count();
 
-	m_ubo.model = glm::rotate(glm::mat4(1.0f), 0 * glm::radians(90.0f)
-			, glm::vec3(0.0f, 0.0f, 1.0f));
-	m_ubo.view = glm::lookAt(glm::vec3(10.0f, 70.0f, 80.0f)
-			, glm::vec3(0.0f, 0.0f, 0.0f)
-			, glm::vec3(0.0f, 1.0f, 0.0f));
+	//m_ubo.model = glm::rotate(glm::mat4(1.0f), time * glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
 	m_ubo.proj = glm::perspective(glm::radians(45.0f)
 			, m_swap_chain_extent.width / (float)m_swap_chain_extent.height
-			, 0.1f, 10.0f);
+			, 0.1f, 1000.0f);
+
 	m_ubo.proj[1][1] *= -1;
 	vkMapMemory(m_device, m_uniform_buffer_memory[img_index], 0
 			, sizeof(m_ubo), 0, &data);

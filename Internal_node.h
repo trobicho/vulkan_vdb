@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/02 20:38:22 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/11 10:46:35 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/11/12 12:14:49 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,9 +53,13 @@ class Internal_node: public Node<Value>
 		{
 			s_vertex	v;
 
-			v.pos.x = (float)(m_x + (i >> (Child::sLog2Y + Child::sLog2Z)));
-			v.pos.y = (float)(m_y + ((i >> (Child::sLog2Z)) & ((1 << Child::sLog2Y) - 1)));
-			v.pos.z = (float)(m_z + (i & ((1 << Child::sLog2Z) - 1)));
+			uint32_t	x_of = (i >> (Log2Y + Log2Z));
+			uint32_t	y_of = (i >> (Log2Z)) & ((1 << Log2Y) - 1);
+			uint32_t	z_of = (i) & ((1 << Log2Z) - 1);
+			std::cout << x_of << ", " << y_of << ", " << z_of << std::endl;
+			v.pos.x = (float)m_x + (x_of << Child::sLog2X);
+			v.pos.y = (float)m_y + (y_of << Child::sLog2Y);
+			v.pos.z = (float)m_z + (z_of << Child::sLog2Z);
 			return (v);
 		}
 
@@ -175,22 +179,61 @@ template <class Value, class Child, int Log2X, int Log2Y, int Log2Z>
 void	Internal_node<Value, Child, Log2X, Log2Y, Log2Z>
 	::do_mesh(Mesh &mesh) const
 {
-	int		index;
+	uint32_t	v_idx[8];
 
 	for (int i = 0; i < sSize; i++)
 	{
-		if (m_value_mask[i] || m_child_mask[i])
+		if (m_child_mask[i])
 		{
+			m_internal_data[i].child->do_mesh(mesh);
+		}
+
+		else if (m_value_mask[i]) 
+		{
+			std::cout << "internal offset = " << i << std::endl;
 			s_vertex	v = get_pos_from_offset(i);
 
-			index = mesh.add_vertex_with_basic_index(v);
+			v_idx[0] = mesh.add_vertex_with_basic_index(v);
+			std::cout << Child::sLog2X << ", " << Child::sLog2Y << ", " << Child::sLog2Z << std::endl;
 			v.pos.x += (float)(1 << Child::sLog2X);
-			mesh.add_vertex_with_basic_index(v);
+			v_idx[1] = mesh.add_vertex_with_basic_index(v);
 			v.pos.z += (float)(1 << Child::sLog2Z);
-			mesh.add_vertex_with_basic_index(v);
+			v_idx[2] = mesh.add_vertex_with_basic_index(v);
 			v.pos.x -= (float)(1 << Child::sLog2X);
-			mesh.add_vertex_with_basic_index(v);
-			mesh.add_index(index);
+			v_idx[3] = mesh.add_vertex_with_basic_index(v);
+			mesh.add_index(v_idx[0]);
+			for (int a = 0; a < 4; a++)
+			{
+				v = mesh.vertex_buffer[v_idx[a]];
+				v.pos.y += (float)(1 << Child::sLog2Y);
+				v.color = glm::vec3(1.0, 0, 0);
+				v_idx[4 + a] = mesh.add_vertex_with_basic_index(v);
+			}
+			mesh.add_index(v_idx[7]);
+
+			mesh.add_index(v_idx[0]);
+			mesh.add_index(v_idx[1]);
+			mesh.add_index(v_idx[5]);
+			mesh.add_index(v_idx[4]);
+			mesh.add_index(v_idx[0]);
+			
+			mesh.add_index(v_idx[1]);
+			mesh.add_index(v_idx[2]);
+			mesh.add_index(v_idx[6]);
+			mesh.add_index(v_idx[5]);
+			mesh.add_index(v_idx[1]);
+			
+			mesh.add_index(v_idx[2]);
+			mesh.add_index(v_idx[3]);
+			mesh.add_index(v_idx[7]);
+			mesh.add_index(v_idx[6]);
+			mesh.add_index(v_idx[2]);
+			
+			mesh.add_index(v_idx[3]);
+			mesh.add_index(v_idx[0]);
+			mesh.add_index(v_idx[4]);
+			mesh.add_index(v_idx[7]);
+			mesh.add_index(v_idx[3]);
 		}
 	}
 }

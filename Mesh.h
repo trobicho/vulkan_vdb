@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/11 06:56:37 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/11 10:03:15 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/11/12 10:11:00 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 #define GLM_FORCE_DEFAULT_ALIGNED_GENTYPES
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
 #include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 #include <vector>
 #include <array>
 
@@ -63,7 +64,7 @@ class	Mesh
 
 		uint32_t	get_nb_vertex() const {return(vertex_buffer.size());}
 		uint32_t	get_nb_index() const {return(index_buffer.size());}
-		int			add_vertex(s_vertex v);
+		int			add_vertex(s_vertex v, uint32_t idx);
 		int			add_vertex_with_basic_index(s_vertex v);
 		void		add_index(uint32_t idx);
 		void		reset();
