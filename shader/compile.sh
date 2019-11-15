@@ -1,2 +1,2 @@
-/sgoinfre/goinfre/Perso/trobicho/vulkansdk-macos-1.1.106.0/macOS/bin/glslangValidator -V shader.vert
-/sgoinfre/goinfre/Perso/trobicho/vulkansdk-macos-1.1.106.0/macOS/bin/glslangValidator -V shader.frag
+$VULKAN_SDK/bin/glslangValidator -V shader.vert
+$VULKAN_SDK/bin/glslangValidator -V shader.frag

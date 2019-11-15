@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/02 20:38:22 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/15 03:28:25 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/11/15 16:00:36 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ class Internal_node: public Node<Value>
 			uint32_t	x_of = (i >> (Log2Y + Log2Z));
 			uint32_t	y_of = (i >> (Log2Z)) & ((1 << Log2Y) - 1);
 			uint32_t	z_of = (i) & ((1 << Log2Z) - 1);
-			std::cout << x_of << ", " << y_of << ", " << z_of << std::endl;
+			//std::cout << x_of << ", " << y_of << ", " << z_of << std::endl;
 			v.pos.x = (float)m_x + (x_of << Child::sLog2X);
 			v.pos.y = (float)m_y + (y_of << Child::sLog2Y);
 			v.pos.z = (float)m_z + (z_of << Child::sLog2Z);
@@ -112,7 +112,9 @@ void	Internal_node<Value, Child, Log2X, Log2Y, Log2Z>
 	else
 	{
 		m_internal_data[internal_offset].child = new Child(
-			x % Child::sLog2X, y % Child::sLog2Y, z % Child::sLog2Z);
+			(x >> Child::sLog2X) << Child::sLog2X
+			, (y >> Child::sLog2Y) << Child::sLog2Y
+			, (z >> Child::sLog2Z) << Child::sLog2Z);
 		m_internal_data[internal_offset].child->set_vox(value, x, y, z);
 		m_child_mask.set(internal_offset);
 	}
@@ -191,11 +193,11 @@ void	Internal_node<Value, Child, Log2X, Log2Y, Log2Z>
 
 		else if (m_value_mask[i]) 
 		{
-			std::cout << "internal offset = " << i << std::endl;
+			//std::cout << "internal offset = " << i << std::endl;
 			s_vertex	v = get_pos_from_offset(i);
 
 			v_idx[0] = mesh.add_vertex_with_basic_index(v);
-			std::cout << Child::sLog2X << ", " << Child::sLog2Y << ", " << Child::sLog2Z << std::endl;
+			//std::cout << Child::sLog2X << ", " << Child::sLog2Y << ", " << Child::sLog2Z << std::endl;
 			v.pos.x += (float)(1 << Child::sLog2X);
 			v.tex_coord = glm::vec2(1.0f, 0.0f);
 			v_idx[1] = mesh.add_vertex_with_basic_index(v);

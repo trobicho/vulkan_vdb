@@ -6,7 +6,7 @@
 #    By: trobicho <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/11/02 20:38:42 by trobicho          #+#    #+#              #
-#    Updated: 2019/11/15 01:47:27 by trobicho         ###   ########.fr        #
+#    Updated: 2019/11/15 05:09:07 by trobicho         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,7 +18,7 @@ SRCS_PATH	=	./
 HDRS_PATH	=	./
 OBJS_PATH	=	./obj
 
-INCS_FLAGS	= -I../QGen/my_lib_cpp/ -I$(VULKAN_SDK)/include -I$(GLFW3_PATH)/include -I$(GLM_PATH)/include \
+INCS_FLAGS	= -I../my_lib_cpp/ -I$(VULKAN_SDK)/include -I$(GLFW3_PATH)/include -I$(GLM_PATH)/include \
 			  -I $(INCLUDE_PATH)
 
 SDL_LOC		=	$(HOME)/.brew/Cellar/sdl2/2.0.10

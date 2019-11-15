@@ -6,7 +6,7 @@
 /*   By: trobicho <trobicho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/09 17:05:36 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/15 02:30:10 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/11/15 06:06:22 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,10 +118,10 @@ int		My_vulkan::update_uniform_buffer(uint32_t img_index)
 	time = std::chrono::duration<float,
 		 std::chrono::seconds::period>(current_time - start_time).count();
 
-	m_ubo.model = glm::rotate(glm::mat4(1.0f), time * glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+	//m_ubo.model = glm::rotate(glm::mat4(1.0f), time * glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
 	m_ubo.proj = glm::perspective(glm::radians(45.0f)
 			, m_swap_chain_extent.width / (float)m_swap_chain_extent.height
-			, 0.1f, 1000.0f);
+			, 0.1f, 10000.0f);
 
 	m_ubo.proj[1][1] *= -1;
 	vkMapMemory(m_device, m_uniform_buffer_memory[img_index], 0
