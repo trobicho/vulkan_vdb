@@ -6,7 +6,7 @@
 /*   By: trobicho <trobicho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/22 17:58:08 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/12 14:24:37 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/11/15 02:51:01 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ VkPipelineRasterizationStateCreateInfo	rasterizer_create(void)
 		VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
 	rasterizer_info.depthClampEnable = VK_FALSE;
 	rasterizer_info.rasterizerDiscardEnable = VK_FALSE;
-	rasterizer_info.polygonMode = VK_POLYGON_MODE_LINE;
+	rasterizer_info.polygonMode = VK_POLYGON_MODE_FILL;
 	rasterizer_info.lineWidth = 1.0f;
 	//rasterizer_info.cullMode = VK_CULL_MODE_BACK_BIT;
 	rasterizer_info.cullMode = VK_CULL_MODE_NONE;
@@ -137,7 +137,7 @@ VkPipelineInputAssemblyStateCreateInfo	input_assembly_create(void)
 	input_assembly = (VkPipelineInputAssemblyStateCreateInfo){};
 	input_assembly.sType
 		= VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
-	input_assembly.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP;
+	input_assembly.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
 	input_assembly.primitiveRestartEnable = VK_FALSE;
 	return (input_assembly);
 }
@@ -158,4 +158,21 @@ VkPipelineVertexInputStateCreateInfo	vert_input_create(void)
 	vert_input_info.pVertexAttributeDescriptions =
 		attribute_descriptions.data();
 	return (vert_input_info);
+}
+
+VkPipelineDepthStencilStateCreateInfo	depth_stencil_create()
+{
+	VkPipelineDepthStencilStateCreateInfo	depth_stencil_info = {};
+	depth_stencil_info.sType =
+		VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
+	depth_stencil_info.depthTestEnable = VK_TRUE;
+	depth_stencil_info.depthWriteEnable = VK_TRUE;
+	depth_stencil_info.depthCompareOp = VK_COMPARE_OP_LESS;
+	depth_stencil_info.depthBoundsTestEnable = VK_FALSE;
+	depth_stencil_info.minDepthBounds = 0.0f;
+	depth_stencil_info.maxDepthBounds = 1.0f;
+	depth_stencil_info.stencilTestEnable = VK_FALSE;
+	depth_stencil_info.front = {};
+	depth_stencil_info.back = {};
+	return (depth_stencil_info);
 }

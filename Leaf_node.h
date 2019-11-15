@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/02 20:38:57 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/12 14:22:29 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/11/15 03:31:39 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,7 @@ class Leaf_node: public Node<Value>
 			v.pos.x = (float)m_x + x_of;
 			v.pos.y = (float)m_y + y_of;
 			v.pos.z = (float)m_z + z_of;
+			v.tex_coord = glm::vec2(0.0f, 0.0f);
 			return (v);
 		}
 
@@ -135,47 +136,78 @@ void		Leaf_node<Value, Log2X, Log2Y, Log2Z>
 		{
 			s_vertex	v = get_pos_from_offset(i);
 
-			v.color = glm::vec3(1.0f, 1.0, 0.0);
 			v_idx[0] = mesh.add_vertex_with_basic_index(v);
 			v.pos.x += 1;
+			v.tex_coord = glm::vec2(1.0f, 0.0f);
 			v_idx[1] = mesh.add_vertex_with_basic_index(v);
 			v.pos.z += 1;
+			v.tex_coord = glm::vec2(1.0f, 1.0f);
 			v_idx[2] = mesh.add_vertex_with_basic_index(v);
+			mesh.add_index(v_idx[2]);
 			v.pos.x -= 1;
+			v.tex_coord = glm::vec2(0.0f, 1.0f);
 			v_idx[3] = mesh.add_vertex_with_basic_index(v);
 			mesh.add_index(v_idx[0]);
 			for (int a = 0; a < 4; a++)
 			{
 				v = mesh.vertex_buffer[v_idx[a]];
 				v.pos.y += 1;
-				v.color = glm::vec3(0, 0, 1.0);
 				v_idx[4 + a] = mesh.add_vertex_with_basic_index(v);
+				if (a == 2)
+					mesh.add_index(v_idx[6]);
 			}
-			mesh.add_index(v_idx[7]);
-
-			mesh.add_index(v_idx[0]);
-			mesh.add_index(v_idx[1]);
-			mesh.add_index(v_idx[5]);
 			mesh.add_index(v_idx[4]);
+
+			int	tmp;
 			mesh.add_index(v_idx[0]);
-
 			mesh.add_index(v_idx[1]);
-			mesh.add_index(v_idx[2]);
-			mesh.add_index(v_idx[6]);
-			mesh.add_index(v_idx[5]);
-			mesh.add_index(v_idx[1]);
-
-			mesh.add_index(v_idx[2]);
-			mesh.add_index(v_idx[3]);
-			mesh.add_index(v_idx[7]);
-			mesh.add_index(v_idx[6]);
-			mesh.add_index(v_idx[2]);
+			v = mesh.vertex_buffer[v_idx[5]];
+			v.tex_coord = glm::vec2(1.0f, 1.0f);
+			tmp = mesh.add_vertex_with_basic_index(v);
+			mesh.add_index(tmp);
+			v = mesh.vertex_buffer[v_idx[4]];
+			v.tex_coord = glm::vec2(0.0f, 1.0f);
+			mesh.add_vertex_with_basic_index(v);
+			mesh.add_index(v_idx[0]);
 			
-			mesh.add_index(v_idx[3]);
-			mesh.add_index(v_idx[0]);
-			mesh.add_index(v_idx[4]);
+			v = mesh.vertex_buffer[v_idx[2]];
+			v.tex_coord = glm::vec2(0.0f, 0.0f);
+			mesh.add_vertex_with_basic_index(v);
+			v = mesh.vertex_buffer[v_idx[1]];
+			v.tex_coord = glm::vec2(1.0f, 0.0f);
+			tmp = mesh.add_vertex_with_basic_index(v);
+			v = mesh.vertex_buffer[v_idx[5]];
+			v.tex_coord = glm::vec2(1.0f, 1.0f);
+			int tmp2 = mesh.add_vertex_with_basic_index(v);
+			mesh.add_index(tmp2);
+			v = mesh.vertex_buffer[v_idx[6]];
+			v.tex_coord = glm::vec2(1.0f, 0.0f);
+			mesh.add_vertex_with_basic_index(v);
+			mesh.add_index(tmp);
+			
+			v = mesh.vertex_buffer[v_idx[3]];
+			v.tex_coord = glm::vec2(0.0f, 0.0f);
+			tmp = mesh.add_vertex_with_basic_index(v);
+			v = mesh.vertex_buffer[v_idx[2]];
+			v.tex_coord = glm::vec2(1.0f, 0.0f);
+			mesh.add_vertex_with_basic_index(v);
+			mesh.add_index(v_idx[6]);
+			mesh.add_index(v_idx[6]);
 			mesh.add_index(v_idx[7]);
-			mesh.add_index(v_idx[3]);
+			mesh.add_index(tmp);
+			
+			mesh.add_index(v_idx[0]);
+			v = mesh.vertex_buffer[v_idx[3]];
+			v.tex_coord = glm::vec2(1.0f, 0.0f);
+			mesh.add_vertex_with_basic_index(v);
+			v = mesh.vertex_buffer[v_idx[7]];
+			v.tex_coord = glm::vec2(1.0f, 1.0f);
+			tmp = mesh.add_vertex_with_basic_index(v);
+			mesh.add_index(tmp);
+			v = mesh.vertex_buffer[v_idx[4]];
+			v.tex_coord = glm::vec2(0.0f, 1.0f);
+			mesh.add_vertex_with_basic_index(v);
+			mesh.add_index(v_idx[0]);
 		}
 	}
 }

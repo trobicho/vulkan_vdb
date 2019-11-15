@@ -6,7 +6,7 @@
 /*   By: trobicho <trobicho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/09 17:05:37 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/12 07:07:21 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/11/15 02:28:29 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,10 +37,13 @@ class	My_vulkan
 
 	private:
 		int			create_uniform_buffer();
+		int			create_texture_img();
+		int			create_texture_sampler();
 		int			create_vertex_buffer();
 		int			create_vertex_index_buffer();
-		int			create_ubo_desc_layout();
-		int			create_ubo_desc_set();
+		int			create_depth_resource();
+		int			create_desc_layout();
+		int			create_desc_set();
 		int			create_desc_pool();
 		int			create_instance();
 		int			render_pass_create();
@@ -52,6 +55,9 @@ class	My_vulkan
 		int			create_surface();
 		int			swap_chain();
 		int			image_view();
+		int			create_texture_image_view();
+		int			create_image_view(VkImageView *img_view, VkImage &image
+						, VkFormat format, VkImageAspectFlags aspectFlags);
 		int			framebuffer_create();
 		int			command_pool_create();
 		int			command_buffer_create();
@@ -60,10 +66,25 @@ class	My_vulkan
 		int			create_buffer(VkDeviceSize size, VkBufferUsageFlags usage
 						, VkMemoryPropertyFlags properties, VkBuffer &buffer
 						, VkDeviceMemory &buffer_mem);
+		int			create_img_buffer(uint32_t width, uint32_t height
+						, VkFormat format, VkImageTiling tiling
+						, VkImageUsageFlags usage
+						, VkMemoryPropertyFlags properties, VkImage& image
+						, VkDeviceMemory& image_memory);
 		int			copy_buffer(VkBuffer src_buffer, VkBuffer dst_buffer
 						, VkDeviceSize size);
+		int			copy_buffer_to_image(VkBuffer buffer, VkImage image
+						, uint32_t width, uint32_t height);
+		int			begin_single_time_command(VkCommandBuffer &command_buffer);
+		int			end_single_time_command(VkCommandBuffer &command_buffer);
+		int			transition_image_layout(VkImage image, VkFormat format
+						, VkImageLayout old_layout, VkImageLayout new_layout);
 		ssize_t		find_memory_type(uint32_t typeFilter
 						, VkMemoryPropertyFlags properties);
+		VkFormat	find_depth_format();
+		VkFormat	find_supported_format(const std::vector<VkFormat>& candidate
+						, VkImageTiling tiling, VkFormatFeatureFlags features);
+		bool		has_stencil_component(VkFormat format);
 
 		GLFWwindow				*m_win;
 		VkInstance				m_instance;
@@ -92,10 +113,18 @@ class	My_vulkan
 		VkDeviceMemory			m_vertex_buffer_memory;
 		VkBuffer				m_vertex_index_buffer;
 		VkDeviceMemory			m_vertex_index_buffer_memory;
-		VkDescriptorSetLayout	m_ubo_desc_set_layout;
+		VkDescriptorSetLayout	m_desc_set_layout;
 		std::vector<VkDescriptorSet>
 								m_desc_set;
 		VkDescriptorPool		m_desc_pool;
+		VkImage					m_texture_img;
+		VkDeviceMemory			m_texture_img_memory;
+		VkImageView				m_texture_img_view;
+		VkSampler				m_texture_sampler;
+		VkImage					m_depth_img;
+		VkDeviceMemory			m_depth_img_memory;
+		VkImageView				m_depth_img_view;
+
 		int						m_update;
 		bool					m_debug = false;
 		Mesh					&m_mesh;

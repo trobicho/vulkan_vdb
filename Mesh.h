@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/11 06:56:37 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/12 10:11:00 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/11/15 01:33:08 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,11 +25,11 @@
 struct	s_vertex
 {
 	s_vertex(){};
-	s_vertex(float	x, float y, float z):
-		pos(x, y, x){};
+	s_vertex(glm::vec3 p_pos, glm::vec2 p_tex_coord):
+		pos(p_pos), tex_coord(p_tex_coord){};
 
 	glm::vec3	pos;
-	glm::vec3	color = glm::vec3(1.f, 1.f, 1.f);
+	glm::vec2	tex_coord;
 
 	static VkVertexInputBindingDescription	get_binding_description()
 	{
@@ -50,8 +50,8 @@ struct	s_vertex
 		attribute_descriptions[0].offset = offsetof(s_vertex, pos);
 		attribute_descriptions[1].binding = 0;
 		attribute_descriptions[1].location = 1;
-		attribute_descriptions[1].format = VK_FORMAT_R32G32B32_SFLOAT;
-		attribute_descriptions[1].offset = offsetof(s_vertex, color);
+		attribute_descriptions[1].format = VK_FORMAT_R32G32_SFLOAT;
+		attribute_descriptions[1].offset = offsetof(s_vertex, tex_coord);
 		return (attribute_descriptions);
 	}
 };
