@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/12 07:22:15 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/12 08:22:26 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/11/15 19:43:52 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@ struct	s_user
 	glm::vec3	cam_pos;
 	glm::vec3	cam_up;
 	glm::vec3	cam_dir;
+	glm::vec3	cam_right;
 	s_ubo	ubo;
 	bool	quit = false;
 };

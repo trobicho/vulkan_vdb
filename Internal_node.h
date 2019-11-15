@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/02 20:38:22 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/15 16:00:36 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/11/15 19:16:25 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -233,10 +233,10 @@ void	Internal_node<Value, Child, Log2X, Log2Y, Log2Z>
 			
 			v = mesh.vertex_buffer[v_idx[2]];
 			v.tex_coord = glm::vec2(0.0f, 0.0f);
-			mesh.add_vertex_with_basic_index(v);
+			tmp = mesh.add_vertex_with_basic_index(v);
 			v = mesh.vertex_buffer[v_idx[1]];
 			v.tex_coord = glm::vec2(1.0f, 0.0f);
-			tmp = mesh.add_vertex_with_basic_index(v);
+			mesh.add_vertex_with_basic_index(v);
 			v = mesh.vertex_buffer[v_idx[5]];
 			v.tex_coord = glm::vec2(1.0f, 1.0f);
 			int tmp2 = mesh.add_vertex_with_basic_index(v);

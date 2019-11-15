@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/12 07:23:05 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/12 10:35:42 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/11/15 21:41:00 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,12 +27,10 @@ void	key_call(GLFWwindow* window, int key, int scancode, int action, int mods)
 		user->cam_pos += user->cam_dir * 2.0f;
 	if (key == GLFW_KEY_S && (action == GLFW_REPEAT || action == GLFW_PRESS))
 		user->cam_pos += user->cam_dir * -2.0f;
-	/*
 	if (key == GLFW_KEY_D && (action == GLFW_REPEAT || action == GLFW_PRESS))
-		user->cam_pos += user->cam_dir * 2.0f;
+		user->cam_pos += user->cam_right * -2.0f;
 	if (key == GLFW_KEY_A && (action == GLFW_REPEAT || action == GLFW_PRESS))
-		user->cam_pos += glm::vec3(0.f, 0.f, -2.f);
-		*/
+		user->cam_pos += user->cam_right * 2.0f;
 	
 	/*
 	if (key == GLFW_KEY_UP && (action == GLFW_REPEAT || action == GLFW_PRESS))
@@ -59,14 +57,15 @@ void	cursor_call(GLFWwindow* window, double x_pos, double y_pos)
 	static double	last_y = y_pos;
 	float			norme = sqrt((x_pos - last_x) * (x_pos - last_x)
 							+ (y_pos - last_y) * (y_pos - last_y));
-	glm::vec3		axis = glm::vec3(y_pos - last_y, last_x - x_pos, 0.0f);
+	glm::vec3		axis; 
 
-	axis = glm::normalize(axis);
 	user = (s_user*)glfwGetWindowUserPointer(window);
 	if (norme > 0.01)
 	{
+		axis = user->cam_right * (float)(y_pos - last_y) + user->cam_up * (float)(last_x - x_pos);
+		axis = glm::normalize(axis);
 		user->cam_dir = glm::rotate(user->cam_dir, norme * glm::radians(0.1f), axis);
-		user->cam_up = glm::rotate(user->cam_up, norme * glm::radians(0.1f), axis);
+		user->cam_right = glm::rotate(user->cam_right, (float)(last_x - x_pos) * glm::radians(0.1f), user->cam_up);
 		last_x = x_pos;
 		last_y = y_pos;
 	}

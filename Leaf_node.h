@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/02 20:38:57 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/15 16:18:12 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/11/15 21:04:13 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,10 @@ class Leaf_node: public Node<Value>
 			v.pos.z = (float)m_z + z_of;
 			v.tex_coord = glm::vec2(0.0f, 0.0f);
 			return (v);
+		}
+		bool			moore_check(unsigned int i, std::bitset<9> &moore_neig) const
+		{
+			return (true);
 		}
 
 		Value				m_leaf_data[sSize];	//direct access table
@@ -128,11 +132,12 @@ template <class Value, int Log2X, int Log2Y, int Log2Z>
 void		Leaf_node<Value, Log2X, Log2Y, Log2Z>
 	::do_mesh(Mesh &mesh) const
 {
-	uint32_t	v_idx[8];
+	uint32_t		v_idx[8];
+	std::bitset<9>	moore_neigh;
 
 	for (int i = 0; i < sSize; i++)
 	{
-		if (m_value_mask[i]) 
+		if (m_value_mask[i] && moore_check(i, moore_neigh)) 
 		{
 			s_vertex	v = get_pos_from_offset(i);
 

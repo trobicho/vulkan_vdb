@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/02 20:39:09 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/15 16:37:47 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/11/15 21:11:21 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,7 +97,7 @@ int	main()
 	glfwInit();
 	glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 	glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
-	GLFWwindow *win = glfwCreateWindow(800, 800, "Vulkan", NULL, NULL);
+	GLFWwindow *win = glfwCreateWindow(1920, 1080, "Vulkan", glfwGetPrimaryMonitor(), NULL);
 	
 	IMG_Init(IMG_INIT_PNG);
 	box.origin = s_vec3i(0, 0, 0);
@@ -125,6 +125,7 @@ int	main()
 	user.cam_pos = glm::vec3(-1.0f, 15.0f, 0.0f);
 	user.cam_dir = glm::vec3(0.0f, 0.0f, 1.0f);
 	user.cam_up = glm::vec3(0.0f, 1.0f, 0.0f);
+	user.cam_right = glm::vec3(1.0f, 0.0f, 0.0f);
 
 	My_vulkan	my_vulkan(win, mesh, user.ubo);
 	glfwSetInputMode(win, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
