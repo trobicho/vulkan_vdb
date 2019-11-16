@@ -6,7 +6,7 @@
 #    By: trobicho <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/11/02 20:38:42 by trobicho          #+#    #+#              #
-#    Updated: 2019/11/15 23:20:48 by trobicho         ###   ########.fr        #
+#    Updated: 2019/11/16 18:34:31 by trobicho         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -47,6 +47,7 @@ SRCS_NAME	=	main.cpp \
 				validation_layer.cpp \
 				key_call.cpp \
 				Mesh.cpp
+				#perlin.cpp \
 
 HDRS_NAME	=	Vdb_test.h \
 				vector.h \
@@ -63,6 +64,7 @@ HDRS_NAME	=	Vdb_test.h \
 				validation_layer.h \
 				key_call.h \
 				Mesh.h
+				#perlin.h \
 
 OBJS_NAME	=	$(SRCS_NAME:.cpp=.o)
 

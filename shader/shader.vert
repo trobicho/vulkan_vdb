@@ -19,7 +19,7 @@ void main() {
 	gl_Position = ubo.proj * ubo.view * ubo.model * vec4(in_pos, 1.0);
 	out_tex_coord = in_tex_coord;
 	float len = length(gl_Position) / 30.0;
-	out_color = vec4(vec3(1.0f, 1.0f, 1.0f) / ((len * len * (M_PI))), 1.0);
+	out_color = vec4(vec3(1.0f, 1.0f, 1.0f) / ((len * len * (M_PI)) / 20), 1.0);
 	out_color = max(out_color, vec4(0.2));
 	out_color = min(out_color, vec4(1.4));
 }

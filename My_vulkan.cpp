@@ -6,7 +6,7 @@
 /*   By: trobicho <trobicho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/09 17:05:36 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/15 22:16:44 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/11/16 20:28:54 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -206,7 +206,7 @@ int		My_vulkan::create_texture_img()
 	VkBuffer				staging_buffer;
 	VkDeviceMemory			staging_buffer_memory;
 
-	pix_buffer = stbi_load("textures/block/iron_ore.png", &w, &h
+	pix_buffer = stbi_load("textures/block/chiseled_stone_bricks.png", &w, &h
 		, &channel, STBI_rgb_alpha);
 	VkDeviceSize image_size = w * h * 4;
 	if (!pix_buffer)

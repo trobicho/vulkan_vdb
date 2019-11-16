@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/02 20:38:57 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/16 03:57:59 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/11/16 17:38:23 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ class Leaf_node: public Node<Value>
 				moore_neigh[2] = 0;
 			else
 				moore_neigh[2] = m_value_mask[i - 1];
-			if ((i & ((1 << (Log2Z)) - 1)) == (1 << Log2Z - 1))
+			if ((i & ((1 << (Log2Z)) - 1)) == (1 << Log2Z) - 1)
 				moore_neigh[3] = 0;
 			else
 				moore_neigh[3] = m_value_mask[i + 1];
