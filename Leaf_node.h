@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/02 20:38:57 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/15 21:04:13 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/11/16 03:57:59 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,9 +60,33 @@ class Leaf_node: public Node<Value>
 			v.tex_coord = glm::vec2(0.0f, 0.0f);
 			return (v);
 		}
-		bool			moore_check(unsigned int i, std::bitset<9> &moore_neig) const
+		bool			moore_check(unsigned int i, std::bitset<6> &moore_neigh) const
 		{
-			return (true);
+			if ((i >> Log2Z) < 1 << Log2Z)
+				moore_neigh[0] = 0;
+			else
+				moore_neigh[0] = m_value_mask[i - (1 << Log2Z)];
+			if ((i >> Log2Z) >= (1 << (Log2X + Log2Y)) - (1 << Log2Z))
+				moore_neigh[1] = 0;
+			else
+				moore_neigh[1] = m_value_mask[i + (1 << Log2Z)];
+			if ((i & ((1 << (Log2Z)) - 1)) == 0)
+				moore_neigh[2] = 0;
+			else
+				moore_neigh[2] = m_value_mask[i - 1];
+			if ((i & ((1 << (Log2Z)) - 1)) == (1 << Log2Z - 1))
+				moore_neigh[3] = 0;
+			else
+				moore_neigh[3] = m_value_mask[i + 1];
+			if (i >= sSize - (1 << (Log2Y + Log2Z)))
+				moore_neigh[4] = 0;
+			else
+				moore_neigh[4] = m_value_mask[i + (1 << (Log2Y + Log2Z))];
+			if (i < 1 << (Log2Y + Log2Z))
+				moore_neigh[5] = 0;
+			else
+				moore_neigh[5] = m_value_mask[i - (1 << (Log2Y + Log2Z))];
+			return (!moore_neigh.all());
 		}
 
 		Value				m_leaf_data[sSize];	//direct access table
@@ -133,7 +157,7 @@ void		Leaf_node<Value, Log2X, Log2Y, Log2Z>
 	::do_mesh(Mesh &mesh) const
 {
 	uint32_t		v_idx[8];
-	std::bitset<9>	moore_neigh;
+	std::bitset<6>	moore_neigh;
 
 	for (int i = 0; i < sSize; i++)
 	{
@@ -164,55 +188,67 @@ void		Leaf_node<Value, Log2X, Log2Y, Log2Z>
 			mesh.add_index(v_idx[4]);
 
 			int	tmp;
-			mesh.add_index(v_idx[0]);
-			mesh.add_index(v_idx[1]);
-			v = mesh.vertex_buffer[v_idx[5]];
-			v.tex_coord = glm::vec2(1.0f, 1.0f);
-			tmp = mesh.add_vertex_with_basic_index(v);
-			mesh.add_index(tmp);
-			v = mesh.vertex_buffer[v_idx[4]];
-			v.tex_coord = glm::vec2(0.0f, 1.0f);
-			mesh.add_vertex_with_basic_index(v);
-			mesh.add_index(v_idx[0]);
-			
-			v = mesh.vertex_buffer[v_idx[2]];
-			v.tex_coord = glm::vec2(0.0f, 0.0f);
-			tmp = mesh.add_vertex_with_basic_index(v);
-			v = mesh.vertex_buffer[v_idx[1]];
-			v.tex_coord = glm::vec2(1.0f, 0.0f);
-			mesh.add_vertex_with_basic_index(v);
-			v = mesh.vertex_buffer[v_idx[5]];
-			v.tex_coord = glm::vec2(1.0f, 1.0f);
-			int tmp2 = mesh.add_vertex_with_basic_index(v);
-			mesh.add_index(tmp2);
-			v = mesh.vertex_buffer[v_idx[6]];
-			v.tex_coord = glm::vec2(1.0f, 0.0f);
-			mesh.add_vertex_with_basic_index(v);
-			mesh.add_index(tmp);
-			
-			v = mesh.vertex_buffer[v_idx[3]];
-			v.tex_coord = glm::vec2(0.0f, 0.0f);
-			tmp = mesh.add_vertex_with_basic_index(v);
-			v = mesh.vertex_buffer[v_idx[2]];
-			v.tex_coord = glm::vec2(1.0f, 0.0f);
-			mesh.add_vertex_with_basic_index(v);
-			mesh.add_index(v_idx[6]);
-			mesh.add_index(v_idx[6]);
-			mesh.add_index(v_idx[7]);
-			mesh.add_index(tmp);
-			
-			mesh.add_index(v_idx[0]);
-			v = mesh.vertex_buffer[v_idx[3]];
-			v.tex_coord = glm::vec2(1.0f, 0.0f);
-			mesh.add_vertex_with_basic_index(v);
-			v = mesh.vertex_buffer[v_idx[7]];
-			v.tex_coord = glm::vec2(1.0f, 1.0f);
-			tmp = mesh.add_vertex_with_basic_index(v);
-			mesh.add_index(tmp);
-			v = mesh.vertex_buffer[v_idx[4]];
-			v.tex_coord = glm::vec2(0.0f, 1.0f);
-			mesh.add_vertex_with_basic_index(v);
-			mesh.add_index(v_idx[0]);
+			if (!moore_neigh[2])
+			{
+				mesh.add_index(v_idx[0]);
+				mesh.add_index(v_idx[1]);
+				v = mesh.vertex_buffer[v_idx[5]];
+				v.tex_coord = glm::vec2(1.0f, 1.0f);
+				tmp = mesh.add_vertex_with_basic_index(v);
+				mesh.add_index(tmp);
+				v = mesh.vertex_buffer[v_idx[4]];
+				v.tex_coord = glm::vec2(0.0f, 1.0f);
+				mesh.add_vertex_with_basic_index(v);
+				mesh.add_index(v_idx[0]);
+			}
+
+			if (!moore_neigh[3])
+			{
+				v = mesh.vertex_buffer[v_idx[3]];
+				v.tex_coord = glm::vec2(0.0f, 0.0f);
+				tmp = mesh.add_vertex_with_basic_index(v);
+				v = mesh.vertex_buffer[v_idx[2]];
+				v.tex_coord = glm::vec2(1.0f, 0.0f);
+				mesh.add_vertex_with_basic_index(v);
+				mesh.add_index(v_idx[6]);
+				mesh.add_index(v_idx[6]);
+				mesh.add_index(v_idx[7]);
+				mesh.add_index(tmp);
+			}
+
+			if (!moore_neigh[4])
+			{
+				v = mesh.vertex_buffer[v_idx[2]];
+				v.tex_coord = glm::vec2(0.0f, 0.0f);
+				tmp = mesh.add_vertex_with_basic_index(v);
+				v = mesh.vertex_buffer[v_idx[1]];
+				v.tex_coord = glm::vec2(1.0f, 0.0f);
+				mesh.add_vertex_with_basic_index(v);
+				v = mesh.vertex_buffer[v_idx[5]];
+				v.tex_coord = glm::vec2(1.0f, 1.0f);
+				int tmp2 = mesh.add_vertex_with_basic_index(v);
+				mesh.add_index(tmp2);
+				v = mesh.vertex_buffer[v_idx[6]];
+				v.tex_coord = glm::vec2(1.0f, 0.0f);
+				mesh.add_vertex_with_basic_index(v);
+				mesh.add_index(tmp);
+			}
+
+			if (!moore_neigh[5])
+			{
+				mesh.add_index(v_idx[0]);
+				v = mesh.vertex_buffer[v_idx[3]];
+				v.tex_coord = glm::vec2(1.0f, 0.0f);
+				mesh.add_vertex_with_basic_index(v);
+				v = mesh.vertex_buffer[v_idx[7]];
+				v.tex_coord = glm::vec2(1.0f, 1.0f);
+				tmp = mesh.add_vertex_with_basic_index(v);
+				mesh.add_index(tmp);
+				v = mesh.vertex_buffer[v_idx[4]];
+				v.tex_coord = glm::vec2(0.0f, 1.0f);
+				mesh.add_vertex_with_basic_index(v);
+				mesh.add_index(v_idx[0]);
+			}
 		}
 	}
 }
