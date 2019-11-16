@@ -1,6 +1,8 @@
 #version 450
 #extension GL_ARB_separate_shader_objects : enable
 
+#define M_PI                3.14159265
+
 layout(location = 0) out vec2 out_tex_coord;
 layout(location = 1) out vec4 out_color;
 
@@ -12,8 +14,6 @@ layout(binding = 0) uniform UniformBufferObject {
 	mat4	view;
 	mat4	proj;
 } ubo;
-
-#define M_PI                3.14159265
 
 void main() {
 	gl_Position = ubo.proj * ubo.view * ubo.model * vec4(in_pos, 1.0);
