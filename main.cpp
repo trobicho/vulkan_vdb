@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/02 20:39:09 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/16 19:25:04 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/11/17 07:28:41 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 #include <SDL2/SDL_image.h>
 #include "My_vulkan.h"
 #include "key_call.h"
+#include "perlin.h"
 
 static uint64_t	nb_vox = 0;
 
@@ -33,6 +34,50 @@ double	get_noise_value_from_img(SDL_Surface *surface, double x, double y)
 
 	v = ((Uint8*)surface->pixels)[ix + iy * surface->w] / 255.0;
 	return (v);
+}
+
+int		add_voxel_from_perlin(Vdb_test &vdb, s_vbox box)
+{
+	Perlin_noiser	noise;
+	double			scalar = 150.0;
+	double			scalar_cave = 30.0;
+	double			cave_thres = 0.3;
+	double			cave_thres_d;
+
+	for (int z = 0; z < box.len.z; ++z)
+	{
+		for (int x = 0; x < box.len.x; ++x)
+		{
+			double	d = noise.perlin2d(3, 2., 0.5
+						, (double)(x + box.origin.x) / scalar
+						, (double)(z + box.origin.z) / scalar);
+			for (int y = 0; y < box.len.y * d + 1; ++y)
+			{
+				s_vec3i	vox(x, y, z);
+				double 
+				d_cave = noise.perlin3d(3, 1.5, 0.5
+						, (double)(x + box.origin.x) / scalar_cave
+						, (double)(z + box.origin.z) / scalar_cave
+						, (double)(y + box.origin.y) / scalar_cave);
+				cave_thres_d = (1.0 - (double)y / box.len.y) - cave_thres;
+				if (d_cave < cave_thres)
+					continue ;
+				vox.x += box.origin.x;
+				vox.y += box.origin.y;
+				vox.z += box.origin.z;
+				vdb.set_vox(1, vox);
+				nb_vox++;
+				if (nb_vox > 0 && nb_vox % 200000000 == 0)
+				{
+					vdb.pruning();
+					std::cout << "prunning" << std::endl;
+					std::cout << (z / (double)box.len.x) * 100.0 << "%"  << std::endl;
+					std::cout << "total of " << nb_vox << " voxels." << std::endl;
+				}
+			}
+		}
+	}
+	return (0);
 }
 
 int		add_voxel_from_img(Vdb_test &vdb, const char *file_name, s_vbox box)
@@ -93,6 +138,8 @@ int	main()
 	s_vbox		box;
 	Mesh		mesh;
 	s_user		user;
+	int			xr = trl::rand_uniform_int(256, 8192 - 256);
+	int			zr = trl::rand_uniform_int(256, 8192 - 256);
 
 	glfwInit();
 	glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
@@ -100,9 +147,9 @@ int	main()
 	GLFWwindow *win = glfwCreateWindow(1920, 1080, "Vulkan", glfwGetPrimaryMonitor(), NULL);
 	
 	IMG_Init(IMG_INIT_PNG);
-	box.origin = s_vec3i(0, 0, 0);
-	box.len = s_vec3i(512, 64, 512);
-	if (add_voxel_from_img(my_vdb, "./map_img/noise3d.png", box))
+	box.len = s_vec3i(300, 128, 300);
+	box.origin = s_vec3i(xr - box.len.x / 2, 0, zr - box.len.z / 2);
+	if (add_voxel_from_perlin(my_vdb, box))
 		return (1);
 	IMG_Quit();
 	my_vdb.pruning();
@@ -121,8 +168,9 @@ int	main()
 	*/
 	std::cout << std::endl;
 	
-	user.ubo.model = glm::rotate(glm::mat4(1.0f), glm::radians(0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-	user.cam_pos = glm::vec3(-1.0f, 15.0f, 0.0f);
+	user.ubo.model = glm::rotate(glm::mat4(1.0f)
+						, glm::radians(0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+	user.cam_pos = glm::vec3(xr, 130.0f, zr);
 	user.cam_dir = glm::vec3(0.0f, 0.0f, 1.0f);
 	user.cam_up = glm::vec3(0.0f, 1.0f, 0.0f);
 	user.cam_right = glm::vec3(1.0f, 0.0f, 0.0f);
