@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/02 20:39:09 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/17 07:28:41 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/11/17 07:46:26 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,8 @@ int		add_voxel_from_perlin(Vdb_test &vdb, s_vbox box)
 	double			scalar_cave = 30.0;
 	double			cave_thres = 0.3;
 	double			cave_thres_d;
+	int				lerp_mod = 3;
+	double			d_cave_prec, d_cave_next, d_cave;
 
 	for (int z = 0; z < box.len.z; ++z)
 	{
@@ -54,11 +56,23 @@ int		add_voxel_from_perlin(Vdb_test &vdb, s_vbox box)
 			for (int y = 0; y < box.len.y * d + 1; ++y)
 			{
 				s_vec3i	vox(x, y, z);
-				double 
-				d_cave = noise.perlin3d(3, 1.5, 0.5
+				if (y % lerp_mod == 0)
+				{
+					d_cave = noise.perlin3d(3, 1.5, 0.5
 						, (double)(x + box.origin.x) / scalar_cave
 						, (double)(z + box.origin.z) / scalar_cave
 						, (double)(y + box.origin.y) / scalar_cave);
+					d_cave_prec = d_cave;
+					d_cave_next = noise.perlin3d(3, 1.5, 0.5
+						, (double)(x + box.origin.x) / scalar_cave
+						, (double)(z + box.origin.z) / scalar_cave
+						, (double)(y + box.origin.y + lerp_mod) / scalar_cave);
+				}
+				else
+				{
+					d_cave = Perlin_noiser::lerp(d_cave_prec, d_cave_next
+								, (y % lerp_mod) / (double)lerp_mod);
+				}
 				cave_thres_d = (1.0 - (double)y / box.len.y) - cave_thres;
 				if (d_cave < cave_thres)
 					continue ;
