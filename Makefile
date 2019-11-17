@@ -6,7 +6,7 @@
 #    By: trobicho <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/11/02 20:38:42 by trobicho          #+#    #+#              #
-#    Updated: 2019/11/17 00:36:48 by trobicho         ###   ########.fr        #
+#    Updated: 2019/11/17 17:21:15 by trobicho         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -45,6 +45,7 @@ SRCS_NAME	=	main.cpp \
 				gpu_pipeline.cpp \
 				shader.cpp \
 				validation_layer.cpp \
+				Player.cpp \
 				key_call.cpp \
 				perlin.cpp \
 				Mesh.cpp
@@ -62,6 +63,7 @@ HDRS_NAME	=	Vdb_test.h \
 				gpu_pipeline.h \
 				shader.h \
 				validation_layer.h \
+				Player.h \
 				key_call.h \
 				perlin.h \
 				Mesh.h

@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/02 20:39:09 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/17 07:46:26 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/11/17 19:43:19 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,10 +134,12 @@ int		add_voxel_from_img(Vdb_test &vdb, const char *file_name, s_vbox box)
 static void	main_loop(My_vulkan &my_vulkan, GLFWwindow *win)
 {
 	s_user *user = (s_user*)glfwGetWindowUserPointer(win);
+
 	while(!glfwWindowShouldClose(win) && !user->quit)
 	{
 		glfwPollEvents();
-		user->ubo.view = glm::lookAt(user->cam_pos, user->cam_pos + user->cam_dir, user->cam_up);
+		user->player.move();
+		user->player.update_ubo();
 		my_vulkan.draw_frame();
 	}
 	vkDeviceWaitIdle(my_vulkan.get_device_ref());
@@ -151,7 +153,6 @@ int	main()
 			dis(0, 1000);
 	s_vbox		box;
 	Mesh		mesh;
-	s_user		user;
 	int			xr = trl::rand_uniform_int(256, 8192 - 256);
 	int			zr = trl::rand_uniform_int(256, 8192 - 256);
 
@@ -160,36 +161,21 @@ int	main()
 	glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
 	GLFWwindow *win = glfwCreateWindow(1920, 1080, "Vulkan", glfwGetPrimaryMonitor(), NULL);
 	
-	IMG_Init(IMG_INIT_PNG);
 	box.len = s_vec3i(300, 128, 300);
 	box.origin = s_vec3i(xr - box.len.x / 2, 0, zr - box.len.z / 2);
 	if (add_voxel_from_perlin(my_vdb, box))
 		return (1);
-	IMG_Quit();
+
 	my_vdb.pruning();
 	std::cout << "total of " << nb_vox << " voxels." << std::endl;
 	my_vdb.mesh(mesh);
 	std::cout << "total of " << mesh.get_nb_vertex() << " vertex." << std::endl;
 	std::cout << "total of " << mesh.get_nb_index() << " index." << std::endl;
-	/*
-	for (int i = 0; i < mesh.get_nb_vertex(); i++)
-	{
-		std::cout << "vertex[" << i << "]:";
-		std::cout << mesh.vertex_buffer[i].pos.x 
-			<< ", " << mesh.vertex_buffer[i].pos.y 
-			<< ", " << mesh.vertex_buffer[i].pos.z << std::endl;
-	}
-	*/
 	std::cout << std::endl;
 	
-	user.ubo.model = glm::rotate(glm::mat4(1.0f)
-						, glm::radians(0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-	user.cam_pos = glm::vec3(xr, 130.0f, zr);
-	user.cam_dir = glm::vec3(0.0f, 0.0f, 1.0f);
-	user.cam_up = glm::vec3(0.0f, 1.0f, 0.0f);
-	user.cam_right = glm::vec3(1.0f, 0.0f, 0.0f);
-
-	My_vulkan	my_vulkan(win, mesh, user.ubo);
+	Player		player(glm::vec3((float)xr, 130.0f, (float)zr));
+	s_user		user(player);
+	My_vulkan	my_vulkan(win, mesh, player.get_cam_ref().ubo);
 	glfwSetInputMode(win, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	if (glfwRawMouseMotionSupported())
 		glfwSetInputMode(win, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
