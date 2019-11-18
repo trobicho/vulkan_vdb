@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/02 20:39:09 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/18 03:08:36 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/11/18 22:49:22 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -140,6 +140,11 @@ static void	main_loop(My_vulkan &my_vulkan, Vdb_test &vdb, GLFWwindow *win)
 	while(!glfwWindowShouldClose(win) && !user->quit)
 	{
 		glfwPollEvents();
+		if (user->resync_physic_time)
+		{
+			physic.resync_time();
+			user->resync_physic_time = false;
+		}
 		user->player.move();
 		if (user->player.has_physic())
 			physic.apply_physic_to_player(user->player);
@@ -163,11 +168,12 @@ int	main()
 	glfwInit();
 	glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 	glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
-	GLFWwindow *win = glfwCreateWindow(800, 600, "Vulkan"
-		, NULL, NULL);
-		//, glfwGetPrimaryMonitor(), NULL);
+	GLFWwindow *win = glfwCreateWindow(1920, 1080, "Vulkan"
+		, glfwGetPrimaryMonitor(), NULL);
+	//GLFWwindow *win = glfwCreateWindow(800, 600, "Vulkan"
+		//, NULL, NULL);
 
-	box.len = s_vec3i(100, 128, 100);
+	box.len = s_vec3i(200, 128, 200);
 	box.origin = s_vec3i(xr - box.len.x / 2, 0, zr - box.len.z / 2);
 	if (add_voxel_from_perlin(my_vdb, box))
 		return (1);

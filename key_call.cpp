@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/12 07:23:05 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/18 02:51:32 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/11/18 20:28:24 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,19 @@ void	key_call(GLFWwindow* window, int key, int scancode, int action, int mods)
 	if (key == GLFW_KEY_F)
 	{
 		if (action == GLFW_PRESS)
+		{
+			user->player.sync_to_cam();
 			user->player.alternate_mode();
+			user->resync_physic_time = true;
+		}
+	}
+	if (key == GLFW_KEY_SPACE)
+	{
+		if (action == GLFW_PRESS)
+		{
+			if (!user->player.is_falling())
+			user->player.jump();
+		}
 	}
 	if (key == GLFW_KEY_W)
 	{

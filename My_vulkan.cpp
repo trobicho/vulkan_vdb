@@ -6,7 +6,7 @@
 /*   By: trobicho <trobicho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/09 17:05:36 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/17 05:27:42 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/11/18 19:29:46 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,6 @@
 #include <cstdlib>
 #include <iostream>
 #include <glm/gtc/matrix_transform.hpp>
-#include <chrono>
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
@@ -111,14 +110,7 @@ int My_vulkan::draw_frame()
 int		My_vulkan::update_uniform_buffer(uint32_t img_index)
 {
 	void*		data;
-	float 		time;
-	static auto	start_time = std::chrono::high_resolution_clock::now();
-	auto		current_time = std::chrono::high_resolution_clock::now();
 
-	time = std::chrono::duration<float,
-		 std::chrono::seconds::period>(current_time - start_time).count();
-
-	//m_ubo.model = glm::rotate(glm::mat4(1.0f), time * glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
 	m_ubo.proj = glm::perspective(glm::radians(45.0f)
 			, m_swap_chain_extent.width / (float)m_swap_chain_extent.height
 			, 0.1f, 10000.0f);

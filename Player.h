@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/17 17:04:20 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/18 03:16:12 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/11/18 23:44:40 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,22 +63,33 @@ class	Player
 		inline Camera&		get_cam_ref() {return (m_cam);}
 		inline void			update_ubo(){m_cam.update_ubo();}
 		inline bool			is_falling() const
-								{return (!(m_state ^ (~P_STATE_FALLING)));}
+								{return (m_state & (P_STATE_FALLING));}
 		inline bool			has_physic(){return (m_mode != DEV_MODE);}
+		inline void			sync_to_cam(){m_pos = m_cam.pos;
+								m_pos.y -= 0.4 * m_hitbox.h;}
 
 		inline glm::vec3	get_pos() const {return (m_pos);}
 		inline s_hitbox		get_hitbox() const {return (m_hitbox);}
+		inline glm::vec3&	get_speed_vec_ref() {return (m_speed_vec);}
+		inline glm::vec3&	get_accel_vec_ref() {return (m_accel_vec);}
 
 		void				move();
+		void				jump() {m_speed_vec.y = 6.0f;}
 		void				collide_eject(glm::vec3 eject_vector, float d);
 		void				alternate_mode();
+		void				touch_ground();
+		void				apply_force(float t);
 
 	private:
 		void				move_dev();
+		void				move_normal();
 
 		uint32_t	m_state = 0;
 		Camera		m_cam;
 		e_mode		m_mode = DEV_MODE;
 		glm::vec3	m_pos;
-		s_hitbox	m_hitbox = s_hitbox(0.4, 2.5);
+		glm::vec3	m_dir;
+		glm::vec3	m_speed_vec;
+		glm::vec3	m_accel_vec;
+		s_hitbox	m_hitbox = s_hitbox(1.1, 2.5);
 };
