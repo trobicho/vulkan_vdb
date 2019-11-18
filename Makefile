@@ -6,7 +6,7 @@
 #    By: trobicho <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/11/02 20:38:42 by trobicho          #+#    #+#              #
-#    Updated: 2019/11/17 17:21:15 by trobicho         ###   ########.fr        #
+#    Updated: 2019/11/18 01:47:47 by trobicho         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -37,8 +37,6 @@ else
 endif
 
 SRCS_NAME	=	main.cpp \
-				vector.cpp \
-				quaternion.cpp \
 				Vdb_test.cpp \
 				My_vulkan.cpp \
 				init_swap_chain.cpp \
@@ -46,13 +44,12 @@ SRCS_NAME	=	main.cpp \
 				shader.cpp \
 				validation_layer.cpp \
 				Player.cpp \
+				Physic.cpp \
 				key_call.cpp \
 				perlin.cpp \
 				Mesh.cpp
 
 HDRS_NAME	=	Vdb_test.h \
-				vector.h \
-				quaternion.h \
 				libvdb.h \
 				Root_node.h \
 				Internal_node.h \
@@ -64,6 +61,7 @@ HDRS_NAME	=	Vdb_test.h \
 				shader.h \
 				validation_layer.h \
 				Player.h \
+				Physic.h \
 				key_call.h \
 				perlin.h \
 				Mesh.h
@@ -76,7 +74,7 @@ OBJS = $(addprefix $(OBJS_PATH)/, $(OBJS_NAME))
 
 all: $(NAME)
 
-$(NAME): $(NAME) $(GEN_OBJS) $(ENV_OBJS) $(OBJS) Makefile
+$(NAME): $(SRCS) $(HDRS) $(OBJS) Makefile
 	$(CC) $(CXXFLAGS) $(INCS_FLAGS) $(SDL_IFLAGS) $(SRCS) $(GEN_SRCS) $(ENV_SRCS) $(LDFLAGS) $(SDL_LFLAGS) -o $(NAME)
 
 $(OBJS_PATH)/%.o: $(SRCS_PATH)/%.cpp $(HDRS) Makefile

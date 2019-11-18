@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/02 20:39:09 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/17 19:43:19 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/11/18 03:08:36 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 #include "My_vulkan.h"
 #include "key_call.h"
 #include "perlin.h"
+#include "Physic.h"
 
 static uint64_t	nb_vox = 0;
 
@@ -39,7 +40,7 @@ double	get_noise_value_from_img(SDL_Surface *surface, double x, double y)
 int		add_voxel_from_perlin(Vdb_test &vdb, s_vbox box)
 {
 	Perlin_noiser	noise;
-	double			scalar = 150.0;
+	double			scalar = 500.0;
 	double			scalar_cave = 30.0;
 	double			cave_thres = 0.3;
 	double			cave_thres_d;
@@ -50,7 +51,7 @@ int		add_voxel_from_perlin(Vdb_test &vdb, s_vbox box)
 	{
 		for (int x = 0; x < box.len.x; ++x)
 		{
-			double	d = noise.perlin2d(3, 2., 0.5
+			double	d = noise.perlin2d(5, 2., 0.8
 						, (double)(x + box.origin.x) / scalar
 						, (double)(z + box.origin.z) / scalar);
 			for (int y = 0; y < box.len.y * d + 1; ++y)
@@ -131,14 +132,17 @@ int		add_voxel_from_img(Vdb_test &vdb, const char *file_name, s_vbox box)
 	return (0);
 }
 
-static void	main_loop(My_vulkan &my_vulkan, GLFWwindow *win)
+static void	main_loop(My_vulkan &my_vulkan, Vdb_test &vdb, GLFWwindow *win)
 {
-	s_user *user = (s_user*)glfwGetWindowUserPointer(win);
+	s_user	*user = (s_user*)glfwGetWindowUserPointer(win);
+	Physic	physic(vdb);
 
 	while(!glfwWindowShouldClose(win) && !user->quit)
 	{
 		glfwPollEvents();
 		user->player.move();
+		if (user->player.has_physic())
+			physic.apply_physic_to_player(user->player);
 		user->player.update_ubo();
 		my_vulkan.draw_frame();
 	}
@@ -159,9 +163,11 @@ int	main()
 	glfwInit();
 	glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 	glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
-	GLFWwindow *win = glfwCreateWindow(1920, 1080, "Vulkan", glfwGetPrimaryMonitor(), NULL);
-	
-	box.len = s_vec3i(300, 128, 300);
+	GLFWwindow *win = glfwCreateWindow(800, 600, "Vulkan"
+		, NULL, NULL);
+		//, glfwGetPrimaryMonitor(), NULL);
+
+	box.len = s_vec3i(100, 128, 100);
 	box.origin = s_vec3i(xr - box.len.x / 2, 0, zr - box.len.z / 2);
 	if (add_voxel_from_perlin(my_vdb, box))
 		return (1);
@@ -188,6 +194,6 @@ int	main()
 		std::cout << "Unable to initialize Vulkan !" << std::endl;
 	}
 
-	main_loop(my_vulkan, win);
+	main_loop(my_vulkan, my_vdb, win);
 	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/12 07:23:05 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/17 19:41:28 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/11/18 02:51:32 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,33 +23,38 @@ void	key_call(GLFWwindow* window, int key, int scancode, int action, int mods)
 
 	if (key == GLFW_KEY_ESCAPE)
 		user->quit = true;
+	if (key == GLFW_KEY_F)
+	{
+		if (action == GLFW_PRESS)
+			user->player.alternate_mode();
+	}
 	if (key == GLFW_KEY_W)
 	{
 		if (action == GLFW_PRESS)
-			user->player.set_state(M_STATE_FORWARD);
+			user->player.set_state(P_STATE_FORWARD);
 		else if (action == GLFW_RELEASE)
-			user->player.unset_state(M_STATE_FORWARD);
+			user->player.unset_state(P_STATE_FORWARD);
 	}
 	if (key == GLFW_KEY_S)
 	{
 		if (action == GLFW_PRESS)
-			user->player.set_state(M_STATE_BACKWARD);
+			user->player.set_state(P_STATE_BACKWARD);
 		else if (action == GLFW_RELEASE)
-			user->player.unset_state(M_STATE_BACKWARD);
+			user->player.unset_state(P_STATE_BACKWARD);
 	}
 	if (key == GLFW_KEY_D)
 	{
 		if (action == GLFW_PRESS)
-			user->player.set_state(M_STATE_RIGHT);
+			user->player.set_state(P_STATE_RIGHT);
 		else if (action == GLFW_RELEASE)
-			user->player.unset_state(M_STATE_RIGHT);
+			user->player.unset_state(P_STATE_RIGHT);
 	}
 	if (key == GLFW_KEY_A)
 	{
 		if (action == GLFW_PRESS)
-			user->player.set_state(M_STATE_LEFT);
+			user->player.set_state(P_STATE_LEFT);
 		else if (action == GLFW_RELEASE)
-			user->player.unset_state(M_STATE_LEFT);
+			user->player.unset_state(P_STATE_LEFT);
 	}
 }
 
