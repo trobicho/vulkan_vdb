@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/17 17:19:36 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/18 23:08:15 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/11/19 00:10:59 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,6 +68,11 @@ void	Player::move_dev()
 
 void	Player::apply_force(float t) // get/set_time
 {
+	glm::vec3	v = m_speed_vec;
+
+	if (!is_falling() && v.y < 0.f)
+		v.y = 0;
+
 	m_pos += m_speed_vec * t;
 }
 

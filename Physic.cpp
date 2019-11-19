@@ -6,7 +6,7 @@
 /*   By: trobicho <trobicho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/17 23:47:42 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/18 23:46:53 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/11/19 02:28:12 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,41 @@
 #include <iostream>
 #include <cmath>
 
+static float	get_vox_dist(glm::vec3 pos, s_vec3i	vox
+					, bool b_x, bool b_y, bool b_z)
+{
+	float	d = 0.0f;
+	int		int_x = (int)pos.x;
+	int		int_y = (int)pos.y;
+	int		int_z = (int)pos.z;
+
+	if (b_x)
+	{
+		if (int_x < vox.x)
+			d += vox.x - pos.x;
+		else if (int_x > vox.x)
+			d += pos.x - (vox.x + 1);
+	}
+	if (b_y)
+	{
+		if (int_y < vox.y)
+			d += vox.y - pos.y;
+		else if (int_y > vox.y)
+			d += pos.y - (vox.y + 1);
+	}
+	if (b_z)
+	{
+		if (int_z < vox.z)
+			d += vox.z - pos.z;
+		else if (int_z > vox.z)
+			d += pos.z - (vox.z + 1);
+	}
+	return (d);
+}
+
 static float	friction_calc(float speed, float friction, float t)
 {
-	return (speed * pow(friction, t));
+	return (speed * pow(1.0 - friction, t));
 }
 
 Physic::Physic(Vdb_test &vdb): m_vdb(vdb)
@@ -36,11 +68,8 @@ void	Physic::apply_physic_to_player(Player &player)
 	glm::vec3	p_pos = player.get_pos();
 	glm::vec3&	p_accel_vec = player.get_accel_vec_ref();
 	glm::vec3&	p_speed_vec = player.get_speed_vec_ref();
-	s_hitbox	hitbox = player.get_hitbox();
+	float		friction;
 	s_vec3i		vox_p((int)p_pos.x, (int)p_pos.y, (int)p_pos.z);
-	s_vec3i		vox = vox_p;
-	double		d_eject;
-	float		friction = 0.8;
 
 	if (m_vdb.get_vox(vox_p))
 	{
@@ -50,26 +79,59 @@ void	Physic::apply_physic_to_player(Player &player)
 		return ;
 	}
 
+	friction = check_ground(player);
+	if (player.is_falling())
+		p_accel_vec.y = -18.8f;
+
+	//std::cout << "time = " << time << std::endl;
+	apply_friction(p_speed_vec, p_accel_vec, friction, time);
+	player.apply_force(time);
+	m_last_time = current_time;
+}
+
+float	Physic::check_ground(Player &player)
+{
+	glm::vec3	p_pos = player.get_pos();
+	s_hitbox	hitbox = player.get_hitbox();
+	float		friction = 0.3; 
+	s_vec3i		vox_p((int)p_pos.x, (int)p_pos.y, (int)p_pos.z);
+	s_vec3i		vox = vox_p;
+	float		d_eject;
+	int			found = 0;
+
 	float	foot_h = (p_pos.y - hitbox.h / 2.0);
 	vox.y = (int)(foot_h - 0.05);
-	if (vox.y != vox_p.y && m_vdb.get_vox(vox))
+	if (vox.y != vox_p.y)
+	{
+		vox.x -= 1;
+		vox.z -= 1;
+		for (int i = 0; i < 9; i++)
+		{
+			if (i && i % 3 == 0)
+			{
+				vox.z++;
+				vox.x = vox_p.x - 1;
+			}
+			if (get_vox_dist(p_pos, vox, true, false, true) < hitbox.w)
+				if ((found = m_vdb.get_vox(vox)))
+					break;
+			vox.x++;
+		}
+	}
+	if (found)
 	{
 		float d = (vox.y + 1.0f) - foot_h;
 		if (d > 0.05)
 			player.collide_eject(glm::vec3(0.f, 1.f, 0.f), d);
 		if (player.is_falling())
 			player.touch_ground();
-		friction = 0.2;
+		friction = 0.8;
 	}
 	else
 	{
 		player.set_state(P_STATE_FALLING);
-		p_accel_vec.y = -18.8f;
 	}
-	//std::cout << "time = " << time << std::endl;
-	apply_friction(p_speed_vec, p_accel_vec, friction, time);
-	player.apply_force(time);
-	m_last_time = current_time;
+	return (friction);
 }
 
 void	Physic::apply_friction(glm::vec3 &speed_vec
@@ -80,7 +142,7 @@ void	Physic::apply_friction(glm::vec3 &speed_vec
 	if (accel > 0.01)
 	{
 		speed_vec += (glm::normalize(accel_vec) * time)
-			* (accel - friction_calc(speed, friction, time));
+			* (accel - friction * speed);
 	}
 	else if (speed > 0.0)
 	{

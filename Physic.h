@@ -6,7 +6,7 @@
 /*   By: trobicho <trobicho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/17 23:36:18 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/18 23:32:24 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/11/19 00:52:23 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ class	Physic
 		Physic(Vdb_test &vdb);
 
 		void	apply_physic_to_player(Player &player);
+		float	check_ground(Player &player);
 		void	resync_time() {m_last_time
 					= std::chrono::high_resolution_clock::now();}
 
