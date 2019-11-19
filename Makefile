@@ -6,7 +6,7 @@
 #    By: trobicho <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/11/02 20:38:42 by trobicho          #+#    #+#              #
-#    Updated: 2019/11/18 01:47:47 by trobicho         ###   ########.fr        #
+#    Updated: 2019/11/19 21:33:23 by trobicho         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -46,7 +46,9 @@ SRCS_NAME	=	main.cpp \
 				Player.cpp \
 				Physic.cpp \
 				key_call.cpp \
+				Map.cpp \
 				perlin.cpp \
+				Block.cpp \
 				Mesh.cpp
 
 HDRS_NAME	=	Vdb_test.h \
@@ -63,7 +65,9 @@ HDRS_NAME	=	Vdb_test.h \
 				Player.h \
 				Physic.h \
 				key_call.h \
+				Map.h \
 				perlin.h \
+				Block.h \
 				Mesh.h
 
 OBJS_NAME	=	$(SRCS_NAME:.cpp=.o)
@@ -75,7 +79,7 @@ OBJS = $(addprefix $(OBJS_PATH)/, $(OBJS_NAME))
 all: $(NAME)
 
 $(NAME): $(SRCS) $(HDRS) $(OBJS) Makefile
-	$(CC) $(CXXFLAGS) $(INCS_FLAGS) $(SDL_IFLAGS) $(SRCS) $(GEN_SRCS) $(ENV_SRCS) $(LDFLAGS) $(SDL_LFLAGS) -o $(NAME)
+	$(CC) $(CXXFLAGS) $(INCS_FLAGS) $(SDL_IFLAGS) $(SRCS) $(LDFLAGS) $(SDL_LFLAGS) -o $(NAME)
 
 $(OBJS_PATH)/%.o: $(SRCS_PATH)/%.cpp $(HDRS) Makefile
 	@mkdir $(OBJ_PATH) 2> /dev/null || true

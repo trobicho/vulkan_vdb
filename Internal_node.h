@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/02 20:38:22 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/15 19:16:25 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/11/19 20:46:04 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,6 @@ class Internal_node: public Node<Value>
 			v.pos.x = (float)m_x + (x_of << Child::sLog2X);
 			v.pos.y = (float)m_y + (y_of << Child::sLog2Y);
 			v.pos.z = (float)m_z + (z_of << Child::sLog2Z);
-			v.tex_coord = glm::vec2(0.0f, 0.0f);
 			return (v);
 		}
 
@@ -199,14 +198,11 @@ void	Internal_node<Value, Child, Log2X, Log2Y, Log2Z>
 			v_idx[0] = mesh.add_vertex_with_basic_index(v);
 			//std::cout << Child::sLog2X << ", " << Child::sLog2Y << ", " << Child::sLog2Z << std::endl;
 			v.pos.x += (float)(1 << Child::sLog2X);
-			v.tex_coord = glm::vec2(1.0f, 0.0f);
 			v_idx[1] = mesh.add_vertex_with_basic_index(v);
 			v.pos.z += (float)(1 << Child::sLog2Z);
-			v.tex_coord = glm::vec2(1.0f, 1.0f);
 			v_idx[2] = mesh.add_vertex_with_basic_index(v);
 			mesh.add_index(v_idx[2]);
 			v.pos.x -= (float)(1 << Child::sLog2X);
-			v.tex_coord = glm::vec2(0.0f, 1.0f);
 			v_idx[3] = mesh.add_vertex_with_basic_index(v);
 			mesh.add_index(v_idx[0]);
 			for (int a = 0; a < 4; a++)
@@ -223,34 +219,26 @@ void	Internal_node<Value, Child, Log2X, Log2Y, Log2Z>
 			mesh.add_index(v_idx[0]);
 			mesh.add_index(v_idx[1]);
 			v = mesh.vertex_buffer[v_idx[5]];
-			v.tex_coord = glm::vec2(1.0f, 1.0f);
 			tmp = mesh.add_vertex_with_basic_index(v);
 			mesh.add_index(tmp);
 			v = mesh.vertex_buffer[v_idx[4]];
-			v.tex_coord = glm::vec2(0.0f, 1.0f);
 			mesh.add_vertex_with_basic_index(v);
 			mesh.add_index(v_idx[0]);
 			
 			v = mesh.vertex_buffer[v_idx[2]];
-			v.tex_coord = glm::vec2(0.0f, 0.0f);
 			tmp = mesh.add_vertex_with_basic_index(v);
 			v = mesh.vertex_buffer[v_idx[1]];
-			v.tex_coord = glm::vec2(1.0f, 0.0f);
 			mesh.add_vertex_with_basic_index(v);
 			v = mesh.vertex_buffer[v_idx[5]];
-			v.tex_coord = glm::vec2(1.0f, 1.0f);
 			int tmp2 = mesh.add_vertex_with_basic_index(v);
 			mesh.add_index(tmp2);
 			v = mesh.vertex_buffer[v_idx[6]];
-			v.tex_coord = glm::vec2(1.0f, 0.0f);
 			mesh.add_vertex_with_basic_index(v);
 			mesh.add_index(tmp);
 			
 			v = mesh.vertex_buffer[v_idx[3]];
-			v.tex_coord = glm::vec2(0.0f, 0.0f);
 			tmp = mesh.add_vertex_with_basic_index(v);
 			v = mesh.vertex_buffer[v_idx[2]];
-			v.tex_coord = glm::vec2(1.0f, 0.0f);
 			mesh.add_vertex_with_basic_index(v);
 			mesh.add_index(v_idx[6]);
 			mesh.add_index(v_idx[6]);
@@ -259,14 +247,11 @@ void	Internal_node<Value, Child, Log2X, Log2Y, Log2Z>
 			
 			mesh.add_index(v_idx[0]);
 			v = mesh.vertex_buffer[v_idx[3]];
-			v.tex_coord = glm::vec2(1.0f, 0.0f);
 			mesh.add_vertex_with_basic_index(v);
 			v = mesh.vertex_buffer[v_idx[7]];
-			v.tex_coord = glm::vec2(1.0f, 1.0f);
 			tmp = mesh.add_vertex_with_basic_index(v);
 			mesh.add_index(tmp);
 			v = mesh.vertex_buffer[v_idx[4]];
-			v.tex_coord = glm::vec2(0.0f, 1.0f);
 			mesh.add_vertex_with_basic_index(v);
 			mesh.add_index(v_idx[0]);
 		}

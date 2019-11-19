@@ -6,27 +6,18 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/02 20:39:09 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/19 04:32:02 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/11/19 19:04:09 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <iostream>
-#include "Vdb_test.h"
-#include "my_lib.h"
 #include <SDL2/SDL_image.h>
+#include "Map.h"
 #include "My_vulkan.h"
 #include "key_call.h"
-#include "perlin.h"
 #include "Physic.h"
 
-static uint64_t	nb_vox = 0;
-
-struct	s_vbox
-{
-	s_vec3i	origin;
-	s_vec3i	len;
-};
-
+/*
 double	get_noise_value_from_img(SDL_Surface *surface, double x, double y)
 {
 	double	v;
@@ -35,64 +26,6 @@ double	get_noise_value_from_img(SDL_Surface *surface, double x, double y)
 
 	v = ((Uint8*)surface->pixels)[ix + iy * surface->w] / 255.0;
 	return (v);
-}
-
-int		add_voxel_from_perlin(Vdb_test &vdb, s_vbox box)
-{
-	Perlin_noiser	noise;
-	double			scalar = 500.0;
-	double			scalar_cave = 30.0;
-	double			cave_thres = 0.3;
-	double			cave_thres_d;
-	int				lerp_mod = 3;
-	double			d_cave_prec, d_cave_next, d_cave;
-
-	for (int z = 0; z < box.len.z; ++z)
-	{
-		for (int x = 0; x < box.len.x; ++x)
-		{
-			double	d = noise.perlin2d(5, 2., 0.8
-						, (double)(x + box.origin.x) / scalar
-						, (double)(z + box.origin.z) / scalar);
-			for (int y = 0; y < box.len.y * d + 1; ++y)
-			{
-				s_vec3i	vox(x, y, z);
-				if (y % lerp_mod == 0)
-				{
-					d_cave = noise.perlin3d(3, 1.5, 0.5
-						, (double)(x + box.origin.x) / scalar_cave
-						, (double)(z + box.origin.z) / scalar_cave
-						, (double)(y + box.origin.y) / scalar_cave);
-					d_cave_prec = d_cave;
-					d_cave_next = noise.perlin3d(3, 1.5, 0.5
-						, (double)(x + box.origin.x) / scalar_cave
-						, (double)(z + box.origin.z) / scalar_cave
-						, (double)(y + box.origin.y + lerp_mod) / scalar_cave);
-				}
-				else
-				{
-					d_cave = Perlin_noiser::lerp(d_cave_prec, d_cave_next
-								, (y % lerp_mod) / (double)lerp_mod);
-				}
-				cave_thres_d = (1.0 - (double)y / box.len.y) - cave_thres;
-				if (d_cave < cave_thres)
-					continue ;
-				vox.x += box.origin.x;
-				vox.y += box.origin.y;
-				vox.z += box.origin.z;
-				vdb.set_vox(1, vox);
-				nb_vox++;
-				if (nb_vox > 0 && nb_vox % 200000000 == 0)
-				{
-					vdb.pruning();
-					std::cout << "prunning" << std::endl;
-					std::cout << (z / (double)box.len.x) * 100.0 << "%"  << std::endl;
-					std::cout << "total of " << nb_vox << " voxels." << std::endl;
-				}
-			}
-		}
-	}
-	return (0);
 }
 
 int		add_voxel_from_img(Vdb_test &vdb, const char *file_name, s_vbox box)
@@ -131,6 +64,7 @@ int		add_voxel_from_img(Vdb_test &vdb, const char *file_name, s_vbox box)
 	SDL_FreeSurface(img);
 	return (0);
 }
+*/
 
 static void	main_loop(My_vulkan &my_vulkan, Vdb_test &vdb, GLFWwindow *win)
 {
@@ -162,8 +96,9 @@ int	main()
 			dis(0, 1000);
 	s_vbox		box;
 	Mesh		mesh;
-	int			xr = trl::rand_uniform_int(256, 8192 - 256);
-	int			zr = trl::rand_uniform_int(256, 8192 - 256);
+	Map			map(0);
+	int			xr = trl::rand_uniform_int(500, 8192 - 500);
+	int			zr = trl::rand_uniform_int(500, 8192 - 500);
 
 	glfwInit();
 	glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
@@ -173,13 +108,13 @@ int	main()
 	//GLFWwindow *win = glfwCreateWindow(800, 600, "Vulkan"
 		//, NULL, NULL);
 
-	box.len = s_vec3i(256, 128, 256);
+	box.len = s_vec3i(300, 128, 300);
 	box.origin = s_vec3i(xr - box.len.x / 2, 0, zr - box.len.z / 2);
-	if (add_voxel_from_perlin(my_vdb, box))
+	if (map.generate(my_vdb, box))
 		return (1);
 
 	my_vdb.pruning();
-	std::cout << "total of " << nb_vox << " voxels." << std::endl;
+	std::cout << "total of " << map.get_nb_vox() << " voxels." << std::endl;
 	my_vdb.mesh(mesh);
 	std::cout << "total of " << mesh.get_nb_vertex() << " vertex." << std::endl;
 	std::cout << "total of " << mesh.get_nb_index() << " index." << std::endl;

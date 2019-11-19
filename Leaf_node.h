@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/02 20:38:57 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/16 17:38:23 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/11/19 21:33:02 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 #include <cstdint>
 #include <bitset>
+#include "Block.h"
 #include "Node.h"
 
 template <class Value, int Log2X, int Log2Y = Log2X, int Log2Z = Log2Y>
@@ -54,10 +55,10 @@ class Leaf_node: public Node<Value>
 			uint32_t	x_of = (i >> (Log2Y + Log2Z));
 			uint32_t	y_of = (i >> (Log2Z)) & ((1 << Log2Y) - 1);
 			uint32_t	z_of = (i) & ((1 << Log2Z) - 1);
+			v.color = get_color_from_block_type(m_leaf_data[i]);
 			v.pos.x = (float)m_x + x_of;
 			v.pos.y = (float)m_y + y_of;
 			v.pos.z = (float)m_z + z_of;
-			v.tex_coord = glm::vec2(0.0f, 0.0f);
 			return (v);
 		}
 		bool			moore_check(unsigned int i, std::bitset<6> &moore_neigh) const
@@ -167,14 +168,11 @@ void		Leaf_node<Value, Log2X, Log2Y, Log2Z>
 
 			v_idx[0] = mesh.add_vertex_with_basic_index(v);
 			v.pos.x += 1;
-			v.tex_coord = glm::vec2(1.0f, 0.0f);
 			v_idx[1] = mesh.add_vertex_with_basic_index(v);
 			v.pos.z += 1;
-			v.tex_coord = glm::vec2(1.0f, 1.0f);
 			v_idx[2] = mesh.add_vertex_with_basic_index(v);
 			mesh.add_index(v_idx[2]);
 			v.pos.x -= 1;
-			v.tex_coord = glm::vec2(0.0f, 1.0f);
 			v_idx[3] = mesh.add_vertex_with_basic_index(v);
 			mesh.add_index(v_idx[0]);
 			for (int a = 0; a < 4; a++)
@@ -193,11 +191,9 @@ void		Leaf_node<Value, Log2X, Log2Y, Log2Z>
 				mesh.add_index(v_idx[0]);
 				mesh.add_index(v_idx[1]);
 				v = mesh.vertex_buffer[v_idx[5]];
-				v.tex_coord = glm::vec2(1.0f, 1.0f);
 				tmp = mesh.add_vertex_with_basic_index(v);
 				mesh.add_index(tmp);
 				v = mesh.vertex_buffer[v_idx[4]];
-				v.tex_coord = glm::vec2(0.0f, 1.0f);
 				mesh.add_vertex_with_basic_index(v);
 				mesh.add_index(v_idx[0]);
 			}
@@ -205,10 +201,8 @@ void		Leaf_node<Value, Log2X, Log2Y, Log2Z>
 			if (!moore_neigh[3])
 			{
 				v = mesh.vertex_buffer[v_idx[3]];
-				v.tex_coord = glm::vec2(0.0f, 0.0f);
 				tmp = mesh.add_vertex_with_basic_index(v);
 				v = mesh.vertex_buffer[v_idx[2]];
-				v.tex_coord = glm::vec2(1.0f, 0.0f);
 				mesh.add_vertex_with_basic_index(v);
 				mesh.add_index(v_idx[6]);
 				mesh.add_index(v_idx[6]);
@@ -219,17 +213,13 @@ void		Leaf_node<Value, Log2X, Log2Y, Log2Z>
 			if (!moore_neigh[4])
 			{
 				v = mesh.vertex_buffer[v_idx[2]];
-				v.tex_coord = glm::vec2(0.0f, 0.0f);
 				tmp = mesh.add_vertex_with_basic_index(v);
 				v = mesh.vertex_buffer[v_idx[1]];
-				v.tex_coord = glm::vec2(1.0f, 0.0f);
 				mesh.add_vertex_with_basic_index(v);
 				v = mesh.vertex_buffer[v_idx[5]];
-				v.tex_coord = glm::vec2(1.0f, 1.0f);
 				int tmp2 = mesh.add_vertex_with_basic_index(v);
 				mesh.add_index(tmp2);
 				v = mesh.vertex_buffer[v_idx[6]];
-				v.tex_coord = glm::vec2(1.0f, 0.0f);
 				mesh.add_vertex_with_basic_index(v);
 				mesh.add_index(tmp);
 			}
@@ -238,14 +228,11 @@ void		Leaf_node<Value, Log2X, Log2Y, Log2Z>
 			{
 				mesh.add_index(v_idx[0]);
 				v = mesh.vertex_buffer[v_idx[3]];
-				v.tex_coord = glm::vec2(1.0f, 0.0f);
 				mesh.add_vertex_with_basic_index(v);
 				v = mesh.vertex_buffer[v_idx[7]];
-				v.tex_coord = glm::vec2(1.0f, 1.0f);
 				tmp = mesh.add_vertex_with_basic_index(v);
 				mesh.add_index(tmp);
 				v = mesh.vertex_buffer[v_idx[4]];
-				v.tex_coord = glm::vec2(0.0f, 1.0f);
 				mesh.add_vertex_with_basic_index(v);
 				mesh.add_index(v_idx[0]);
 			}
