@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/17 17:04:20 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/18 23:44:40 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/11/19 04:22:41 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,8 @@ class	Player
 		inline glm::vec3&	get_accel_vec_ref() {return (m_accel_vec);}
 
 		void				move();
-		void				jump() {m_speed_vec.y = 6.0f;}
+		void				jump() {m_speed_vec.y = 8.0f;}
+		void				super_jump() {m_speed_vec.y = 20.0f;}
 		void				collide_eject(glm::vec3 eject_vector, float d);
 		void				alternate_mode();
 		void				touch_ground();
@@ -91,5 +92,5 @@ class	Player
 		glm::vec3	m_dir;
 		glm::vec3	m_speed_vec;
 		glm::vec3	m_accel_vec;
-		s_hitbox	m_hitbox = s_hitbox(1.1, 2.5);
+		s_hitbox	m_hitbox = s_hitbox(0.8, 2.2);
 };

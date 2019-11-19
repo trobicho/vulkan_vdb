@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/12 07:23:05 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/18 20:28:24 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/11/19 04:21:55 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,15 @@ void	key_call(GLFWwindow* window, int key, int scancode, int action, int mods)
 		if (action == GLFW_PRESS)
 		{
 			if (!user->player.is_falling())
-			user->player.jump();
+				user->player.jump();
+		}
+	}
+	if (key == GLFW_KEY_B)
+	{
+		if (action == GLFW_PRESS)
+		{
+			if (!user->player.is_falling())
+				user->player.super_jump();
 		}
 	}
 	if (key == GLFW_KEY_W)

@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/17 17:19:36 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/19 00:10:59 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/11/19 03:54:30 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,6 +89,18 @@ void	Player::touch_ground()
 void	Player::collide_eject(glm::vec3 eject_vector, float d)
 {
 	m_pos += eject_vector * d;
+	if (eject_vector.x < 0 && m_speed_vec.x > 0)
+		m_speed_vec.x = 0;
+	else if (eject_vector.x > 0 && m_speed_vec.x < 0)
+		m_speed_vec.x = 0;
+	if (eject_vector.y < 0 && m_speed_vec.y > 0)
+		m_speed_vec.y = 0;
+	else if (eject_vector.y > 0 && m_speed_vec.y < 0)
+		m_speed_vec.y = 0;
+	if (eject_vector.z < 0 && m_speed_vec.z > 0)
+		m_speed_vec.z = 0;
+	else if (eject_vector.z > 0 && m_speed_vec.z < 0)
+		m_speed_vec.z = 0;
 }
 
 void	Player::alternate_mode()

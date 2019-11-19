@@ -6,7 +6,7 @@
 /*   By: trobicho <trobicho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/17 23:36:18 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/19 00:52:23 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/11/19 03:12:06 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ class	Physic
 
 		void	apply_physic_to_player(Player &player);
 		float	check_ground(Player &player);
+		void	check_collision(Player &player);
 		void	resync_time() {m_last_time
 					= std::chrono::high_resolution_clock::now();}
 

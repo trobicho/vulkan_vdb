@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/02 20:39:09 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/18 22:49:22 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/11/19 04:32:02 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -173,7 +173,7 @@ int	main()
 	//GLFWwindow *win = glfwCreateWindow(800, 600, "Vulkan"
 		//, NULL, NULL);
 
-	box.len = s_vec3i(200, 128, 200);
+	box.len = s_vec3i(256, 128, 256);
 	box.origin = s_vec3i(xr - box.len.x / 2, 0, zr - box.len.z / 2);
 	if (add_voxel_from_perlin(my_vdb, box))
 		return (1);
@@ -186,6 +186,9 @@ int	main()
 	std::cout << std::endl;
 	
 	Player		player(glm::vec3((float)xr, 130.0f, (float)zr));
+	glm::vec3 v = player.get_pos();
+	std::cout << "m_pos = {" << v.x << ", "
+				<< v.y << ", " << v.z << "}" << std::endl;
 	s_user		user(player);
 	My_vulkan	my_vulkan(win, mesh, player.get_cam_ref().ubo);
 	glfwSetInputMode(win, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
@@ -201,5 +204,8 @@ int	main()
 	}
 
 	main_loop(my_vulkan, my_vdb, win);
+	v = player.get_pos();
+	std::cout << "m_pos = {" << v.x << ", "
+				<< v.y << ", " << v.z << "}" << std::endl;
 	return (0);
 }
