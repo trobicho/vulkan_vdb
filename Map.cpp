@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/19 18:43:08 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/20 03:11:52 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/11/20 04:59:01 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,8 +35,8 @@ double		Map::get_density_cave(double x, double y, double z)
 
 void		Map::get_biome_info(s_biome_info &biome_info, double x, double z)
 {
-	double	scalar_temp = 100.0;
-	double	scalar_prec = 100.0;
+	double	scalar_temp = 1000.0;
+	double	scalar_prec = 1000.0;
 
 	biome_info.temp = m_noise.perlin2d(4, 1.5, 0.8
 			, (double)x / scalar_temp
