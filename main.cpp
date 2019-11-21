@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/02 20:39:09 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/20 02:52:52 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/11/21 17:53:14 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,6 +125,7 @@ int	main()
 	std::cout << "m_pos = {" << v.x << ", "
 				<< v.y << ", " << v.z << "}" << std::endl;
 	s_user		user(player);
+	player.get_cam_ref().ubo.sun_pos = glm::vec3(xr, 300, zr);
 	My_vulkan	my_vulkan(win, mesh, player.get_cam_ref().ubo);
 	glfwSetInputMode(win, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	if (glfwRawMouseMotionSupported())

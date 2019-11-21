@@ -12,12 +12,17 @@ layout(binding = 0) uniform UniformBufferObject {
 	mat4	model;
 	mat4	view;
 	mat4	proj;
+	vec3	sun_pos;
 } ubo;
 
-void main() {
+void main()
+{
+
 	gl_Position = ubo.proj * ubo.view * ubo.model * vec4(in_pos, 1.0);
-	float len = length(gl_Position) / 10.0;
-	out_color = vec4(vec3(1.0f, 1.0f, 1.0f) / ((len * len * (M_PI)) / 20), 1.0) / 2.0;
+	float intensity = 1000;
+	float len = length(ubo.sun_pos - in_pos) / 10.0f;
+	len *= len;
+	out_color = vec4(vec3(1.0f, 1.0f, 1.0f) * (intensity / (M_PI * len)), 1.0f);
 	out_color = max(out_color, vec4(0.1));
 	out_color = min(out_color, vec4(1.0));
 	out_color *= vec4(in_color, 1.0f);
