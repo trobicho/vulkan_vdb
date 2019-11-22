@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/02 20:38:57 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/19 21:33:02 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/11/22 23:43:40 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -157,7 +157,6 @@ template <class Value, int Log2X, int Log2Y, int Log2Z>
 void		Leaf_node<Value, Log2X, Log2Y, Log2Z>
 	::do_mesh(Mesh &mesh) const
 {
-	uint32_t		v_idx[8];
 	std::bitset<6>	moore_neigh;
 
 	for (int i = 0; i < sSize; i++)
@@ -165,77 +164,7 @@ void		Leaf_node<Value, Log2X, Log2Y, Log2Z>
 		if (m_value_mask[i] && moore_check(i, moore_neigh)) 
 		{
 			s_vertex	v = get_pos_from_offset(i);
-
-			v_idx[0] = mesh.add_vertex_with_basic_index(v);
-			v.pos.x += 1;
-			v_idx[1] = mesh.add_vertex_with_basic_index(v);
-			v.pos.z += 1;
-			v_idx[2] = mesh.add_vertex_with_basic_index(v);
-			mesh.add_index(v_idx[2]);
-			v.pos.x -= 1;
-			v_idx[3] = mesh.add_vertex_with_basic_index(v);
-			mesh.add_index(v_idx[0]);
-			for (int a = 0; a < 4; a++)
-			{
-				v = mesh.vertex_buffer[v_idx[a]];
-				v.pos.y += 1;
-				v_idx[4 + a] = mesh.add_vertex_with_basic_index(v);
-				if (a == 2)
-					mesh.add_index(v_idx[6]);
-			}
-			mesh.add_index(v_idx[4]);
-
-			int	tmp;
-			if (!moore_neigh[2])
-			{
-				mesh.add_index(v_idx[0]);
-				mesh.add_index(v_idx[1]);
-				v = mesh.vertex_buffer[v_idx[5]];
-				tmp = mesh.add_vertex_with_basic_index(v);
-				mesh.add_index(tmp);
-				v = mesh.vertex_buffer[v_idx[4]];
-				mesh.add_vertex_with_basic_index(v);
-				mesh.add_index(v_idx[0]);
-			}
-
-			if (!moore_neigh[3])
-			{
-				v = mesh.vertex_buffer[v_idx[3]];
-				tmp = mesh.add_vertex_with_basic_index(v);
-				v = mesh.vertex_buffer[v_idx[2]];
-				mesh.add_vertex_with_basic_index(v);
-				mesh.add_index(v_idx[6]);
-				mesh.add_index(v_idx[6]);
-				mesh.add_index(v_idx[7]);
-				mesh.add_index(tmp);
-			}
-
-			if (!moore_neigh[4])
-			{
-				v = mesh.vertex_buffer[v_idx[2]];
-				tmp = mesh.add_vertex_with_basic_index(v);
-				v = mesh.vertex_buffer[v_idx[1]];
-				mesh.add_vertex_with_basic_index(v);
-				v = mesh.vertex_buffer[v_idx[5]];
-				int tmp2 = mesh.add_vertex_with_basic_index(v);
-				mesh.add_index(tmp2);
-				v = mesh.vertex_buffer[v_idx[6]];
-				mesh.add_vertex_with_basic_index(v);
-				mesh.add_index(tmp);
-			}
-
-			if (!moore_neigh[5])
-			{
-				mesh.add_index(v_idx[0]);
-				v = mesh.vertex_buffer[v_idx[3]];
-				mesh.add_vertex_with_basic_index(v);
-				v = mesh.vertex_buffer[v_idx[7]];
-				tmp = mesh.add_vertex_with_basic_index(v);
-				mesh.add_index(tmp);
-				v = mesh.vertex_buffer[v_idx[4]];
-				mesh.add_vertex_with_basic_index(v);
-				mesh.add_index(v_idx[0]);
-			}
+			mesh.add_cube_moore(v, 1, moore_neigh);
 		}
 	}
 }

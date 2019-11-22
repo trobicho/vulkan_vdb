@@ -6,7 +6,7 @@
 /*   By: trobicho <trobicho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/22 17:58:08 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/16 02:27:25 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/11/22 23:12:41 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,8 +76,8 @@ VkPipelineRasterizationStateCreateInfo	rasterizer_create(void)
 	rasterizer_info.rasterizerDiscardEnable = VK_FALSE;
 	rasterizer_info.polygonMode = VK_POLYGON_MODE_FILL;
 	rasterizer_info.lineWidth = 1.0f;
-	//rasterizer_info.cullMode = VK_CULL_MODE_BACK_BIT;
-	rasterizer_info.cullMode = VK_CULL_MODE_NONE;
+	rasterizer_info.cullMode = VK_CULL_MODE_BACK_BIT;
+	//rasterizer_info.cullMode = VK_CULL_MODE_NONE;
 	rasterizer_info.frontFace = VK_FRONT_FACE_CLOCKWISE;
 	rasterizer_info.depthBiasEnable = VK_FALSE;
 	rasterizer_info.depthBiasConstantFactor = 0.0f;

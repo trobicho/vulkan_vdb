@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/11 06:56:37 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/19 20:57:06 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/11/22 22:38:50 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <vector>
 #include <array>
+#include <bitset>
 
 struct	s_vertex
 {
@@ -62,13 +63,22 @@ class	Mesh
 		Mesh();
 		~Mesh(){};
 
+		void		reset();
 		uint32_t	get_nb_vertex() const {return(vertex_buffer.size());}
 		uint32_t	get_nb_index() const {return(index_buffer.size());}
 		int			add_vertex(s_vertex v, uint32_t idx);
 		int			add_vertex_with_basic_index(s_vertex v);
+		int			add_vertex_with_no_index(s_vertex v);
 		void		add_index(uint32_t idx);
-		void		reset();
+		void		add_cube_moore(s_vertex v, uint32_t w
+						, std::bitset<6> &moore_neigh);
 
 		std::vector<s_vertex>	vertex_buffer;
 		std::vector<uint32_t>	index_buffer;
+
+	private:
+		void		get_needed_vertex(std::bitset<8> &v_b
+						, std::bitset<6> &moore_neigh);
+		void		add_needed_vertex(s_vertex v, uint32_t w
+						, std::bitset<8> &v_b, uint32_t v_idx[8]);
 };
