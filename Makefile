@@ -6,7 +6,7 @@
 #    By: trobicho <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/11/02 20:38:42 by trobicho          #+#    #+#              #
-#    Updated: 2019/11/19 21:33:23 by trobicho         ###   ########.fr        #
+#    Updated: 2019/11/23 04:01:36 by trobicho         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -49,6 +49,7 @@ SRCS_NAME	=	main.cpp \
 				Map.cpp \
 				perlin.cpp \
 				Block.cpp \
+				Moore_accessor.cpp \
 				Mesh.cpp
 
 HDRS_NAME	=	Vdb_test.h \
@@ -68,6 +69,7 @@ HDRS_NAME	=	Vdb_test.h \
 				Map.h \
 				perlin.h \
 				Block.h \
+				Moore_accessor.h \
 				Mesh.h
 
 OBJS_NAME	=	$(SRCS_NAME:.cpp=.o)

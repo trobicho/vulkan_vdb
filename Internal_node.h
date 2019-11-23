@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/02 20:38:22 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/22 23:44:00 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/11/23 05:31:00 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,18 +50,16 @@ class Internal_node: public Node<Value>
 		inline s_vec3i		do_get_child_slog() const {
 			return s_vec3i(Child::sLog2X, Child::sLog2Y, Child::sLog2Z);
 		}
-		inline s_vertex		get_pos_from_offset(unsigned int i) const
+		inline s_vec3i		get_pos_from_offset(unsigned int i) const
 		{
-			s_vertex	v;
+			s_vec3i	v;
 
 			uint32_t	x_of = (i >> (Log2Y + Log2Z));
 			uint32_t	y_of = (i >> (Log2Z)) & ((1 << Log2Y) - 1);
 			uint32_t	z_of = (i) & ((1 << Log2Z) - 1);
-			//std::cout << x_of << ", " << y_of << ", " << z_of << std::endl;
-			v.color = get_color_from_block_type(m_internal_data[i].value);
-			v.pos.x = (float)m_x + (x_of << Child::sLog2X);
-			v.pos.y = (float)m_y + (y_of << Child::sLog2Y);
-			v.pos.z = (float)m_z + (z_of << Child::sLog2Z);
+			v.x = m_x + (x_of << Child::sLog2X);
+			v.y = m_y + (y_of << Child::sLog2Y);
+			v.z = m_z + (z_of << Child::sLog2Z);
 			return (v);
 		}
 
@@ -183,9 +181,6 @@ template <class Value, class Child, int Log2X, int Log2Y, int Log2Z>
 void	Internal_node<Value, Child, Log2X, Log2Y, Log2Z>
 	::do_mesh(Mesh &mesh) const
 {
-	std::bitset<6>	moore_neigh;
-
-	moore_neigh.reset();
 	for (int i = 0; i < sSize; i++)
 	{
 		if (m_child_mask[i])
@@ -194,8 +189,8 @@ void	Internal_node<Value, Child, Log2X, Log2Y, Log2Z>
 		}
 		if (m_value_mask[i]) 
 		{
-			s_vertex	v = get_pos_from_offset(i);
-			mesh.add_cube_moore(v, 1 << Child::sLog2Y, moore_neigh);
+			mesh.add_cube_from_node(get_pos_from_offset(i)
+				, (e_block_type)m_internal_data[i].value, (void*)this);
 		}
 	}
 }

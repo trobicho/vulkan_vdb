@@ -6,20 +6,13 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/04 06:38:12 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/11 08:57:02 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/11/23 05:24:15 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
 #include <Mesh.h>
-
-struct	s_vec3i
-{
-	s_vec3i(){};
-	s_vec3i(int32_t sx, int32_t sy, int32_t sz): x(sx), y(sy), z(sz){};
-	int32_t	x, y, z;
-};
 
 template <class Value>
 class	Node

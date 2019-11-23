@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/02 20:39:09 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/22 23:12:52 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/11/23 06:24:56 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 #include "My_vulkan.h"
 #include "key_call.h"
 #include "Physic.h"
+#include "Moore_accessor.h"
 
 /*
 double	get_noise_value_from_img(SDL_Surface *surface, double x, double y)
@@ -95,7 +96,9 @@ int	main()
 	std::uniform_int_distribution<int>
 			dis(0, 1000);
 	s_vbox		box;
-	Mesh		mesh;
+	Moore_accessor
+				moore_access(my_vdb);
+	Mesh		mesh(moore_access);
 	Map			map(0);
 	int			xr = trl::rand_uniform_int(500, 8192 - 500);
 	int			zr = trl::rand_uniform_int(500, 8192 - 500);
@@ -108,7 +111,7 @@ int	main()
 	//GLFWwindow *win = glfwCreateWindow(800, 600, "Vulkan"
 		//, NULL, NULL);
 
-	box.len = s_vec3i(100, 128, 100);
+	box.len = s_vec3i(300, 128, 300);
 	box.origin = s_vec3i(xr - box.len.x / 2, 0, zr - box.len.z / 2);
 	if (map.generate(my_vdb, box))
 		return (1);
