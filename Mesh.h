@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/11 06:56:37 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/23 05:31:21 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/11/23 08:04:08 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,7 +93,7 @@ class	Mesh
 
 	private:
 		void		get_needed_vertex(std::bitset<8> &v_b);
-		void		add_needed_vertex(s_vertex v, s_vec3i l
+		void		add_needed_vertex(s_vertex v, uint32_t l
 						, std::bitset<8> &v_b, uint32_t v_idx[8]);
 		uint8_t		get_ao(int idx);
 		uint8_t		vertex_ao(bool side1, bool side2, bool corner)

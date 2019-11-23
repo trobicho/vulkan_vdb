@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/02 20:39:09 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/23 07:36:13 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/11/23 08:21:05 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,7 +111,7 @@ int	main()
 	//GLFWwindow *win = glfwCreateWindow(800, 600, "Vulkan"
 		//, NULL, NULL);
 
-	box.len = s_vec3i(500, 128, 500);
+	box.len = s_vec3i(200, 128, 200);
 	box.origin = s_vec3i(xr - box.len.x / 2, 0, zr - box.len.z / 2);
 	if (map.generate(my_vdb, box))
 		return (1);

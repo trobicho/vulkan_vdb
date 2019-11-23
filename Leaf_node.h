@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/02 20:38:57 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/23 05:30:55 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/11/23 08:17:20 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ class Leaf_node: public Node<Value>
 			return s_vec3i(sLog2X, sLog2Y, sLog2Z);
 		}
 		inline s_vec3i		do_get_child_slog() const {
-			return s_vec3i(1, 1, 1);
+			return s_vec3i(0, 0, 0);
 		}
 		inline s_vec3i		get_pos_from_offset(unsigned int i) const
 		{
@@ -59,34 +59,6 @@ class Leaf_node: public Node<Value>
 			v.y = m_y + y_of;
 			v.z = m_z + z_of;
 			return (v);
-		}
-		bool			moore_check(unsigned int i, std::bitset<6> &moore_neigh) const
-		{
-			if ((i >> Log2Z) < 1 << Log2Z)
-				moore_neigh[0] = 0;
-			else
-				moore_neigh[0] = m_value_mask[i - (1 << Log2Z)];
-			if ((i >> Log2Z) >= (1 << (Log2X + Log2Y)) - (1 << Log2Z))
-				moore_neigh[1] = 0;
-			else
-				moore_neigh[1] = m_value_mask[i + (1 << Log2Z)];
-			if ((i & ((1 << (Log2Z)) - 1)) == 0)
-				moore_neigh[2] = 0;
-			else
-				moore_neigh[2] = m_value_mask[i - 1];
-			if ((i & ((1 << (Log2Z)) - 1)) == (1 << Log2Z) - 1)
-				moore_neigh[3] = 0;
-			else
-				moore_neigh[3] = m_value_mask[i + 1];
-			if (i >= sSize - (1 << (Log2Y + Log2Z)))
-				moore_neigh[4] = 0;
-			else
-				moore_neigh[4] = m_value_mask[i + (1 << (Log2Y + Log2Z))];
-			if (i < 1 << (Log2Y + Log2Z))
-				moore_neigh[5] = 0;
-			else
-				moore_neigh[5] = m_value_mask[i - (1 << (Log2Y + Log2Z))];
-			return (!moore_neigh.all());
 		}
 
 		Value				m_leaf_data[sSize];	//direct access table

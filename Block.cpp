@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/19 21:20:09 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/20 03:31:42 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/11/23 08:23:44 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ glm::vec3	get_color_from_block_type(uint32_t block)
 			return (glm::vec3(0.35f, 0.35f, 0.35f));
 			break;
 		case bl_dirt:
-			return (glm::vec3(0.4f, 0.2f, 0.0f));
+			return (glm::vec3(0.48f, 0.35f, 0.25f));
 			break;
 		case bl_grass:
 			return (glm::vec3(0.1f, 0.8f, 0.1f));

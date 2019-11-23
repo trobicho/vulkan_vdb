@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/02 20:38:22 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/23 05:31:00 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/11/23 08:18:00 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -187,7 +187,7 @@ void	Internal_node<Value, Child, Log2X, Log2Y, Log2Z>
 		{
 			m_internal_data[i].child->do_mesh(mesh);
 		}
-		if (m_value_mask[i]) 
+		else if (m_value_mask[i]) 
 		{
 			mesh.add_cube_from_node(get_pos_from_offset(i)
 				, (e_block_type)m_internal_data[i].value, (void*)this);
