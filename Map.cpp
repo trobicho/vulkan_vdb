@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/19 18:43:08 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/20 04:59:01 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/11/23 18:23:53 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,8 @@ double		Map::get_height(double x, double z)
 
 double		Map::get_density_cave(double x, double y, double z)
 {
-	double	scalar_cave = 30.0;
-	double	d = m_noise.perlin3d(3, 1.5, 0.5
+	double	scalar_cave = 40.0;
+	double	d = m_noise.perlin3d(3, 3., 0.5
 			, (double)x / scalar_cave
 			, (double)z / scalar_cave
 			, (double)y / scalar_cave);
@@ -62,7 +62,7 @@ uint32_t	Map::get_block_type(s_biome_info &biome_info, double y
 
 int			Map::generate(Vdb_test &vdb, s_vbox box)
 {
-	double			cave_thres = 0.3;
+	double			cave_thres = 0.35;
 	double			cave_thres_d;
 	int				lerp_mod = 8;
 	double			d_cave_prec, d_cave_next, d_cave;

@@ -6,13 +6,19 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/04 06:38:12 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/23 05:24:15 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/11/24 20:20:00 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
 #include <Mesh.h>
+
+struct	s_vbox
+{
+	s_vec3i	origin;
+	s_vec3i	len;
+};
 
 template <class Value>
 class	Node
@@ -37,6 +43,8 @@ class	Node
 			return (do_get_interresting_node(v, value));
 		}
 		inline void			mesh(Mesh &mesh) const {do_mesh(mesh);}
+		inline void			mesh(Mesh &mesh, const s_vbox &box) const
+								{do_mesh(mesh, box);}
 
 	private:
 		virtual bool		do_is_leaf() const = 0;
@@ -48,4 +56,5 @@ class	Node
 		virtual const Node<Value>
 							*do_get_interresting_node(s_vec3i v, Value &value) const = 0;
 		virtual void		do_mesh(Mesh &mesh) const = 0;
+		virtual void		do_mesh(Mesh &mesh, const s_vbox &box) const = 0;
 };

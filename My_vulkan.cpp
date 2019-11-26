@@ -6,7 +6,7 @@
 /*   By: trobicho <trobicho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/09 17:05:36 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/21 17:27:38 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/11/26 00:24:43 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -167,6 +167,8 @@ int		My_vulkan::init()
 		return (-1);
 	if (command_buffer_create() == -1)
 		return (-1);
+	if (command_buffer_record() == -1)
+		return (-1);
 	if (semaphore_create() == -1)
 		return (-1);
 	return (0);
@@ -318,7 +320,7 @@ int		My_vulkan::create_vertex_buffer()
 	VkBuffer		staging_buffer;
 	VkDeviceMemory	staging_buffer_memory;
 
-	buffer_size = sizeof(m_mesh.vertex_buffer[0]) * m_mesh.vertex_buffer.size();
+	buffer_size = sizeof(m_mesh.vertex_buffer[0]) * ALLOC_VERTEX_BUF_SIZE;
 	if (create_buffer(buffer_size, VK_BUFFER_USAGE_TRANSFER_SRC_BIT
 		, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT
 		| VK_MEMORY_PROPERTY_HOST_COHERENT_BIT
@@ -348,9 +350,10 @@ int		My_vulkan::create_vertex_index_buffer()
 	VkDeviceSize	buffer_size;
 	VkBuffer		staging_buffer;
 	VkDeviceMemory	staging_buffer_memory;
+	VkDeviceSize	copy_size;
 
-	buffer_size = sizeof(m_mesh.index_buffer[0]) * m_mesh.index_buffer.size();
-	if (create_buffer(buffer_size, VK_BUFFER_USAGE_TRANSFER_SRC_BIT
+	copy_size = m_mesh.index_buffer.size() *  sizeof(m_mesh.index_buffer[0]);
+	if (create_buffer(copy_size, VK_BUFFER_USAGE_TRANSFER_SRC_BIT
 		, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT
 		| VK_MEMORY_PROPERTY_HOST_COHERENT_BIT
 		, staging_buffer, staging_buffer_memory) == -1)
@@ -358,9 +361,10 @@ int		My_vulkan::create_vertex_index_buffer()
 		return (-1);
 	}
 	void* data;
-	vkMapMemory(m_device, staging_buffer_memory, 0, buffer_size, 0, &data);
-	memcpy(data, m_mesh.index_buffer.data(), (size_t) buffer_size);
+	vkMapMemory(m_device, staging_buffer_memory, 0, copy_size, 0, &data);
+	memcpy(data, m_mesh.index_buffer.data(), (size_t)copy_size);
 	vkUnmapMemory(m_device, staging_buffer_memory);
+	buffer_size = sizeof(m_mesh.index_buffer[0]) * ALLOC_INDEX_BUF_SIZE;
 	if (create_buffer(buffer_size, VK_BUFFER_USAGE_TRANSFER_DST_BIT
 		| VK_BUFFER_USAGE_VERTEX_BUFFER_BIT
 		, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT
@@ -368,7 +372,7 @@ int		My_vulkan::create_vertex_index_buffer()
 	{
 		return (-1);
 	}
-	copy_buffer(staging_buffer, m_vertex_index_buffer, buffer_size);
+	copy_buffer(staging_buffer, m_vertex_index_buffer, copy_size);
 	vkDestroyBuffer(m_device, staging_buffer, nullptr);
 	vkFreeMemory(m_device, staging_buffer_memory, nullptr);
 	return (0);
@@ -1057,13 +1061,8 @@ int		My_vulkan::command_pool_create()
 
 int		My_vulkan::command_buffer_create()
 {
-	int							i;
 	uint32_t					img_count;
 	VkCommandBufferAllocateInfo alloc_info;
-	VkCommandBufferBeginInfo	begin_info;
-	VkRenderPassBeginInfo		render_pass_info;
-	VkClearValue				clear_color;
-	std::array<VkClearValue, 2> clear_value = {};
 
 	vkGetSwapchainImagesKHR(m_device, m_swap_chain, &img_count, NULL);
 	if ((m_command_buffer = (VkCommandBuffer*)
@@ -1080,7 +1079,20 @@ int		My_vulkan::command_buffer_create()
 		printf("failed to create allocate buffer!\n");
 		return (-1);
 	}
+	return (0);
+}
+
+int		My_vulkan::command_buffer_record()
+{
+	int							i;
+	uint32_t					img_count;
+	VkCommandBufferBeginInfo	begin_info;
+	VkRenderPassBeginInfo		render_pass_info;
+	VkClearValue				clear_color;
+	std::array<VkClearValue, 2> clear_value = {};
+
 	i = 0;
+	vkGetSwapchainImagesKHR(m_device, m_swap_chain, &img_count, NULL);
 	begin_info = (VkCommandBufferBeginInfo){};
 	clear_value[0].color = {0.0f, 0.0f, 0.0f, 1.0f};
 	clear_value[1].depthStencil = {1.0f, 0};

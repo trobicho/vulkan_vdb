@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/02 20:38:57 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/23 08:17:20 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/11/24 19:51:26 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ class Leaf_node: public Node<Value>
 		const Node<Value>
 					*do_get_interresting_node(s_vec3i v, Value &value) const;
 		void		do_mesh(Mesh &mesh) const;
+		void		do_mesh(Mesh &mesh, const s_vbox &b) const {do_mesh(mesh);}
 
 		static const int sSize = 1 << (Log2X + Log2Y + Log2Z);
 		static const int sLog2X = Log2X, sLog2Y = Log2Y, sLog2Z = Log2Z;

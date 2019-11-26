@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/11 07:00:55 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/23 08:04:17 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/11/26 00:05:08 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,11 @@
 
 Mesh::Mesh(Moore_accessor &moore_access): m_moore_access(moore_access)
 {
+}
+
+void	Mesh::update()
+{
+	m_old_size = vertex_buffer.size();
 }
 
 void	Mesh::reset()
@@ -48,6 +53,36 @@ void	Mesh::add_index(uint32_t idx)
 {
 	index_buffer.push_back(idx);
 }
+
+void	Mesh::remove_vertex(uint32_t offset, uint32_t size)
+{
+	bool	del;
+
+	if (offset + size >= vertex_buffer.size())
+		return ;
+	vertex_buffer.erase(vertex_buffer.begin() + offset
+			, vertex_buffer.begin() + offset + size);
+	for (int t = 0; t < index_buffer.size();)
+	{
+		del = false;
+		for (int i = 0; i < 3; i++)
+		{
+			if (index_buffer[t + i] >= offset
+				&& index_buffer[t + i] < offset + size)
+			{
+				index_buffer.erase(index_buffer.begin() + t
+					, index_buffer.begin() + t + 3);
+				del = true;
+				break;
+			}
+			else if (index_buffer[t + i] >= offset + size)
+				index_buffer[t + i] -= size;
+		}
+		if (!del)
+			t += 3;
+	}
+}
+
 
 void	Mesh::get_needed_vertex(std::bitset<8> &v_b)
 {

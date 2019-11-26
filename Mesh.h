@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/11 06:56:37 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/23 08:04:08 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/11/26 00:05:21 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,8 +85,12 @@ class	Mesh
 		int			add_vertex_with_basic_index(s_vertex v);
 		int			add_vertex_with_no_index(s_vertex v, uint8_t ao = 3);
 		void		add_index(uint32_t idx);
+		void		remove_vertex(uint32_t offset, uint32_t size);
 		void		add_cube_from_node(s_vec3i v
 						, e_block_type type, void *node_ptr);
+		bool		has_update() const
+						{return (m_old_size != vertex_buffer.size());}
+		void		update();
 
 		std::vector<s_vertex>	vertex_buffer;
 		std::vector<uint32_t>	index_buffer;
@@ -104,4 +108,5 @@ class	Mesh
 		}
 
 		Moore_accessor		&m_moore_access;
+		size_t				m_old_size = 0;
 };

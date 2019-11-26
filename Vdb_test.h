@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/02 21:06:37 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/11 09:20:19 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/11/24 19:52:11 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ class	Vdb_test
 		const Node_v
 					*get_interresting_node(s_vec3i v, uint32_t &value);
 		void		mesh(Mesh &mesh) const;
+		void		mesh(Mesh &mesh, const s_vbox &box) const;
 
 	private:
 		Internal_L1	m_root_static = Internal_L1(0, 0, 0);

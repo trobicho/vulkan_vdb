@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/02 20:38:22 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/23 08:18:00 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/11/25 20:21:25 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@ class Internal_node: public Node<Value>
 		const Node<Value>
 					*do_get_interresting_node(s_vec3i v, Value &value) const;
 		void		do_mesh(Mesh &mesh) const;
+		void		do_mesh(Mesh &mesh, const s_vbox &box) const;
 
 		static const int sLog2X = Log2X + Child::sLog2X,
 			sLog2Y = Log2Y + Child::sLog2Y,
@@ -127,6 +128,7 @@ Value	Internal_node<Value, Child, Log2X, Log2Y, Log2Z>
 		(((x & (1 << sLog2X) - 1) >> Child::sLog2X) << (Log2Y + Log2Z))
 		+ (((y & (1 << sLog2Y) - 1) >> Child::sLog2Y) << Log2Z)
 		+ ((z & (1 << sLog2Z) - 1) >> Child::sLog2Z);
+
 	if (m_value_mask[internal_offset])
 		return (m_internal_data[internal_offset].value);
 	else if (m_child_mask[internal_offset])
@@ -142,6 +144,7 @@ const Node<Value>	*Internal_node<Value, Child, Log2X, Log2Y, Log2Z>
 		(((v.x & (1 << sLog2X) - 1) >> Child::sLog2X) << (Log2Y + Log2Z))
 		+ (((v.y & (1 << sLog2Y) - 1) >> Child::sLog2Y) << Log2Z)
 		+ ((v.z & (1 << sLog2Z) - 1) >> Child::sLog2Z);
+
 	if (m_value_mask[internal_offset])
 	{
 		value = m_internal_data[internal_offset].value;
@@ -152,6 +155,7 @@ const Node<Value>	*Internal_node<Value, Child, Log2X, Log2Y, Log2Z>
 			->get_interresting_node(v, value));
 	return (this);
 }
+
 template <class Value, class Child, int Log2X, int Log2Y, int Log2Z>
 Value	Internal_node<Value, Child, Log2X, Log2Y, Log2Z>::pruning()
 {
@@ -191,6 +195,50 @@ void	Internal_node<Value, Child, Log2X, Log2Y, Log2Z>
 		{
 			mesh.add_cube_from_node(get_pos_from_offset(i)
 				, (e_block_type)m_internal_data[i].value, (void*)this);
+		}
+	}
+}
+		
+template <class Value, class Child, int Log2X, int Log2Y, int Log2Z>
+void	Internal_node<Value, Child, Log2X, Log2Y, Log2Z>
+	::do_mesh(Mesh &mesh, const s_vbox &box) const
+{
+	unsigned int	x_off = (box.origin.x & (1 << sLog2X) - 1) >> Child::sLog2X;
+	unsigned int	y_off;
+	unsigned int	z_off;
+	unsigned int	off;
+	
+	for (; x_off <= ((box.origin.x + box.len.x - 1) 
+		& (1 << sLog2X) - 1) >> Child::sLog2X; x_off++)
+	{
+		off = x_off << (Log2Y + Log2Z);
+		if(off >= sSize)
+			break;
+		z_off = (box.origin.z & (1 << sLog2Z) - 1) >> Child::sLog2Z;
+		for (; z_off <= ((box.origin.z + box.len.z - 1)
+			& (1 << sLog2Z) - 1) >> Child::sLog2Z; z_off++)
+		{
+			y_off = (box.origin.y & (1 << sLog2Y) - 1) >> Child::sLog2Y;
+			off = (x_off << (Log2Y + Log2Z)) + (y_off << Log2Z) + z_off;
+			if (off >= sSize)
+				break ;
+			for (; y_off <= ((box.origin.y + box.len.y - 1) 
+				& (1 << sLog2Y) - 1) >> Child::sLog2Y; y_off++)
+			{
+				off = (x_off << (Log2Y + Log2Z)) + (y_off << Log2Z) + z_off;
+				if (off >= sSize)
+					break ;
+				if (m_child_mask[off])
+				{
+					m_internal_data[off].child->do_mesh(mesh, box);
+				}
+				else if (m_value_mask[off]) 
+				{
+					mesh.add_cube_from_node(get_pos_from_offset(off)
+							, (e_block_type)m_internal_data[off].value
+							, (void*)this);
+				}
+			}
 		}
 	}
 }

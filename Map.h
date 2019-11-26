@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/19 18:38:50 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/20 02:25:00 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/11/24 19:23:05 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,12 +28,6 @@ enum e_biome_type
 	bt_subtropical_desert,
 	bt_savanna,
 	bt_tropical_rainforest,
-};
-
-struct	s_vbox
-{
-	s_vec3i	origin;
-	s_vec3i	len;
 };
 
 struct	s_biome_info

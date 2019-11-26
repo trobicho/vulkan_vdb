@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/02 20:39:09 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/23 08:21:05 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/11/26 00:16:49 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,8 @@ int		add_voxel_from_img(Vdb_test &vdb, const char *file_name, s_vbox box)
 }
 */
 
-static void	main_loop(My_vulkan &my_vulkan, Vdb_test &vdb, GLFWwindow *win)
+static int	main_loop(My_vulkan &my_vulkan, Vdb_test &vdb
+	, Mesh &mesh, GLFWwindow *win)
 {
 	s_user	*user = (s_user*)glfwGetWindowUserPointer(win);
 	Physic	physic(vdb);
@@ -84,9 +85,17 @@ static void	main_loop(My_vulkan &my_vulkan, Vdb_test &vdb, GLFWwindow *win)
 		if (user->player.has_physic())
 			physic.apply_physic_to_player(user->player);
 		user->player.update_ubo();
+		/*
+		if (mesh.has_update())
+		{
+			if (my_vulkan.command_buffer_record() == -1)
+				return (-1);
+		}
+		*/
 		my_vulkan.draw_frame();
 	}
 	vkDeviceWaitIdle(my_vulkan.get_device_ref());
+	return (0);
 }
 
 int	main()
@@ -103,6 +112,8 @@ int	main()
 	int			xr = trl::rand_uniform_int(500, 8192 - 500);
 	int			zr = trl::rand_uniform_int(500, 8192 - 500);
 
+	xr = 4096;
+	zr = 4096;
 	glfwInit();
 	glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 	glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
@@ -111,14 +122,26 @@ int	main()
 	//GLFWwindow *win = glfwCreateWindow(800, 600, "Vulkan"
 		//, NULL, NULL);
 
-	box.len = s_vec3i(200, 128, 200);
-	box.origin = s_vec3i(xr - box.len.x / 2, 0, zr - box.len.z / 2);
-	if (map.generate(my_vdb, box))
-		return (1);
 
+	mesh.reset();
+	box.len = s_vec3i(12, 128, 12);
+	for (int x = 0; x < 1; x++)
+	{
+		for (int z = 0; z < 1; z++)
+		{
+			box.origin.x = xr + x * box.len.x;
+			box.origin.z = zr + z * box.len.z;
+			box.origin.y = 0;
+			if (map.generate(my_vdb, box))
+				return (1);
+			std::cout << x << "/4, " << z << "/4" << std::endl;
+		}
+	}
 	my_vdb.pruning();
+	my_vdb.mesh(mesh, box);
+	mesh.remove_vertex(100000, 30000);
+	//box.origin = s_vec3i(xr - box.len.x / 2, 0, zr - box.len.z / 2);
 	std::cout << "total of " << map.get_nb_vox() << " voxels." << std::endl;
-	my_vdb.mesh(mesh);
 	std::cout << "total of " << mesh.get_nb_vertex() << " vertex." << std::endl;
 	std::cout << "total of " << mesh.get_nb_index() << " index." << std::endl;
 	std::cout << std::endl;
@@ -142,7 +165,7 @@ int	main()
 		std::cout << "Unable to initialize Vulkan !" << std::endl;
 	}
 
-	main_loop(my_vulkan, my_vdb, win);
+	main_loop(my_vulkan, my_vdb, mesh, win);
 	v = player.get_pos();
 	std::cout << "m_pos = {" << v.x << ", "
 				<< v.y << ", " << v.z << "}" << std::endl;
