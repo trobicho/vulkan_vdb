@@ -6,7 +6,7 @@
 /*   By: trobicho <trobicho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/09 17:05:36 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/26 00:24:43 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/11/26 23:57:53 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -319,9 +319,10 @@ int		My_vulkan::create_vertex_buffer()
 	VkDeviceSize	buffer_size;
 	VkBuffer		staging_buffer;
 	VkDeviceMemory	staging_buffer_memory;
+	VkDeviceSize	copy_size;
 
-	buffer_size = sizeof(m_mesh.vertex_buffer[0]) * ALLOC_VERTEX_BUF_SIZE;
-	if (create_buffer(buffer_size, VK_BUFFER_USAGE_TRANSFER_SRC_BIT
+	copy_size = sizeof(m_mesh.vertex_buffer[0]) * m_mesh.vertex_buffer.size();
+	if (create_buffer(copy_size, VK_BUFFER_USAGE_TRANSFER_SRC_BIT
 		, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT
 		| VK_MEMORY_PROPERTY_HOST_COHERENT_BIT
 		, staging_buffer, staging_buffer_memory) == -1)
@@ -329,9 +330,10 @@ int		My_vulkan::create_vertex_buffer()
 		return (-1);
 	}
 	void* data;
-	vkMapMemory(m_device, staging_buffer_memory, 0, buffer_size, 0, &data);
-	memcpy(data, m_mesh.vertex_buffer.data(), (size_t)buffer_size);
+	vkMapMemory(m_device, staging_buffer_memory, 0, copy_size, 0, &data);
+	memcpy(data, m_mesh.vertex_buffer.data(), (size_t)copy_size);
 	vkUnmapMemory(m_device, staging_buffer_memory);
+	buffer_size = sizeof(m_mesh.vertex_buffer[0]) * ALLOC_VERTEX_BUF_SIZE;
 	if (create_buffer(buffer_size, VK_BUFFER_USAGE_TRANSFER_DST_BIT
 		| VK_BUFFER_USAGE_VERTEX_BUFFER_BIT
 		, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT
@@ -339,7 +341,7 @@ int		My_vulkan::create_vertex_buffer()
 	{
 		return (-1);
 	}
-	copy_buffer(staging_buffer, m_vertex_buffer, buffer_size);
+	copy_buffer(staging_buffer, m_vertex_buffer, copy_size);
 	vkDestroyBuffer(m_device, staging_buffer, nullptr);
 	vkFreeMemory(m_device, staging_buffer_memory, nullptr);
 	return (0);

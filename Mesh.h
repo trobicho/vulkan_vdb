@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/11 06:56:37 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/26 00:05:21 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/11/27 00:07:11 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ class	Moore_accessor;
 
 struct	s_vertex
 {
-	s_vertex():color(glm::vec3(0.1f, 0.7f, 0.15f)){};
+	s_vertex():color(glm::vec3(0.7f, 0.7f, 0.7f)){};
 	s_vertex(glm::vec3 p_pos, glm::vec3 p_color = glm::vec3(0.7f, 0.7f, 0.7f)):
 		pos(p_pos), color(p_color){};
 

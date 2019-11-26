@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/02 20:39:09 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/26 00:16:49 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/11/27 00:08:39 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,7 +124,7 @@ int	main()
 
 
 	mesh.reset();
-	box.len = s_vec3i(12, 128, 12);
+	box.len = s_vec3i(128, 128, 128);
 	for (int x = 0; x < 1; x++)
 	{
 		for (int z = 0; z < 1; z++)
@@ -139,13 +139,13 @@ int	main()
 	}
 	my_vdb.pruning();
 	my_vdb.mesh(mesh, box);
-	mesh.remove_vertex(100000, 30000);
+	//mesh.remove_vertex(100000, 30000);
 	//box.origin = s_vec3i(xr - box.len.x / 2, 0, zr - box.len.z / 2);
 	std::cout << "total of " << map.get_nb_vox() << " voxels." << std::endl;
 	std::cout << "total of " << mesh.get_nb_vertex() << " vertex." << std::endl;
 	std::cout << "total of " << mesh.get_nb_index() << " index." << std::endl;
 	std::cout << std::endl;
-	
+
 	Player		player(glm::vec3((float)xr, 130.0f, (float)zr));
 	glm::vec3 v = player.get_pos();
 	std::cout << "m_pos = {" << v.x << ", "
