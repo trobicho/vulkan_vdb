@@ -6,7 +6,7 @@
 #    By: trobicho <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/11/02 20:38:42 by trobicho          #+#    #+#              #
-#    Updated: 2019/11/23 04:01:36 by trobicho         ###   ########.fr        #
+#    Updated: 2019/11/27 00:11:28 by trobicho         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -19,21 +19,17 @@ HDRS_PATH	=	./
 OBJS_PATH	=	./obj
 
 
-SDL_LOC		=	$(HOME)/.brew/Cellar/sdl2/2.0.10
-IMG_LOC		=	$(HOME)/.brew/Cellar/sdl2_image/2.0.5
-SDL_LFLAGS	=	-L $(SDL_LOC)/lib -lSDL2 -L$(IMG_LOC)/lib -lSDL2_image
-SDL_IFLAGS	=	-I $(HDRS_PATH) -I $(SDL_LOC)/include/SDL2 -I $(SDL_LOC)/include -I $(IMG_LOC)/include -I ./libft
-
 ifeq ($(UNAME), Linux)
 	INCS_FLAGS	= -I../my_lib_cpp/ -I$(VULKAN_SDK)/include \
-	-I$(GLFW3_PATH)/include -I$(GLM_PATH)/include \
-	-I $(INCLUDE_PATH)
+		-I$(GLFW3_PATH)/include -I$(GLM_PATH)/include \
+		-I $(INCLUDE_PATH)
 	LDFLAGS = -L$(VULKAN_SDK)/lib `pkg-config --static --libs glfw3` -lvulkan -lm -L ../my_lib_cpp/ -ltrl
 else
 	INCS_FLAGS	= -I../QGen/my_lib_cpp/ -I$(VULKAN_SDK)/include \
-	-I$(GLFW3_PATH)/include -I$(GLM_PATH)/include \
-	-I $(INCLUDE_PATH)
-	LDFLAGS = -L$(GLFW3_PATH)/lib -L$(VULKAN_SDK)/lib `pkg-config --static --libs glm` -lvulkan -lglfw -lm -L ../QGen/my_lib_cpp/ -ltrl
+		-I$(GLFW3_PATH)/include -I$(GLM_PATH)/include \
+		-I $(INCLUDE_PATH)
+	LDFLAGS = -L$(GLFW3_PATH)/lib -L$(VULKAN_SDK)/lib `pkg-config --static --libs glm`\
+		-lvulkan -lglfw -lm -L ../QGen/my_lib_cpp/ -ltrl
 endif
 
 SRCS_NAME	=	main.cpp \

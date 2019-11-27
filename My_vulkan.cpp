@@ -6,7 +6,7 @@
 /*   By: trobicho <trobicho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/09 17:05:36 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/26 23:57:53 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/11/27 00:53:22 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -160,6 +160,10 @@ int		My_vulkan::init()
 	if (create_vertex_buffer() == -1)
 		return (-1);
 	if (create_vertex_index_buffer() == -1)
+		return (-1);
+	if (copy_vertex_buffer() == -1)
+		return (-1);
+	if (copy_vertex_index_buffer() == -1)
 		return (-1);
 	if (create_desc_pool() == -1)
 		return (-1);
@@ -317,9 +321,39 @@ int		My_vulkan::create_img_buffer(uint32_t width, uint32_t height
 int		My_vulkan::create_vertex_buffer()
 {
 	VkDeviceSize	buffer_size;
+
+	buffer_size = sizeof(m_mesh.vertex_buffer[0]) * ALLOC_VERTEX_BUF_SIZE;
+	if (create_buffer(buffer_size, VK_BUFFER_USAGE_TRANSFER_DST_BIT
+		| VK_BUFFER_USAGE_VERTEX_BUFFER_BIT
+		, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT
+		, m_vertex_buffer, m_vertex_buffer_memory) == -1)
+	{
+		return (-1);
+	}
+	return (0);
+}
+
+int		My_vulkan::create_vertex_index_buffer()
+{
+	VkDeviceSize	buffer_size;
+
+	buffer_size = sizeof(m_mesh.index_buffer[0]) * ALLOC_INDEX_BUF_SIZE;
+	if (create_buffer(buffer_size, VK_BUFFER_USAGE_TRANSFER_DST_BIT
+		| VK_BUFFER_USAGE_VERTEX_BUFFER_BIT
+		, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT
+		, m_vertex_index_buffer, m_vertex_index_buffer_memory) == -1)
+	{
+		return (-1);
+	}
+	return (0);
+}
+
+int		My_vulkan::copy_vertex_buffer()
+{
 	VkBuffer		staging_buffer;
 	VkDeviceMemory	staging_buffer_memory;
 	VkDeviceSize	copy_size;
+	void*			data;
 
 	copy_size = sizeof(m_mesh.vertex_buffer[0]) * m_mesh.vertex_buffer.size();
 	if (create_buffer(copy_size, VK_BUFFER_USAGE_TRANSFER_SRC_BIT
@@ -329,32 +363,23 @@ int		My_vulkan::create_vertex_buffer()
 	{
 		return (-1);
 	}
-	void* data;
 	vkMapMemory(m_device, staging_buffer_memory, 0, copy_size, 0, &data);
 	memcpy(data, m_mesh.vertex_buffer.data(), (size_t)copy_size);
 	vkUnmapMemory(m_device, staging_buffer_memory);
-	buffer_size = sizeof(m_mesh.vertex_buffer[0]) * ALLOC_VERTEX_BUF_SIZE;
-	if (create_buffer(buffer_size, VK_BUFFER_USAGE_TRANSFER_DST_BIT
-		| VK_BUFFER_USAGE_VERTEX_BUFFER_BIT
-		, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT
-		, m_vertex_buffer, m_vertex_buffer_memory) == -1)
-	{
-		return (-1);
-	}
 	copy_buffer(staging_buffer, m_vertex_buffer, copy_size);
 	vkDestroyBuffer(m_device, staging_buffer, nullptr);
 	vkFreeMemory(m_device, staging_buffer_memory, nullptr);
 	return (0);
 }
 
-int		My_vulkan::create_vertex_index_buffer()
+int		My_vulkan::copy_vertex_index_buffer()
 {
-	VkDeviceSize	buffer_size;
 	VkBuffer		staging_buffer;
 	VkDeviceMemory	staging_buffer_memory;
 	VkDeviceSize	copy_size;
+	void*			data;
 
-	copy_size = m_mesh.index_buffer.size() *  sizeof(m_mesh.index_buffer[0]);
+	copy_size = sizeof(m_mesh.index_buffer[0]) * m_mesh.index_buffer.size();
 	if (create_buffer(copy_size, VK_BUFFER_USAGE_TRANSFER_SRC_BIT
 		, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT
 		| VK_MEMORY_PROPERTY_HOST_COHERENT_BIT
@@ -362,18 +387,9 @@ int		My_vulkan::create_vertex_index_buffer()
 	{
 		return (-1);
 	}
-	void* data;
 	vkMapMemory(m_device, staging_buffer_memory, 0, copy_size, 0, &data);
 	memcpy(data, m_mesh.index_buffer.data(), (size_t)copy_size);
 	vkUnmapMemory(m_device, staging_buffer_memory);
-	buffer_size = sizeof(m_mesh.index_buffer[0]) * ALLOC_INDEX_BUF_SIZE;
-	if (create_buffer(buffer_size, VK_BUFFER_USAGE_TRANSFER_DST_BIT
-		| VK_BUFFER_USAGE_VERTEX_BUFFER_BIT
-		, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT
-		, m_vertex_index_buffer, m_vertex_index_buffer_memory) == -1)
-	{
-		return (-1);
-	}
 	copy_buffer(staging_buffer, m_vertex_index_buffer, copy_size);
 	vkDestroyBuffer(m_device, staging_buffer, nullptr);
 	vkFreeMemory(m_device, staging_buffer_memory, nullptr);

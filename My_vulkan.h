@@ -6,7 +6,7 @@
 /*   By: trobicho <trobicho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/09 17:05:37 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/26 00:16:11 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/11/27 00:48:22 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,8 @@
 #include "Mesh.h"
 #include <vector>
 #define GLFW_INCLUDE_VULKAN
-#define	ALLOC_VERTEX_BUF_SIZE	(1000000)
-#define	ALLOC_INDEX_BUF_SIZE	(2000000)
+#define	ALLOC_VERTEX_BUF_SIZE	(10000000)
+#define	ALLOC_INDEX_BUF_SIZE	(20000000)
 #include "GLFW/glfw3.h"
 
 struct s_ubo
@@ -38,6 +38,8 @@ class	My_vulkan
 		int			update_uniform_buffer(uint32_t img_index);
 		VkDevice	&get_device_ref(){return (m_device);}
 		int			command_buffer_record();
+		int			copy_vertex_buffer();
+		int			copy_vertex_index_buffer();
 
 	private:
 		int			create_uniform_buffer();

@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/23 03:49:25 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/23 06:08:30 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/11/27 12:11:49 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,8 @@ class	Moore_accessor
 		Moore_accessor(Vdb_test &vdb);
 		~Moore_accessor(){};
 
-		void	find_neigh(s_vec3i v, Node_v *node);
+		void				find_neigh(s_vec3i v, Node_v *node);
+		const Vdb_test&		get_vdb_ref(void) const {return (m_vdb);}
 
 		bool	operator[](std::size_t pos) const {return (m_neigh[pos]);}
 

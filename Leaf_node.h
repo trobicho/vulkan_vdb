@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/02 20:38:57 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/24 19:51:26 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/11/27 12:56:50 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,13 +41,16 @@ class Leaf_node: public Node<Value>
 			return (true);
 		}
 		inline s_vec3i		do_get_log() const {
-			return s_vec3i(Log2X, Log2Y, Log2Z);
+			return (s_vec3i(Log2X, Log2Y, Log2Z));
 		}
 		inline s_vec3i		do_get_slog() const {
-			return s_vec3i(sLog2X, sLog2Y, sLog2Z);
+			return (s_vec3i(sLog2X, sLog2Y, sLog2Z));
 		}
 		inline s_vec3i		do_get_child_slog() const {
-			return s_vec3i(0, 0, 0);
+			return (s_vec3i(0, 0, 0));
+		}
+		inline const int	do_get_sSize() const {
+			return (sSize);
 		}
 		inline s_vec3i		get_pos_from_offset(unsigned int i) const
 		{

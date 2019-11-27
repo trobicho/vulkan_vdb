@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/02 20:38:22 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/25 20:21:25 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/11/27 14:16:34 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,9 @@ class Internal_node: public Node<Value>
 		}
 		inline s_vec3i		do_get_child_slog() const {
 			return s_vec3i(Child::sLog2X, Child::sLog2Y, Child::sLog2Z);
+		}
+		inline const int	do_get_sSize() const {
+			return (sSize);
 		}
 		inline s_vec3i		get_pos_from_offset(unsigned int i) const
 		{
@@ -228,13 +231,13 @@ void	Internal_node<Value, Child, Log2X, Log2Y, Log2Z>
 				off = (x_off << (Log2Y + Log2Z)) + (y_off << Log2Z) + z_off;
 				if (off >= sSize)
 					break ;
-				if (m_child_mask[off])
+				if (m_child_mask[off]) 
 				{
 					m_internal_data[off].child->do_mesh(mesh, box);
 				}
 				else if (m_value_mask[off]) 
 				{
-					mesh.add_cube_from_node(get_pos_from_offset(off)
+					mesh.add_big_cube_from_node(get_pos_from_offset(off)
 							, (e_block_type)m_internal_data[off].value
 							, (void*)this);
 				}

@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/02 21:06:27 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/24 19:57:05 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/11/27 13:02:38 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ void		Vdb_test::set_vox(uint32_t value, s_vec3i v)
 	}
 }
 
-uint32_t	Vdb_test::get_vox(s_vec3i v)
+uint32_t	Vdb_test::get_vox(s_vec3i v) const
 {
 	if (v.x >= m_min.x && v.y >= m_min.y && v.z >= m_min.z
 		&& v.x < m_max.x && v.y < m_max.y && v.z < m_max.z)
@@ -36,7 +36,7 @@ uint32_t	Vdb_test::get_vox(s_vec3i v)
 }
 
 const Node_v
-			*Vdb_test::get_interresting_node(s_vec3i v, uint32_t &value)
+			*Vdb_test::get_interresting_node(s_vec3i v, uint32_t &value) const
 {
 	value = 0;
 	if (v.x >= m_min.x && v.y >= m_min.y && v.z >= m_min.z

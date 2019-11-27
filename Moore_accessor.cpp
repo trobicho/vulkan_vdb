@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/23 04:53:19 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/23 06:04:49 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/11/27 14:25:56 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,6 @@ void	Moore_accessor::find_neigh(s_vec3i v, Node_v *node)
 {
 	s_vec3i vox;
 	m_neigh.reset();
-	if (node->get_child_slog().x > 1)
-		return ;
 	for (int y = 0; y < 3; y++)
 	{
 		for (int z = 0; z < 3; z++)
