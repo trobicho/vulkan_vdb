@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/02 20:39:09 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/27 11:24:59 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/11/27 21:11:29 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,11 +87,11 @@ int	main()
 			box.origin.y = 0;
 			if (map.generate(my_vdb, box))
 				return (1);
+			my_vdb.pruning();
+			my_vdb.mesh(mesh, box);
 			std::cout << x << "/4, " << z << "/4" << std::endl;
 		}
 	}
-	my_vdb.pruning();
-	my_vdb.mesh(mesh, box);
 	//mesh.remove_vertex(100000, 30000);
 	//box.origin = s_vec3i(xr - box.len.x / 2, 0, zr - box.len.z / 2);
 	std::cout << "total of " << map.get_nb_vox() << " voxels." << std::endl;

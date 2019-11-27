@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/11 07:00:55 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/27 14:31:30 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/11/27 17:14:33 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -283,63 +283,147 @@ void	Mesh::add_cube_from_node(s_vec3i v, e_block_type type, void *node_ptr)
 	add_needed_vertex(vertex, 1, v_b, v_idx); // weird
 	if (!m_moore_access[MOORE_UP])
 	{
-		add_index(v_idx[2]);
-		add_index(v_idx[1]);
-		add_index(v_idx[0]);
+		if (vertex_buffer[v_idx[1]].ao + vertex_buffer[v_idx[3]].ao
+			> vertex_buffer[v_idx[2]].ao + vertex_buffer[v_idx[0]].ao)
+		{
+			add_index(v_idx[1]);
+			add_index(v_idx[0]);
+			add_index(v_idx[3]);
 
-		add_index(v_idx[0]);
-		add_index(v_idx[3]);
-		add_index(v_idx[2]);
+			add_index(v_idx[3]);
+			add_index(v_idx[2]);
+			add_index(v_idx[1]);
+		}
+		else
+		{
+			add_index(v_idx[2]);
+			add_index(v_idx[1]);
+			add_index(v_idx[0]);
+
+			add_index(v_idx[0]);
+			add_index(v_idx[3]);
+			add_index(v_idx[2]);
+		}
 	}
 	if (!m_moore_access[MOORE_DOWN])
 	{
-		add_index(v_idx[4]);
-		add_index(v_idx[5]);
-		add_index(v_idx[6]);
+		if (vertex_buffer[v_idx[7]].ao + vertex_buffer[v_idx[5]].ao
+			> vertex_buffer[v_idx[4]].ao + vertex_buffer[v_idx[6]].ao)
+		{
+			add_index(v_idx[7]);
+			add_index(v_idx[4]);
+			add_index(v_idx[5]);
 
-		add_index(v_idx[6]);
-		add_index(v_idx[7]);
-		add_index(v_idx[4]);
+			add_index(v_idx[5]);
+			add_index(v_idx[6]);
+			add_index(v_idx[7]);
+		}
+		else
+		{
+			add_index(v_idx[4]);
+			add_index(v_idx[5]);
+			add_index(v_idx[6]);
+
+			add_index(v_idx[6]);
+			add_index(v_idx[7]);
+			add_index(v_idx[4]);
+		}
 	}
 	if (!m_moore_access[MOORE_FRONT])
 	{
-		add_index(v_idx[0]);
-		add_index(v_idx[1]);
-		add_index(v_idx[5]);
+		if (vertex_buffer[v_idx[4]].ao + vertex_buffer[v_idx[1]].ao
+			> vertex_buffer[v_idx[0]].ao + vertex_buffer[v_idx[5]].ao)
+		{
+			add_index(v_idx[4]);
+			add_index(v_idx[0]);
+			add_index(v_idx[1]);
 
-		add_index(v_idx[5]);
-		add_index(v_idx[4]);
-		add_index(v_idx[0]);
+			add_index(v_idx[1]);
+			add_index(v_idx[5]);
+			add_index(v_idx[4]);
+		}
+		else
+		{
+			add_index(v_idx[0]);
+			add_index(v_idx[1]);
+			add_index(v_idx[5]);
+
+			add_index(v_idx[5]);
+			add_index(v_idx[4]);
+			add_index(v_idx[0]);
+		}
 	}
 	if (!m_moore_access[MOORE_BACK])
 	{
-		add_index(v_idx[6]);
-		add_index(v_idx[2]);
-		add_index(v_idx[3]);
+		if (vertex_buffer[v_idx[7]].ao + vertex_buffer[v_idx[2]].ao
+			> vertex_buffer[v_idx[6]].ao + vertex_buffer[v_idx[3]].ao)
+		{
+			add_index(v_idx[7]);
+			add_index(v_idx[6]);
+			add_index(v_idx[2]);
 
-		add_index(v_idx[3]);
-		add_index(v_idx[7]);
-		add_index(v_idx[6]);
+			add_index(v_idx[2]);
+			add_index(v_idx[3]);
+			add_index(v_idx[7]);
+		}
+		else
+		{
+			add_index(v_idx[6]);
+			add_index(v_idx[2]);
+			add_index(v_idx[3]);
+
+			add_index(v_idx[3]);
+			add_index(v_idx[7]);
+			add_index(v_idx[6]);
+		}
 	}
 	if (!m_moore_access[MOORE_RIGHT])
 	{
-		add_index(v_idx[5]);
-		add_index(v_idx[1]);
-		add_index(v_idx[2]);
+		if (vertex_buffer[v_idx[6]].ao + vertex_buffer[v_idx[1]].ao
+			> vertex_buffer[v_idx[5]].ao + vertex_buffer[v_idx[2]].ao)
+		{
+			add_index(v_idx[6]);
+			add_index(v_idx[5]);
+			add_index(v_idx[1]);
 
-		add_index(v_idx[2]);
-		add_index(v_idx[6]);
-		add_index(v_idx[5]);
+			add_index(v_idx[1]);
+			add_index(v_idx[2]);
+			add_index(v_idx[6]);
+		}
+		else
+		{
+			add_index(v_idx[5]);
+			add_index(v_idx[1]);
+			add_index(v_idx[2]);
+
+			add_index(v_idx[2]);
+			add_index(v_idx[6]);
+			add_index(v_idx[5]);
+		}
 	}
 	if (!m_moore_access[MOORE_LEFT])
 	{
-		add_index(v_idx[7]);
-		add_index(v_idx[3]);
-		add_index(v_idx[0]);
+		if (vertex_buffer[v_idx[4]].ao + vertex_buffer[v_idx[3]].ao
+			> vertex_buffer[v_idx[7]].ao + vertex_buffer[v_idx[0]].ao)
+		{
+			add_index(v_idx[4]);
+			add_index(v_idx[7]);
+			add_index(v_idx[3]);
 
-		add_index(v_idx[0]);
-		add_index(v_idx[4]);
-		add_index(v_idx[7]);
+			add_index(v_idx[3]);
+			add_index(v_idx[0]);
+			add_index(v_idx[4]);
+		}
+		else
+		{
+			add_index(v_idx[7]);
+			add_index(v_idx[3]);
+			add_index(v_idx[0]);
+
+			add_index(v_idx[0]);
+			add_index(v_idx[4]);
+			add_index(v_idx[7]);
+		}
 	}
 }
 
