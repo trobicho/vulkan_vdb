@@ -6,7 +6,7 @@
 /*   By: trobicho <trobicho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/17 23:47:42 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/19 17:58:21 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/11/28 11:26:55 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,13 @@ static float	get_vox_dist(glm::vec3 pos, glm::vec3 &v, s_vec3i vox
 			v.z = pos.z - (vox.z + 1);
 	}
 	d = glm::length(v);
+	if (d < 0.001)
+	{
+		v.x = (b_x) ? 0.001f : 0.0f;
+		v.y = (b_y) ? 0.001f : 0.0f;
+		v.z = (b_z) ? 0.001f : 0.0f;
+		d = 0.001f;
+	}
 	v = glm::normalize(v);
 	return (d);
 }
@@ -119,8 +126,18 @@ void	Physic::apply_physic_to_player(Player &player)
 	if (player.is_falling())
 		p_accel_vec.y = -18.8f;
 
+
+	p_speed_vec += p_accel_vec * time;
+	float l_s = length(p_speed_vec);
+	if (length(p_accel_vec) < 0.1f || l_s > 18.f)
+	{
+		p_speed_vec *= 1.0f - (friction * time * 5.f);
+		if (l_s < 1.f)
+			p_speed_vec *= 0.8f;
+	}
+	//std::cout << length(p_speed_vec) << std::endl;
 	//std::cout << "time = " << time << std::endl;
-	apply_friction(p_speed_vec, p_accel_vec, friction, time);
+	//apply_friction(p_speed_vec, p_accel_vec, friction, time);
 	player.apply_force(time);
 	m_last_time = current_time;
 }
@@ -129,7 +146,7 @@ float	Physic::check_ground(Player &player)
 {
 	glm::vec3	p_pos = player.get_pos();
 	s_hitbox	hitbox = player.get_hitbox();
-	float		friction = 0.3; 
+	float		friction = 0.1; 
 	s_vec3i		vox_p((int)p_pos.x, (int)p_pos.y, (int)p_pos.z);
 	s_vec3i		vox = vox_p;
 	float		d_eject;
@@ -161,7 +178,7 @@ float	Physic::check_ground(Player &player)
 			player.collide_eject(glm::vec3(0.f, 1.f, 0.f), d);
 		if (player.is_falling())
 			player.touch_ground();
-		friction = 0.8;
+		friction = 0.5;
 	}
 	else
 	{
@@ -221,6 +238,14 @@ void	Physic::apply_friction(glm::vec3 &speed_vec
 	float	speed = length(speed_vec);
 	float	accel = length(accel_vec);
 	if (accel > 0.01)
+		speed_vec += (accel_vec * time);
+	float	min = time * friction;
+	if (min > 1.0f)
+		speed_vec = glm::vec3(0.f, 0.f, 0.f);
+	else
+		speed_vec *= 1.0f - min;
+	/*
+	if (accel > 0.01)
 	{
 		speed_vec += (glm::normalize(accel_vec) * time)
 			* (accel - friction * speed);
@@ -231,4 +256,5 @@ void	Physic::apply_friction(glm::vec3 &speed_vec
 		if (scalar > 0.0)
 			speed_vec = glm::normalize(speed_vec) * scalar;
 	}
+	*/
 }

@@ -6,12 +6,13 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/19 18:43:08 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/27 16:57:48 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/11/28 15:49:41 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Map.h"
 #include "Block.h"
+#include "Noise.h"
 
 double		Map::get_height(double x, double z)
 {
@@ -24,8 +25,8 @@ double		Map::get_height(double x, double z)
 
 double		Map::get_density_cave(double x, double y, double z)
 {
-	double	scalar_cave = 40.0;
-	double	d = m_noise.perlin3d(3, 3., 0.5
+	double	scalar_cave = 75.0;
+	double	d = m_noise.perlin3d(5, 1., 0.6
 			, (double)x / scalar_cave
 			, (double)z / scalar_cave
 			, (double)y / scalar_cave);
@@ -62,9 +63,9 @@ uint32_t	Map::get_block_type(s_biome_info &biome_info, double y
 
 int			Map::generate(Vdb_test &vdb, s_vbox box)
 {
-	double			cave_thres = 0.35;
+	double			cave_thres = 0.25;
 	double			cave_thres_d;
-	int				lerp_mod = 8;
+	int				lerp_mod = 4;
 	double			d_cave_prec, d_cave_next, d_cave;
 	int				block_type = 1;
 	s_biome_info	biome_info;
@@ -76,6 +77,7 @@ int			Map::generate(Vdb_test &vdb, s_vbox box)
 		for (int x = 0; x < box.len.x; ++x)
 		{
 			get_biome_info(biome_info, x + box.origin.x, z + box.origin.z);
+			d_cave = 1.0;
 			for (y = 0; y < box.len.y * d + 1; ++y)
 			{
 				s_vec3i	vox(x, y, z);
@@ -90,8 +92,8 @@ int			Map::generate(Vdb_test &vdb, s_vbox box)
 				}
 				else if (y > 0)
 				{
-					d_cave = Perlin_noiser::lerp(d_cave_prec, d_cave_next
-								, (y % lerp_mod) / (double)lerp_mod);
+					d_cave = Noise::lerp(d_cave_prec, d_cave_next
+								, ((y - 1) % lerp_mod) / (double)lerp_mod);
 				}
 				cave_thres_d = (1.0 - (double)y / box.len.y) - cave_thres;
 				if (y > 0 && d_cave < cave_thres)

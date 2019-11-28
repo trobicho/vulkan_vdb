@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/16 17:58:09 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/19 19:04:27 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/11/28 13:45:52 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,6 @@ class	Perlin_noiser
 		Perlin_noiser(){};
 
 		static double	rand_noise(int t);
-		static double	lerp(double a, double b, double t);
 		static double	cerp(double a, double b, double t);
 		double	cubic_interpolate(double p0, double p1
 					, double b_p0, double a_p1, double t);

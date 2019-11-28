@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/02 20:39:09 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/28 16:50:22 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/11/28 16:49:22 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,11 +18,11 @@
 #include "Moore_accessor.h"
 #include "Noise.h"
 
-static int	main_loop(My_vulkan &my_vulkan, Map_loader &map_loader
-				, GLFWwindow *win)
+static int	main_loop(My_vulkan &my_vulkan, &Map_loader map_loader
+	, Mesh &mesh, GLFWwindow *win)
 {
 	s_user	*user = (s_user*)glfwGetWindowUserPointer(win);
-	Physic	physic(map_loader.get_vdb_ref());
+	Physic	physic(vdb);
 
 	while(!glfwWindowShouldClose(win) && !user->quit)
 	{

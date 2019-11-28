@@ -6,36 +6,36 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/19 21:20:09 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/23 08:23:44 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/11/28 10:32:17 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Block.h"
 
-glm::vec3	get_color_from_block_type(uint32_t block)
+glm::vec4	get_color_from_block_type(uint32_t block)
 {
 	switch ((e_block_type)block)
 	{
 		case bl_stone:
-			return (glm::vec3(0.35f, 0.35f, 0.35f));
+			return (glm::vec4(0.35f, 0.35f, 0.35f, 1.0f));
 			break;
 		case bl_dirt:
-			return (glm::vec3(0.48f, 0.35f, 0.25f));
+			return (glm::vec4(0.48f, 0.35f, 0.25f, 1.0f));
 			break;
 		case bl_grass:
-			return (glm::vec3(0.1f, 0.8f, 0.1f));
+			return (glm::vec4(0.1f, 0.8f, 0.1f, 1.0f));
 			break;
 		case bl_water:
-			return (glm::vec3(0.2f, 0.2f, 0.8f));
+			return (glm::vec4(0.2f, 0.2f, 0.8f, 0.1f));
 			break;
 		case bl_ice:
-			return (glm::vec3(0.65f, 0.65f, 0.8f));
+			return (glm::vec4(0.65f, 0.65f, 0.8f, 1.0f));
 			break;
 		case bl_sand:
-			return (glm::vec3(0.9f, 0.9f, 0.0f));
+			return (glm::vec4(0.9f, 0.9f, 0.0f, 1.0f));
 			break;
 		default:
-			return (glm::vec3(0.7f, 0.1f, 0.1f));
+			return (glm::vec4(0.7f, 0.1f, 0.1f, 1.0f));
 			break;
 	}
 }

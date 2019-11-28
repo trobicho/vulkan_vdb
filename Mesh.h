@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/11 06:56:37 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/27 12:21:56 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/11/28 10:28:50 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,12 +35,12 @@ class	Moore_accessor;
 
 struct	s_vertex
 {
-	s_vertex():color(glm::vec3(0.7f, 0.7f, 0.7f)){};
-	s_vertex(glm::vec3 p_pos, glm::vec3 p_color = glm::vec3(0.7f, 0.7f, 0.7f)):
+	s_vertex():color(glm::vec4(0.7f, 0.7f, 0.7f, 1.0f)){};
+	s_vertex(glm::vec3 p_pos, glm::vec4 p_color = glm::vec4(0.7f, 0.7f, 0.7f, 1.0f)):
 		pos(p_pos), color(p_color){};
 
 	glm::vec3				pos;
-	glm::vec3				color;
+	glm::vec4				color;
 	uint8_t					ao = 3;
 
 	static VkVertexInputBindingDescription	get_binding_description()
@@ -62,7 +62,7 @@ struct	s_vertex
 		attribute_descriptions[0].offset = offsetof(s_vertex, pos);
 		attribute_descriptions[1].binding = 0;
 		attribute_descriptions[1].location = 1;
-		attribute_descriptions[1].format = VK_FORMAT_R32G32B32_SFLOAT;
+		attribute_descriptions[1].format = VK_FORMAT_R32G32B32A32_SFLOAT;
 		attribute_descriptions[1].offset = offsetof(s_vertex, color);
 		attribute_descriptions[2].binding = 0;
 		attribute_descriptions[2].location = 2;

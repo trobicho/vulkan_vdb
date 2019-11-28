@@ -1,78 +1,25 @@
-0/4, 0/4
-0/4, 0/4
-total of 1071942 voxels.
-total of 793295 vertex.
-total of 2528400 index.
+time to generate = 8.46492
+time to mesh = 12.7698
+total of 3315909 voxels.
+total of 3581042 vertex.
+total of 6361308 index.
 
 m_pos = {4096, 130, 4096}
 nbFormat: 1
-shader size (2208, 548)
-codeSize = 2208
+shader size (2244, 548)
+codeSize = 2244
 codeSize = 548
 m_pos = {4096, 130, 4096}
-0/4, 0/4
-total of 1071942 voxels.
-total of 793295 vertex.
-total of 2528400 index.
+
+time to generate = 8.96437
+time to mesh = 8.84338
+total of 3796006 voxels.
+total of 1751856 vertex.
+total of 2975676 index.
 
 m_pos = {4096, 130, 4096}
 nbFormat: 1
-shader size (2208, 548)
-codeSize = 2208
-codeSize = 548
-m_pos = {4096, 130, 4096}
-0/4, 0/4
-total of 1071942 voxels.
-total of 793295 vertex.
-total of 2528400 index.
-
-m_pos = {4096, 130, 4096}
-nbFormat: 1
-shader size (2208, 548)
-codeSize = 2208
-codeSize = 548
-m_pos = {4096, 130, 4096}
-0/4, 0/4
-total of 1071942 voxels.
-total of 923207 vertex.
-total of 3113004 index.
-
-m_pos = {4096, 130, 4096}
-nbFormat: 1
-shader size (2208, 548)
-codeSize = 2208
-codeSize = 548
-m_pos = {4096, 130, 4096}
-0/4, 0/4
-total of 1071942 voxels.
-total of 923207 vertex.
-total of 3113004 index.
-
-m_pos = {4096, 130, 4096}
-nbFormat: 1
-shader size (2208, 548)
-codeSize = 2208
-codeSize = 548
-m_pos = {4096, 130, 4096}
-0/4, 0/4
-total of 1071942 voxels.
-total of 1416623 vertex.
-total of 5333376 index.
-
-m_pos = {4096, 130, 4096}
-nbFormat: 1
-shader size (2208, 548)
-codeSize = 2208
-codeSize = 548
-m_pos = {4103.71, 73.1, 4211.36}
-0/4, 0/4
-total of 1071942 voxels.
-total of 472145 vertex.
-total of 807240 index.
-
-m_pos = {4096, 130, 4096}
-nbFormat: 1
-shader size (2208, 548)
-codeSize = 2208
+shader size (2244, 548)
+codeSize = 2244
 codeSize = 548
 m_pos = {4096, 130, 4096}

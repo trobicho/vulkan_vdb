@@ -6,7 +6,7 @@
 #    By: trobicho <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/11/02 20:38:42 by trobicho          #+#    #+#              #
-#    Updated: 2019/11/27 00:11:28 by trobicho         ###   ########.fr        #
+#    Updated: 2019/11/28 13:37:22 by trobicho         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -44,6 +44,7 @@ SRCS_NAME	=	main.cpp \
 				key_call.cpp \
 				Map.cpp \
 				perlin.cpp \
+				Noise.cpp \
 				Block.cpp \
 				Moore_accessor.cpp \
 				Mesh.cpp
@@ -64,6 +65,7 @@ HDRS_NAME	=	Vdb_test.h \
 				key_call.h \
 				Map.h \
 				perlin.h \
+				Noise.h \
 				Block.h \
 				Moore_accessor.h \
 				Mesh.h

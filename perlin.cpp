@@ -6,11 +6,12 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/16 18:03:36 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/17 05:56:23 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/11/28 14:45:33 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "perlin.h"
+#include "Noise.h"
 #include <cmath>
 
 double	Perlin_noiser::rand_noise(int t)
@@ -18,11 +19,6 @@ double	Perlin_noiser::rand_noise(int t)
 	t = (t << 13) ^ t;
 	t = (t * (t * t * 15731 + 789221) + 1376312589);
 	return (1.0 - (t & 0x7fffffff) / 1073741824.0);
-}
-
-double	Perlin_noiser::lerp(double a, double b, double t)
-{
-	return ((1. - t) * a + t * b);
 }
 
 double	Perlin_noiser::cerp(double a, double b, double t)
@@ -64,7 +60,7 @@ double	Perlin_noiser::smooth_noise(double x)
 	double	a = rand_noise(int_x);
 	double	b = rand_noise(int_x + 1);
 
-	return (lerp(a, b, fract_x));
+	return (Noise::lerp(a, b, fract_x));
 }
 
 double	Perlin_noiser::smooth_noise2d(double x, double y)
@@ -81,10 +77,10 @@ double	Perlin_noiser::smooth_noise2d(double x, double y)
 	c = noise2d(int_x, int_y + 1);
 	d = noise2d(int_x + 1, int_y + 1);
 
-	f = lerp(a, b, fract_x);
-	g = lerp(c, d, fract_x);
+	f = Noise::lerp(a, b, fract_x);
+	g = Noise::lerp(c, d, fract_x);
 
-	return (lerp(f, g, fract_y));
+	return (Noise::lerp(f, g, fract_y));
 }
 
 double	Perlin_noiser::smooth_noise3d(double x, double y, double z)
@@ -112,14 +108,14 @@ double	Perlin_noiser::smooth_noise3d(double x, double y, double z)
 	d0 = noise3d(int_x, int_y + 1, int_z + 1);
 	d1 = noise3d(int_x + 1, int_y + 1, int_z + 1);
 
-	a = lerp(a0, a1, fract_x);
-	b = lerp(b0, b1, fract_x);
-	v = lerp(a, b, fract_y);
-	c = lerp(c0, c1, fract_x);
-	d = lerp(d0, d1, fract_x);
-	w = lerp(c, d, fract_y);
+	a = Noise::lerp(a0, a1, fract_x);
+	b = Noise::lerp(b0, b1, fract_x);
+	v = Noise::lerp(a, b, fract_y);
+	c = Noise::lerp(c0, c1, fract_x);
+	d = Noise::lerp(d0, d1, fract_x);
+	w = Noise::lerp(c, d, fract_y);
 
-	return lerp(v, w, fract_z);
+	return Noise::lerp(v, w, fract_z);
 }
 
 double Perlin_noiser::smooth_noise_firstdim(int integer_x
@@ -194,11 +190,13 @@ double	Perlin_noiser::perlin3d(int nb_octave, double freq
 	double	r = 0.;
 	double	f = freq;
 	double	amplitude = 1.;
+	static Noise	noise;
 
 	for (int i = 0; i < nb_octave; i++)
 	{
 		int t = i * 4096;
-		r += smooth_noise3d(x * f + t, y * f + t, z * f + t) * amplitude;
+		//r += smooth_noise3d(x * f + t, y * f + t, z * f + t) * amplitude;
+		r += (noise.smooth_noise3d(x * f + t, y * f + t, z * f + t) + 0.5f) * amplitude;
 		amplitude *= persistence;
 		f *= 2.;
 	}

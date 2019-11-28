@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/17 17:19:36 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/19 03:54:30 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/11/28 11:35:07 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,13 +44,13 @@ void	Player::move_normal() //TMP
 	m_dir.y = 0;
 	m_dir = glm::normalize(m_dir);
 	if (m_state & P_STATE_FORWARD)
-		m_accel_vec = m_dir * 10.0f;
+		m_accel_vec = m_dir * 4.0f;
 	if (m_state & P_STATE_BACKWARD)
-		m_accel_vec = m_dir * -10.0f;
+		m_accel_vec = m_dir * -4.0f;
 	if (m_state & P_STATE_RIGHT)
-		m_accel_vec = m_cam.right * -8.0f;
+		m_accel_vec = m_cam.right * -4.0f;
 	if (m_state & P_STATE_LEFT)
-		m_accel_vec = m_cam.right * 8.0f;
+		m_accel_vec = m_cam.right * 4.0f;
 	m_accel_vec.y = accel_y;
 }
 
