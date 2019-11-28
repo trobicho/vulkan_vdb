@@ -6,7 +6,7 @@
 /*   By: trobicho <trobicho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/09 17:05:37 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/27 00:48:22 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/11/28 17:56:42 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ struct s_ubo
 class	My_vulkan
 {
 	public:
-		My_vulkan(GLFWwindow *win, Mesh &mesh, s_ubo &ubo);
+		My_vulkan(GLFWwindow *win, const Mesh &mesh, s_ubo &ubo);
 		~My_vulkan();
 
 		int			init();
@@ -133,6 +133,6 @@ class	My_vulkan
 
 		int						m_update;
 		bool					m_debug = false;
-		Mesh					&m_mesh;
+		const Mesh				&m_mesh;
 		s_ubo					&m_ubo;
 };

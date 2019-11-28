@@ -6,17 +6,14 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/02 20:39:09 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/28 16:50:22 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/11/28 17:57:12 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <iostream>
-#include "Map.h"
-#include "My_vulkan.h"
+#include "Map_loader.h"
 #include "key_call.h"
 #include "Physic.h"
-#include "Moore_accessor.h"
-#include "Noise.h"
 
 static int	main_loop(My_vulkan &my_vulkan, Map_loader &map_loader
 				, GLFWwindow *win)
@@ -36,6 +33,7 @@ static int	main_loop(My_vulkan &my_vulkan, Map_loader &map_loader
 		if (user->player.has_physic())
 			physic.apply_physic_to_player(user->player);
 		user->player.update_ubo();
+		/*
 		if (mesh.has_update())
 		{
 			mesh.update();
@@ -46,6 +44,7 @@ static int	main_loop(My_vulkan &my_vulkan, Map_loader &map_loader
 			if (my_vulkan.command_buffer_record() == -1)
 				return (-1);
 		}
+		*/
 		my_vulkan.draw_frame();
 	}
 	vkDeviceWaitIdle(my_vulkan.get_device_ref());
@@ -91,7 +90,7 @@ int	main()
 	}
 
 	main_loop(my_vulkan, map_loader, win);
-	v = player.get_pos();
+	glm::vec3 v = player.get_pos();
 	std::cout << "m_pos = {" << v.x << ", "
 				<< v.y << ", " << v.z << "}" << std::endl;
 	return (0);

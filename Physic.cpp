@@ -6,7 +6,7 @@
 /*   By: trobicho <trobicho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/17 23:47:42 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/28 11:26:55 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/11/28 17:55:07 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,7 +93,7 @@ static float	friction_calc(float speed, float friction, float t)
 	return (speed * pow(1.0 - friction, t));
 }
 
-Physic::Physic(Vdb_test &vdb): m_vdb(vdb)
+Physic::Physic(const Vdb_test &vdb): m_vdb(vdb)
 		, m_start_time(std::chrono::high_resolution_clock::now())
 {
 	m_last_time = m_start_time;

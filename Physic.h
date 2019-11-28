@@ -6,7 +6,7 @@
 /*   By: trobicho <trobicho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/17 23:36:18 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/19 03:12:06 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/11/28 17:54:50 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 class	Physic
 {
 	public:
-		Physic(Vdb_test &vdb);
+		Physic(const Vdb_test &vdb);
 
 		void	apply_physic_to_player(Player &player);
 		float	check_ground(Player &player);
@@ -31,7 +31,7 @@ class	Physic
 		void	apply_friction(glm::vec3 &speed_vec
 					, glm::vec3 accel_vec, float friction, float time);
 
-		Vdb_test	&m_vdb;
+		const Vdb_test	&m_vdb;
 		const std::chrono::time_point<std::chrono::high_resolution_clock
 						, std::chrono::duration<long int
 							, std::ratio<1, 1000000000>>>

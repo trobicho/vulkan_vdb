@@ -6,7 +6,7 @@
 /*   By: trobicho <trobicho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/09 17:05:36 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/27 00:53:22 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/11/28 17:56:21 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
-My_vulkan::My_vulkan(GLFWwindow *win, Mesh &mesh, s_ubo &ubo):
+My_vulkan::My_vulkan(GLFWwindow *win, const Mesh &mesh, s_ubo &ubo):
 	m_win(win), m_mesh(mesh), m_ubo(ubo) //try catch
 {
 }

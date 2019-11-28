@@ -6,7 +6,7 @@
 #    By: trobicho <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/11/02 20:38:42 by trobicho          #+#    #+#              #
-#    Updated: 2019/11/28 13:37:22 by trobicho         ###   ########.fr        #
+#    Updated: 2019/11/28 17:50:09 by trobicho         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -47,6 +47,7 @@ SRCS_NAME	=	main.cpp \
 				Noise.cpp \
 				Block.cpp \
 				Moore_accessor.cpp \
+				Map_loader.cpp \
 				Mesh.cpp
 
 HDRS_NAME	=	Vdb_test.h \
@@ -68,6 +69,7 @@ HDRS_NAME	=	Vdb_test.h \
 				Noise.h \
 				Block.h \
 				Moore_accessor.h \
+				Map_loader.h \
 				Mesh.h
 
 OBJS_NAME	=	$(SRCS_NAME:.cpp=.o)

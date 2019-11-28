@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/19 18:43:08 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/28 15:49:41 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/11/28 18:14:09 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,7 +98,10 @@ int			Map::generate(Vdb_test &vdb, s_vbox box)
 				cave_thres_d = (1.0 - (double)y / box.len.y) - cave_thres;
 				if (y > 0 && d_cave < cave_thres)
 					continue ;
-				block_type = get_block_type(biome_info, (double)y / box.len.y, d);
+				if (y == 0)
+					block_type = bl_bedrock;
+				else
+					block_type = get_block_type(biome_info, (double)y / box.len.y, d);
 				if (block_type == bl_dirt && y >= box.len.y * d - 1)
 					block_type = bl_grass;
 				vox.x += box.origin.x;
