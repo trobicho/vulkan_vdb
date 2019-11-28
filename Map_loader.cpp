@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/28 17:47:20 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/28 20:16:47 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/11/28 22:35:48 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,16 +39,16 @@ static s_vec3i
 
 void	Map_loader::thread_loader()
 {
+	uint32_t	value;
+
 	while (!m_quit)
 	{
 		if (m_update == false)
 		{
 			glm::vec3	p_pos = m_player.get_cam_pos();
 			s_vec3i	i_pos = s_vec3i((int)p_pos.x, (int)p_pos.y, (int)p_pos.z);
-			s_vec3i	dist = dist_from_chunk(i_pos, m_chunk);
-			std::cout << "dist = " << dist.x << ", " << dist.z << std::endl;
-			std::cout << "p_pos = " << p_pos.x << ", " << p_pos.z << std::endl;
-			if (dist.x > (1 << CHUNK_LOG_X) || dist.z > (1 << CHUNK_LOG_Z))
+			if (m_vdb.get_interresting_node(s_vec3i(i_pos.x, 0, i_pos.z), value)
+					->get_child_slog().x >= CHUNK_LOG_X)
 			{
 				std::cout << "load new chunk" << std::endl;
 				load_one_chunck(i_pos.x, i_pos.z);

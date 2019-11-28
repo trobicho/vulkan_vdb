@@ -6,7 +6,7 @@
 /*   By: trobicho <trobicho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/09 17:05:37 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/28 17:56:42 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/11/28 21:50:39 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,8 @@
 #include "Mesh.h"
 #include <vector>
 #define GLFW_INCLUDE_VULKAN
-#define	ALLOC_VERTEX_BUF_SIZE	(10000000)
-#define	ALLOC_INDEX_BUF_SIZE	(20000000)
+#define	ALLOC_VERTEX_BUF_SIZE	(15000000)
+#define	ALLOC_INDEX_BUF_SIZE	(30000000)
 #include "GLFW/glfw3.h"
 
 struct s_ubo
