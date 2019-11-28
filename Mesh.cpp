@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/11 07:00:55 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/27 17:14:33 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/11/28 18:55:12 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,12 +15,6 @@
 
 Mesh::Mesh(Moore_accessor &moore_access): m_moore_access(moore_access)
 {
-}
-
-void	Mesh::update()
-{
-	m_old_size = vertex_buffer.size();
-	m_update = false;
 }
 
 void	Mesh::reset()

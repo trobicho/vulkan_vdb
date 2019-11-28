@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/17 17:04:20 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/19 04:22:41 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/11/28 20:14:05 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,6 +69,7 @@ class	Player
 								m_pos.y -= 0.4 * m_hitbox.h;}
 
 		inline glm::vec3	get_pos() const {return (m_pos);}
+		inline glm::vec3	get_cam_pos() const {return (m_cam.pos);}
 		inline s_hitbox		get_hitbox() const {return (m_hitbox);}
 		inline glm::vec3&	get_speed_vec_ref() {return (m_speed_vec);}
 		inline glm::vec3&	get_accel_vec_ref() {return (m_accel_vec);}

@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/11 06:56:37 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/28 10:28:50 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/11/28 19:04:23 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,8 +90,6 @@ class	Mesh
 						, e_block_type type, void *node_ptr);
 		void		add_cube_from_node(s_vec3i v
 						, e_block_type type, void *node_ptr);
-		bool		has_update() const {return (m_update);}
-		void		update();
 
 		std::vector<s_vertex>	vertex_buffer;
 		std::vector<uint32_t>	index_buffer;
@@ -111,6 +109,4 @@ class	Mesh
 		}
 
 		Moore_accessor		&m_moore_access;
-		size_t				m_old_size = 0;
-		bool				m_update = false;
 };
