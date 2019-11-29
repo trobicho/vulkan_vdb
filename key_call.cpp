@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/12 07:23:05 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/19 04:21:55 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/11/29 14:24:42 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,7 +94,7 @@ void	cursor_call(GLFWwindow* window, double x_pos, double y_pos)
 		axis = cam.right * (float)(y_pos - last_y) + cam.up * (float)(last_x - x_pos);
 		axis = glm::normalize(axis);
 		cam.dir = glm::rotate(cam.dir, norme * glm::radians(0.1f), axis);
-		cam.right = glm::rotate(cam.right, (float)(last_x - x_pos) * glm::radians(0.1f), cam.up);
+		cam.right = glm::normalize(glm::cross(cam.up, cam.dir));
 		last_x = x_pos;
 		last_y = y_pos;
 	}

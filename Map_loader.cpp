@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/28 17:47:20 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/28 22:35:48 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/11/29 15:17:44 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,12 +47,17 @@ void	Map_loader::thread_loader()
 		{
 			glm::vec3	p_pos = m_player.get_cam_pos();
 			s_vec3i	i_pos = s_vec3i((int)p_pos.x, (int)p_pos.y, (int)p_pos.z);
-			if (m_vdb.get_interresting_node(s_vec3i(i_pos.x, 0, i_pos.z), value)
-					->get_child_slog().x >= CHUNK_LOG_X)
+			if (i_pos.x > 0 && i_pos.z > 0)
 			{
-				std::cout << "load new chunk" << std::endl;
-				load_one_chunck(i_pos.x, i_pos.z);
-				m_update = true;
+				if (m_vdb.get_interresting_node(s_vec3i(i_pos.x, 0, i_pos.z), value)
+						->get_child_slog().x >= CHUNK_LOG_X)
+				{
+					std::cout << "load new chunk" << std::endl;
+					load_one_chunck(i_pos.x, i_pos.z);
+					std::cout << "new vbo size = " << m_mesh.vertex_buffer.size() << std::endl;
+					std::cout << "new ibo size = " << m_mesh.index_buffer.size() << std::endl << std::endl;
+					m_update = true;
+				}
 			}
 		}
 	}
@@ -76,14 +81,15 @@ int		Map_loader::load_one_chunck(uint32_t x, uint32_t z)
 	auto	gtime = std::chrono::high_resolution_clock::now();
 	auto	time_gen = std::chrono::duration<float
 			, std::chrono::seconds::period>(gtime - time).count();
+	time = std::chrono::high_resolution_clock::now();
 	m_vdb.pruning();
-	std::cout << "time to generate = " << time_gen << std::endl;
+	m_vdb.mesh(m_mesh, box);
 	auto	mtime = std::chrono::high_resolution_clock::now();
 	auto	time_mesh = std::chrono::duration<float
 			, std::chrono::seconds::period>(mtime - time).count();
+	std::cout << "time to generate = " << time_gen << std::endl;
 	std::cout << "time to mesh = " << time_mesh << std::endl;
 	std::cout << "total = " << time_mesh + time_gen << std::endl;
-	m_vdb.mesh(m_mesh, box);
 	m_chunk.origin = box.origin;
 	return (0);
 }

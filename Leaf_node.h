@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/02 20:38:57 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/27 12:56:50 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/11/29 09:26:59 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,6 +123,11 @@ Value		Leaf_node<Value, Log2X, Log2Y, Log2Z>
 
 	if (m_value_mask.all())
 	{
+		for (int i = 0; i < sSize; ++i)
+		{
+			if (m_leaf_data[i] != m_leaf_data[0])
+				return (0);
+		}
 		return (m_leaf_data[0]);
 	}
 	return (0);

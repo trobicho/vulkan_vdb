@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/02 20:38:22 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/27 14:16:34 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/11/29 09:29:41 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -179,6 +179,11 @@ Value	Internal_node<Value, Child, Log2X, Log2Y, Log2Z>::pruning()
 	}
 	if (m_value_mask.all())
 	{
+		for (int i = 0; i < sSize; ++i)
+		{
+			if (m_internal_data[i].value != m_internal_data[0].value)
+				return (0);
+		}
 		return (m_internal_data[0].value);
 	}
 	return (0);

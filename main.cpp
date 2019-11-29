@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/02 20:39:09 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/28 21:41:19 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/11/29 15:39:18 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,13 +54,15 @@ static int	main_loop(My_vulkan &my_vulkan, Map_loader &map_loader
 int	main()
 {
 	Vdb_test	my_vdb;
-	int			xr = trl::rand_uniform_int(500, 8192 - 500);
-	int			zr = trl::rand_uniform_int(500, 8192 - 500);
+	int			xr = trl::rand_uniform_int(0, 1048575);
+	int			zr = trl::rand_uniform_int(0, 1048575);
 
-	xr = 4096;
-	zr = 4096;
-
+	xr =0;
+	zr =0;
 	Player		player(glm::vec3((float)xr, 130.0f, (float)zr));
+	glm::vec3 v = player.get_pos();
+	std::cout << "m_pos = {" << v.x << ", "
+				<< v.y << ", " << v.z << "}" << std::endl;
 	Map_loader	map_loader(my_vdb, player);
 	map_loader.load_one_chunck(xr, zr);
 
@@ -94,7 +96,7 @@ int	main()
 
 	main_loop(my_vulkan, map_loader, win);
 	thread.join();
-	glm::vec3 v = player.get_pos();
+	v = player.get_pos();
 	std::cout << "m_pos = {" << v.x << ", "
 				<< v.y << ", " << v.z << "}" << std::endl;
 	return (0);
