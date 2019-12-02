@@ -6,7 +6,7 @@
 /*   By: trobicho <trobicho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/09 17:05:37 by trobicho          #+#    #+#             */
-/*   Updated: 2019/12/01 21:20:36 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/12/02 10:39:05 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,16 +32,33 @@ struct s_ubo
 class	My_vulkan
 {
 	public:
-		My_vulkan(GLFWwindow *win, const Mesh &mesh, s_ubo &ubo);
+		My_vulkan(GLFWwindow *win, s_ubo &ubo);
 		~My_vulkan();
 
 		int			init();
 		int			draw_frame();
 		int			update_uniform_buffer(uint32_t img_index);
-		VkDevice	&get_device_ref(){return (m_device);}
-		int			command_buffer_record();
+		const VkDevice
+					&get_device_ref() const {return (const VkDevice&)(m_device);}
+		int			command_buffer_record(uint32_t nb_idx);
+		int			create_buffer(VkDeviceSize size, VkBufferUsageFlags usage
+						, VkMemoryPropertyFlags properties, VkBuffer &buffer
+						, VkDeviceMemory &buffer_mem);
+		int			copy_buffer(VkBuffer src_buffer, VkBuffer dst_buffer
+						, VkDeviceSize size
+						, uint32_t src_offset = 0, uint32_t dst_offset = 0); 
+		int			begin_single_time_command(VkCommandBuffer &command_buffer);
+		int			end_single_time_command(VkCommandBuffer &command_buffer);
+		int			copy_staging_to_vbo(VkBuffer &staging_buffer
+						, VkDeviceMemory &staging_buffer_memory
+						, VkDeviceSize copy_size, uint32_t offset);
+		int			copy_staging_to_ibo(VkBuffer &staging_buffer
+						, VkDeviceMemory &staging_buffer_memory
+						, VkDeviceSize copy_size, uint32_t offset);
+		/*
 		int			copy_vertex_buffer();
 		int			copy_vertex_index_buffer();
+		*/
 
 	private:
 		int			create_uniform_buffer();
@@ -71,20 +88,13 @@ class	My_vulkan
 		int			command_buffer_create();
 		int			gpu_pipeline_create();
 		int			semaphore_create();
-		int			create_buffer(VkDeviceSize size, VkBufferUsageFlags usage
-						, VkMemoryPropertyFlags properties, VkBuffer &buffer
-						, VkDeviceMemory &buffer_mem);
 		int			create_img_buffer(uint32_t width, uint32_t height
 						, VkFormat format, VkImageTiling tiling
 						, VkImageUsageFlags usage
 						, VkMemoryPropertyFlags properties, VkImage& image
 						, VkDeviceMemory& image_memory);
-		int			copy_buffer(VkBuffer src_buffer, VkBuffer dst_buffer
-						, VkDeviceSize size);
 		int			copy_buffer_to_image(VkBuffer buffer, VkImage image
 						, uint32_t width, uint32_t height);
-		int			begin_single_time_command(VkCommandBuffer &command_buffer);
-		int			end_single_time_command(VkCommandBuffer &command_buffer);
 		int			transition_image_layout(VkImage image, VkFormat format
 						, VkImageLayout old_layout, VkImageLayout new_layout);
 		ssize_t		find_memory_type(uint32_t typeFilter
@@ -135,6 +145,5 @@ class	My_vulkan
 
 		int						m_update;
 		bool					m_debug = false;
-		const Mesh				&m_mesh;
 		s_ubo					&m_ubo;
 };

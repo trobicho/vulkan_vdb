@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/02 20:39:09 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/30 19:55:27 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/12/02 10:30:31 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,12 +37,12 @@ static int	main_loop(My_vulkan &my_vulkan, Map_loader &map_loader
 		if (map_loader.has_update())
 		{
 			map_loader.update();
+			/*
 			if (my_vulkan.copy_vertex_buffer() == -1)
 				return (-1);
 			if (my_vulkan.copy_vertex_index_buffer() == -1)
 				return (-1);
-			if (my_vulkan.command_buffer_record() == -1)
-				return (-1);
+			*/
 		}
 		my_vulkan.draw_frame();
 	}
@@ -56,16 +56,7 @@ int	main()
 	Vdb_test	my_vdb;
 	int			xr = trl::rand_uniform_int(0, 1048575);
 	int			zr = trl::rand_uniform_int(0, 1048575);
-
-	xr = 0;
-	zr = 0;
-	Player		player(glm::vec3((float)xr, 130.0f, (float)zr));
-	glm::vec3 v = player.get_pos();
-	std::cout << "m_pos = {" << v.x << ", "
-				<< v.y << ", " << v.z << "}" << std::endl;
-	Map_loader	map_loader(my_vdb, player);
-	map_loader.load_one_chunck(xr, zr);
-
+	
 	glfwInit();
 	glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 	glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
@@ -73,13 +64,27 @@ int	main()
 		, glfwGetPrimaryMonitor(), NULL);
 	//GLFWwindow *win = glfwCreateWindow(800, 600, "Vulkan"
 		//, NULL, NULL);
+	
+	xr = 0;
+	zr = 0;
+	Player		player(glm::vec3((float)xr, 130.0f, (float)zr));
+	
+	My_vulkan	my_vulkan(win, player.get_cam_ref().ubo);
+	Map_loader	map_loader(my_vdb, my_vulkan, player);
 
+
+	glm::vec3 v = player.get_pos();
+	std::cout << "m_pos = {" << v.x << ", "
+				<< v.y << ", " << v.z << "}" << std::endl;
+	s_vbox box;
+	box.origin = s_vec3i(xr, 0, zr);
+	box.len = s_vec3i(1 << CHUNK_LOG_X, 1 << CHUNK_LOG_Y, 1 << CHUNK_LOG_Z);
+	map_loader.generate_one_chunck(box);
+	map_loader.mesh_one_chunck(box);
 
 	s_user		user(player);
 	player.get_cam_ref().ubo.sun_pos = glm::vec3(xr, 300, zr);
 
-	My_vulkan	my_vulkan(win, map_loader.get_mesh_ref()
-					, player.get_cam_ref().ubo);
 	glfwSetInputMode(win, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	if (glfwRawMouseMotionSupported())
 		glfwSetInputMode(win, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
@@ -92,6 +97,7 @@ int	main()
 		std::cout << "Unable to initialize Vulkan !" << std::endl;
 	}
 
+	map_loader.update();
 	std::thread thread(&Map_loader::thread_loader, &map_loader);
 
 	main_loop(my_vulkan, map_loader, win);

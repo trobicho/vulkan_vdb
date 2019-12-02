@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/28 17:47:20 by trobicho          #+#    #+#             */
-/*   Updated: 2019/12/02 10:39:37 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/12/02 09:40:59 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,69 +69,11 @@ void	Map_loader::thread_loader()
 	}
 }
 
-int		Map_loader::update()
+void	Map_loader::update()
 {
-	VkBuffer		staging_buffer;
-	VkBuffer		staging_buffer_idx;
-	VkDeviceMemory	staging_buffer_memory;
-	VkDeviceMemory	staging_buffer_memory_idx;
-	VkDeviceSize	copy_size;
-	VkDeviceSize	copy_size_idx;
-	void*			data;
-	void*			data_idx;
-	const VkDevice	&device_ref = m_vulk.get_device_ref();
-
-	copy_size = sizeof(m_mesh.vertex_buffer[0])
-				* (m_mesh.vertex_buffer.size() - m_old_size_vbo);
-	copy_size_idx = sizeof(m_mesh.index_buffer[0])
-				* (m_mesh.index_buffer.size() - m_old_size_ibo);
-	if (m_vulk.create_buffer(copy_size, VK_BUFFER_USAGE_TRANSFER_SRC_BIT
-		, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT
-		| VK_MEMORY_PROPERTY_HOST_COHERENT_BIT
-		, staging_buffer, staging_buffer_memory) == -1)
-	{
-		return (-1);
-	}
-	if (m_vulk.create_buffer(copy_size_idx, VK_BUFFER_USAGE_TRANSFER_SRC_BIT
-		, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT
-		| VK_MEMORY_PROPERTY_HOST_COHERENT_BIT
-		, staging_buffer_idx, staging_buffer_memory_idx) == -1)
-	{
-		return (-1);
-	}
-	vkMapMemory(device_ref, staging_buffer_memory, 0, copy_size, 0, &data);
-	vkMapMemory(device_ref, staging_buffer_memory_idx, 0, copy_size_idx, 0, &data_idx);
-	uint32_t	offset_data_vbo = 0;
-	uint32_t	offset_data_ibo = 0;
-	for (int i = 0; i < m_nb_chunk; ++i)
-	{
-		if (!m_chunk[i].in_vbo)
-		{
-			memcpy(((char*)data) + offset_data_vbo
-					, m_mesh.vertex_buffer.data() + m_chunk[i].start_offset
-					, m_chunk[i].size * sizeof(m_mesh.vertex_buffer[0]));
-			memcpy(((char*)data_idx) + offset_data_ibo
-					, m_mesh.index_buffer.data() + m_chunk[i].start_offset_idx
-					, m_chunk[i].size_idx * sizeof(m_mesh.index_buffer[0]));
-			offset_data_vbo += m_chunk[i].size * sizeof(m_mesh.vertex_buffer[0]);
-			offset_data_ibo += m_chunk[i].size_idx * sizeof(m_mesh.index_buffer[0]);
-			m_chunk[i].in_vbo = true;
-		}
-	}
-	vkUnmapMemory(device_ref, staging_buffer_memory);
-	vkUnmapMemory(device_ref, staging_buffer_memory_idx);
-	m_vulk.copy_staging_to_vbo(staging_buffer, staging_buffer_memory
-			, copy_size, m_old_size_vbo * sizeof(m_mesh.vertex_buffer[0]));
-	m_vulk.copy_staging_to_ibo(staging_buffer_idx, staging_buffer_memory_idx
-			, copy_size_idx, m_old_size_ibo * sizeof(m_mesh.index_buffer[0]));
-	if (m_vulk.command_buffer_record(m_mesh.index_buffer.size()) == -1)
-		return (-1);
-	m_old_size_vbo = m_mesh.vertex_buffer.size();
-	m_old_size_ibo = m_mesh.index_buffer.size();
-	if (m_vulk.command_buffer_record(m_mesh.index_buffer.size()) == -1)
-		return (-1);
 	m_update = false;
-	return (0);
+	m_old_size_vbo = m_mesh.vertex_buffer.size();
+	m_old_size_vbo = m_mesh.index_buffer.size();
 }
 
 int		Map_loader::generate_one_chunck(s_vbox &box)
@@ -153,7 +95,6 @@ int		Map_loader::mesh_one_chunck(s_vbox &box)
 	if (m_nb_chunk < MAX_CHUNK)
 	{
 		mesh_one_chunck(box, m_nb_chunk);
-		m_update = true;
 		m_nb_chunk++;
 		return (1);
 	}
@@ -173,6 +114,5 @@ int		Map_loader::mesh_one_chunck(s_vbox &box, uint32_t chunk_id)
 	m_chunk[chunk_id].size = m_mesh.vertex_buffer.size() - m_chunk[chunk_id].start_offset;
 	m_chunk[chunk_id].size_idx = m_mesh.index_buffer.size() - m_chunk[chunk_id].start_offset_idx;
 	m_chunk[chunk_id].origin = box.origin;
-	m_chunk[chunk_id].in_vbo = false;
 	return (0);
 }

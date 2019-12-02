@@ -6,7 +6,7 @@
 /*   By: trobicho <trobicho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/09 17:05:36 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/28 17:56:21 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/12/02 10:38:42 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,8 +23,8 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
-My_vulkan::My_vulkan(GLFWwindow *win, const Mesh &mesh, s_ubo &ubo):
-	m_win(win), m_mesh(mesh), m_ubo(ubo) //try catch
+My_vulkan::My_vulkan(GLFWwindow *win, s_ubo &ubo):
+	m_win(win), m_ubo(ubo) //try catch
 {
 }
 
@@ -161,20 +161,24 @@ int		My_vulkan::init()
 		return (-1);
 	if (create_vertex_index_buffer() == -1)
 		return (-1);
+	/*
 	if (copy_vertex_buffer() == -1)
 		return (-1);
 	if (copy_vertex_index_buffer() == -1)
 		return (-1);
+	*/
 	if (create_desc_pool() == -1)
 		return (-1);
 	if (create_desc_set() == -1)
 		return (-1);
 	if (command_buffer_create() == -1)
 		return (-1);
-	if (command_buffer_record() == -1)
-		return (-1);
 	if (semaphore_create() == -1)
 		return (-1);
+	/*
+	if (command_buffer_record() == -1)
+		return (-1);
+	*/
 	return (0);
 }
 
@@ -322,7 +326,7 @@ int		My_vulkan::create_vertex_buffer()
 {
 	VkDeviceSize	buffer_size;
 
-	buffer_size = sizeof(m_mesh.vertex_buffer[0]) * ALLOC_VERTEX_BUF_SIZE;
+	buffer_size = sizeof(s_vertex) * ALLOC_VERTEX_BUF_SIZE;
 	if (create_buffer(buffer_size, VK_BUFFER_USAGE_TRANSFER_DST_BIT
 		| VK_BUFFER_USAGE_VERTEX_BUFFER_BIT
 		, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT
@@ -337,7 +341,7 @@ int		My_vulkan::create_vertex_index_buffer()
 {
 	VkDeviceSize	buffer_size;
 
-	buffer_size = sizeof(m_mesh.index_buffer[0]) * ALLOC_INDEX_BUF_SIZE;
+	buffer_size = sizeof(uint32_t) * ALLOC_INDEX_BUF_SIZE;
 	if (create_buffer(buffer_size, VK_BUFFER_USAGE_TRANSFER_DST_BIT
 		| VK_BUFFER_USAGE_VERTEX_BUFFER_BIT
 		, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT
@@ -348,6 +352,7 @@ int		My_vulkan::create_vertex_index_buffer()
 	return (0);
 }
 
+/*
 int		My_vulkan::copy_vertex_buffer()
 {
 	VkBuffer		staging_buffer;
@@ -356,16 +361,6 @@ int		My_vulkan::copy_vertex_buffer()
 	void*			data;
 
 	copy_size = sizeof(m_mesh.vertex_buffer[0]) * m_mesh.vertex_buffer.size();
-	if (create_buffer(copy_size, VK_BUFFER_USAGE_TRANSFER_SRC_BIT
-		, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT
-		| VK_MEMORY_PROPERTY_HOST_COHERENT_BIT
-		, staging_buffer, staging_buffer_memory) == -1)
-	{
-		return (-1);
-	}
-	vkMapMemory(m_device, staging_buffer_memory, 0, copy_size, 0, &data);
-	memcpy(data, m_mesh.vertex_buffer.data(), (size_t)copy_size);
-	vkUnmapMemory(m_device, staging_buffer_memory);
 	copy_buffer(staging_buffer, m_vertex_buffer, copy_size);
 	vkDestroyBuffer(m_device, staging_buffer, nullptr);
 	vkFreeMemory(m_device, staging_buffer_memory, nullptr);
@@ -391,6 +386,27 @@ int		My_vulkan::copy_vertex_index_buffer()
 	memcpy(data, m_mesh.index_buffer.data(), (size_t)copy_size);
 	vkUnmapMemory(m_device, staging_buffer_memory);
 	copy_buffer(staging_buffer, m_vertex_index_buffer, copy_size);
+	vkDestroyBuffer(m_device, staging_buffer, nullptr);
+	vkFreeMemory(m_device, staging_buffer_memory, nullptr);
+	return (0);
+}
+*/
+
+int		My_vulkan::copy_staging_to_vbo(VkBuffer &staging_buffer
+			, VkDeviceMemory &staging_buffer_memory, VkDeviceSize copy_size
+			, uint32_t offset)
+{
+	copy_buffer(staging_buffer, m_vertex_buffer, copy_size, 0, offset);
+	vkDestroyBuffer(m_device, staging_buffer, nullptr);
+	vkFreeMemory(m_device, staging_buffer_memory, nullptr);
+	return (0);
+}
+
+int		My_vulkan::copy_staging_to_ibo(VkBuffer &staging_buffer
+			, VkDeviceMemory &staging_buffer_memory, VkDeviceSize copy_size
+			, uint32_t offset)
+{
+	copy_buffer(staging_buffer, m_vertex_index_buffer, copy_size, 0, offset);
 	vkDestroyBuffer(m_device, staging_buffer, nullptr);
 	vkFreeMemory(m_device, staging_buffer_memory, nullptr);
 	return (0);
@@ -562,15 +578,15 @@ int			My_vulkan::create_buffer(VkDeviceSize size
 }
 
 int			My_vulkan::copy_buffer(VkBuffer src_buffer, VkBuffer dst_buffer
-			, VkDeviceSize size) 
+			, VkDeviceSize size, uint32_t src_offset, uint32_t dst_offset) 
 {
 	VkBufferCopy	copy_region = {};
 	VkCommandBuffer	command_buffer;
 
 	if (begin_single_time_command(command_buffer) == -1)
 		return (-1);
-	copy_region.srcOffset = 0;
-	copy_region.dstOffset = 0;
+	copy_region.srcOffset = src_offset;
+	copy_region.dstOffset = dst_offset;
 	copy_region.size = size;
 	vkCmdCopyBuffer(command_buffer, src_buffer, dst_buffer, 1, &copy_region);
 	return (end_single_time_command(command_buffer));
@@ -1100,7 +1116,7 @@ int		My_vulkan::command_buffer_create()
 	return (0);
 }
 
-int		My_vulkan::command_buffer_record()
+int		My_vulkan::command_buffer_record(uint32_t nb_idx)
 {
 	int							i;
 	uint32_t					img_count;
@@ -1147,8 +1163,7 @@ int		My_vulkan::command_buffer_record()
 		vkCmdBindDescriptorSets(m_command_buffer[i]
 				, VK_PIPELINE_BIND_POINT_GRAPHICS, m_pipeline_layout
 				, 0, 1, &m_desc_set[i], 0, nullptr);
-		vkCmdDrawIndexed(m_command_buffer[i]
-			, static_cast<uint32_t>(m_mesh.index_buffer.size()), 1, 0, 0, 0);
+		vkCmdDrawIndexed(m_command_buffer[i], nb_idx, 1, 0, 0, 0);
 		vkCmdEndRenderPass(m_command_buffer[i]);
 		if (vkEndCommandBuffer(m_command_buffer[i]) != VK_SUCCESS)
 		{
