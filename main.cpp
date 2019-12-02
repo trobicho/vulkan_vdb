@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/02 20:39:09 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/29 15:39:18 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/11/30 19:55:27 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,8 +57,8 @@ int	main()
 	int			xr = trl::rand_uniform_int(0, 1048575);
 	int			zr = trl::rand_uniform_int(0, 1048575);
 
-	xr =0;
-	zr =0;
+	xr = 0;
+	zr = 0;
 	Player		player(glm::vec3((float)xr, 130.0f, (float)zr));
 	glm::vec3 v = player.get_pos();
 	std::cout << "m_pos = {" << v.x << ", "

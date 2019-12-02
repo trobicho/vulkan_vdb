@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/02 20:38:57 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/29 09:26:59 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/11/30 04:06:05 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ class Leaf_node: public Node<Value>
 		void		do_set_vox(Value v, int32_t x, int32_t y, int32_t z);
 		Value		do_get_vox(int32_t x, int32_t y, int32_t z) const;
 		Value		pruning();
+		int			do_remove_node_by_slog(s_vec3i node_pos, uint32_t slog);
 		const Node<Value>
 					*do_get_interresting_node(s_vec3i v, Value &value) const;
 		void		do_mesh(Mesh &mesh) const;
@@ -101,6 +102,24 @@ Value	Leaf_node<Value, Log2X, Log2Y, Log2Z>
 	if (m_value_mask[leaf_offset])
 		return (m_leaf_data[leaf_offset]);
 	return (0);
+}
+
+template <class Value, int Log2X, int Log2Y, int Log2Z>
+int		Leaf_node<Value, Log2X, Log2Y, Log2Z>
+	::do_remove_node_by_slog(s_vec3i node_pos, uint32_t slog)
+{
+	if (slog >= sLog2X)
+	{
+		m_value_mask.reset();
+		return (sLog2X);
+	}
+	unsigned int	leaf_offset =
+		((node_pos.x & (1 << sLog2X)-1) << (Log2Y + Log2Z))
+		+ ((node_pos.y & (1 << sLog2Y)-1) << Log2Z)
+		+ (node_pos.z & (1 << sLog2Z) - 1);
+
+	m_value_mask[leaf_offset] = false;
+	return (1);
 }
 
 template <class Value, int Log2X, int Log2Y, int Log2Z>

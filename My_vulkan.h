@@ -6,7 +6,7 @@
 /*   By: trobicho <trobicho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/09 17:05:37 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/28 21:50:39 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/12/01 21:20:36 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,8 @@
 #define	ALLOC_VERTEX_BUF_SIZE	(15000000)
 #define	ALLOC_INDEX_BUF_SIZE	(30000000)
 #include "GLFW/glfw3.h"
+
+#define	MAX_FRAME_IN_FLIGHT	2
 
 struct s_ubo
 {

@@ -6,13 +6,13 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/02 21:06:27 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/27 13:02:38 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/11/30 19:47:56 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Vdb_test.h"
 
-Vdb_test::Vdb_test(): m_min(0, 0, 0), m_max(8192, 8192, 8192)
+Vdb_test::Vdb_test(): m_min(0, 0, 0), m_max(1048575, 512, 1048575)
 {
 }
 
@@ -31,6 +31,16 @@ uint32_t	Vdb_test::get_vox(s_vec3i v) const
 		&& v.x < m_max.x && v.y < m_max.y && v.z < m_max.z)
 	{
 		return (m_root_static.get_vox(v.x, v.y, v.z));
+	}
+	return (0);
+}
+
+int			Vdb_test::remove_node_by_slog(s_vec3i node_pos, uint32_t slog)
+{
+	if (node_pos.x >= m_min.x && node_pos.y >= m_min.y && node_pos.z >= m_min.z
+		&& node_pos.x < m_max.x && node_pos.y < m_max.y && node_pos.z < m_max.z)
+	{
+		return (m_root_static.remove_node_by_slog(node_pos, slog));
 	}
 	return (0);
 }

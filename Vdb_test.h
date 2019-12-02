@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/02 21:06:37 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/28 22:12:38 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/11/30 03:59:14 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,9 +28,10 @@ class	Vdb_test
 
 		void		set_vox(uint32_t value, s_vec3i v);
 		uint32_t	get_vox(s_vec3i v) const;
-		void		pruning();
+		int			remove_node_by_slog(s_vec3i node_pos, uint32_t slog);
 		const Node_v
 					*get_interresting_node(s_vec3i v, uint32_t &value) const;
+		void		pruning();
 		void		mesh(Mesh &mesh) const;
 		void		mesh(Mesh &mesh, const s_vbox &box) const;
 

@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/02 20:38:22 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/29 09:29:41 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/11/30 04:06:47 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ class Internal_node: public Node<Value>
 		void		do_set_vox(Value v, int32_t x, int32_t y, int32_t z);
 		Value		do_get_vox(int32_t x, int32_t y, int32_t z) const;
 		Value		pruning();
+		int			do_remove_node_by_slog(s_vec3i node_pos, uint32_t slog);
 		const Node<Value>
 					*do_get_interresting_node(s_vec3i v, Value &value) const;
 		void		do_mesh(Mesh &mesh) const;
@@ -136,6 +137,33 @@ Value	Internal_node<Value, Child, Log2X, Log2Y, Log2Z>
 		return (m_internal_data[internal_offset].value);
 	else if (m_child_mask[internal_offset])
 		return (m_internal_data[internal_offset].child->get_vox(x, y, z));
+	return (0);
+}
+
+template <class Value, class Child, int Log2X, int Log2Y, int Log2Z>
+int		Internal_node<Value, Child, Log2X, Log2Y, Log2Z>
+	::do_remove_node_by_slog(s_vec3i node_pos, uint32_t slog)
+{
+	
+	if (slog >= sLog2X)
+	{
+		m_child_mask.reset();
+		m_value_mask.reset();
+		return (sLog2X);
+	}
+	unsigned int	internal_offset =
+		(((node_pos.x & (1 << sLog2X) - 1) >> Child::sLog2X) << (Log2Y + Log2Z))
+		+ (((node_pos.y & (1 << sLog2Y) - 1) >> Child::sLog2Y) << Log2Z)
+		+ ((node_pos.z & (1 << sLog2Z) - 1) >> Child::sLog2Z);
+
+	if (m_value_mask[internal_offset])
+	{
+		m_value_mask[internal_offset] = false;
+		return (m_internal_data[internal_offset].value);
+	}
+	else if (m_child_mask[internal_offset])
+		return (m_internal_data[internal_offset].child
+				->do_remove_node_by_slog(node_pos, slog));
 	return (0);
 }
 

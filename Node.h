@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/04 06:38:12 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/27 12:59:44 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/11/30 03:52:14 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,10 @@ class	Node
 		{
 			return (do_get_vox(x, y, z));
 		}
+		inline int			remove_node_by_slog(s_vec3i node_pos, uint32_t slog)
+		{
+			return (do_remove_node_by_slog(node_pos, slog));
+		}
 		inline const Node<Value>
 							*get_interresting_node(s_vec3i v, Value &value) const
 		{
@@ -55,6 +59,8 @@ class	Node
 		virtual const int	do_get_sSize() const = 0;
 		virtual void		do_set_vox(Value value, int32_t x, int32_t y, int32_t z) = 0;
 		virtual Value		do_get_vox(int32_t x, int32_t y, int32_t z) const = 0;
+		virtual int			do_remove_node_by_slog(s_vec3i node_pos
+								, uint32_t slog) = 0;
 		virtual const Node<Value>
 							*do_get_interresting_node(s_vec3i v, Value &value) const = 0;
 		virtual void		do_mesh(Mesh &mesh) const = 0;
