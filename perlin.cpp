@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/16 18:03:36 by trobicho          #+#    #+#             */
-/*   Updated: 2019/12/02 11:37:45 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/12/02 15:43:41 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -178,7 +178,7 @@ double	Perlin_noiser::perlin2d(int nb_octave, double freq
 	{
 		int t = i * 4096;
 		//r += noise.smooth_noise2d(x * f + t, y * f + t) * amplitude;
-		r += (noise.smooth_noise2d(x * f + t, y * f + t) + 0.5f) * amplitude;
+		r += ((noise.smooth_noise2d(x * f + t, y * f + t) + 1.0f) / 2.0f) * amplitude;
 		amplitude *= persistence;
 		f *= 2.;
 	}

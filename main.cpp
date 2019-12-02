@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/02 20:39:09 by trobicho          #+#    #+#             */
-/*   Updated: 2019/12/02 10:30:31 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/12/02 16:07:17 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,9 @@ static int	main_loop(My_vulkan &my_vulkan, Map_loader &map_loader
 	return (0);
 }
 
+
+#include "Noise.h"
+
 int	main()
 {
 	Vdb_test	my_vdb;
@@ -64,6 +67,26 @@ int	main()
 		, glfwGetPrimaryMonitor(), NULL);
 	//GLFWwindow *win = glfwCreateWindow(800, 600, "Vulkan"
 		//, NULL, NULL);
+
+	/*
+	//----------TEST---------
+	Noise noise;
+
+	double min = 1.;
+	double max = -1.;
+	for (int i = 0; i < 100000; i++)
+	{
+		int			xrand = trl::rand_uniform_int(0, 1048575);
+		int			zrand = trl::rand_uniform_int(0, 1048575);
+		double		d = noise.smooth_noise2d(xrand / 10., zrand / 10.);
+		if (min > d)
+			min = d;
+		if (max < d)
+			max = d;
+	}
+	std::cout << min << ", " << max << std::endl;
+	//----------TEST---------
+	*/
 	
 	xr = 0;
 	zr = 0;
