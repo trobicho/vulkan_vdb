@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/02 20:38:57 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/30 04:06:05 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/12/02 13:32:41 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,8 +114,8 @@ int		Leaf_node<Value, Log2X, Log2Y, Log2Z>
 		return (sLog2X);
 	}
 	unsigned int	leaf_offset =
-		((node_pos.x & (1 << sLog2X)-1) << (Log2Y + Log2Z))
-		+ ((node_pos.y & (1 << sLog2Y)-1) << Log2Z)
+		((node_pos.x & (1 << sLog2X) - 1) << (Log2Y + Log2Z))
+		+ ((node_pos.y & (1 << sLog2Y) - 1) << Log2Z)
 		+ (node_pos.z & (1 << sLog2Z) - 1);
 
 	m_value_mask[leaf_offset] = false;

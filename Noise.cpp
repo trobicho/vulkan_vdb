@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/28 13:39:08 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/28 13:52:45 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/12/02 12:08:58 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,11 +50,21 @@ static unsigned char
 };
 
 static int		_grad3[16][3] = {
-    {1,1,0},{-1,1,0},{1,-1,0},{-1,-1,0},
-    {1,0,1},{-1,0,1},{1,0,-1},{-1,0,-1},
-    {0,1,1},{0,-1,1},{0,1,-1},{0,-1,-1},
-    {1,1,0},{-1,1,0},{0,-1,1},{0,-1,-1}
+    {1,1,0}, {-1,1,0}, {1,-1,0}, {-1,-1,0},
+    {1,0,1}, {-1,0,1}, {1,0,-1}, {-1,0,-1},
+    {0,1,1}, {0,-1,1}, {0,1,-1}, {0,-1,-1},
+    {1,1,0}, {-1,1,0}, {0,-1,1}, {0,-1,-1}
 };
+
+static int		_grad2[4][2] = {
+    {1,1}, {-1,1}, {1,-1}, {-1,-1},
+};
+
+static double	fast_dot(const int *v, const double x,
+        const double y)
+{
+    return v[0] * x + v[1] * y;
+}
 
 static double	fast_dot(const int *v, const double x,
         const double y, const double z)
@@ -66,6 +76,12 @@ static int		*get_grad(int x, int y, int z)
 {
     int rand_value = perm[z + perm[y + perm[x]]];
     return _grad3[rand_value & 15];
+}
+
+static int		*get_grad(int x, int y)
+{
+    int rand_value = perm[y + perm[x]];
+    return _grad2[rand_value & 3];
 }
 
 static double	quintic_poly(const double t)
@@ -88,6 +104,38 @@ double		Noise::lerp(double a, double b, double t)
 	return ((1. - t) * a + t * b);
 }
 
+
+double		Noise::smooth_noise2d(double x_pos, double y_pos)
+{
+    int		x_int, y_int;
+    double	x_frac, y_frac;
+
+    int_and_frac(x_pos, x_int, x_frac);
+    int_and_frac(y_pos, y_int, y_frac);
+
+    x_int &= 255;
+    y_int &= 255;
+
+    const double g00 = fast_dot(get_grad(x_int, y_int)
+							, x_frac, y_frac);
+    const double g01 = fast_dot(get_grad(x_int, y_int + 1)
+							, x_frac, y_frac - 1.);
+    const double g10 = fast_dot(get_grad(x_int + 1, y_int)
+							, x_frac - 1., y_frac);
+    const double g11 = fast_dot(get_grad(x_int + 1, y_int + 1)
+							, x_frac - 1., y_frac - 1.);
+
+    const double u = quintic_poly(x_frac);
+    const double v = quintic_poly(y_frac);
+
+    const double x00 = lerp(g00 , g10, u);
+    const double x10 = lerp(g01 , g11, u);
+
+
+    const double xy = lerp(x00 , x10, v);
+
+    return (xy);
+}
 
 double		Noise::smooth_noise3d(double x_pos, double y_pos, double z_pos)
 {
@@ -133,5 +181,5 @@ double		Noise::smooth_noise3d(double x_pos, double y_pos, double z_pos)
 
     const double xyz = lerp(xy0 , xy1, w);
 
-    return xyz;
+    return (xyz);
 }

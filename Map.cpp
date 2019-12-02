@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/19 18:43:08 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/28 22:23:33 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/12/02 12:09:50 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ int			Map::generate(Vdb_test &vdb, s_vbox box)
 {
 	double			cave_thres = 0.25;
 	double			cave_thres_d;
-	int				lerp_mod = 4;
+	int				lerp_mod = 8;
 	double			d_cave_prec, d_cave_next, d_cave;
 	int				block_type = 1;
 	s_biome_info	biome_info;
