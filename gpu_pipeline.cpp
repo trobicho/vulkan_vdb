@@ -6,7 +6,7 @@
 /*   By: trobicho <trobicho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/22 17:58:08 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/29 15:43:24 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/12/04 20:38:24 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,10 +74,10 @@ VkPipelineRasterizationStateCreateInfo	rasterizer_create(void)
 		VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
 	rasterizer_info.depthClampEnable = VK_FALSE;
 	rasterizer_info.rasterizerDiscardEnable = VK_FALSE;
-	rasterizer_info.polygonMode = VK_POLYGON_MODE_FILL;
+	rasterizer_info.polygonMode = VK_POLYGON_MODE_LINE;
 	rasterizer_info.lineWidth = 1.0f;
-	rasterizer_info.cullMode = VK_CULL_MODE_BACK_BIT;
-	//rasterizer_info.cullMode = VK_CULL_MODE_NONE;
+	//rasterizer_info.cullMode = VK_CULL_MODE_BACK_BIT;
+	rasterizer_info.cullMode = VK_CULL_MODE_NONE;
 	rasterizer_info.frontFace = VK_FRONT_FACE_CLOCKWISE;
 	rasterizer_info.depthBiasEnable = VK_FALSE;
 	rasterizer_info.depthBiasConstantFactor = 0.0f;
@@ -137,7 +137,8 @@ VkPipelineInputAssemblyStateCreateInfo	input_assembly_create(void)
 	input_assembly = (VkPipelineInputAssemblyStateCreateInfo){};
 	input_assembly.sType
 		= VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
-	input_assembly.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
+	//input_assembly.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
+	input_assembly.topology = VK_PRIMITIVE_TOPOLOGY_LINE_LIST;
 	input_assembly.primitiveRestartEnable = VK_FALSE;
 	return (input_assembly);
 }

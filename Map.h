@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/19 18:38:50 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/24 19:23:05 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/12/03 17:27:43 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,10 @@
 #include "my_lib.h"
 #include "My_vulkan.h"
 #include "perlin.h"
+
+#define WATER_HEIGHT	62
+#define	CLOUD_HEIGHT	120
+#define	WORLD_HEIGHT	256
 
 enum e_biome_type
 {
@@ -47,11 +51,11 @@ class	Map
 
 	private:
 		double			get_height(double x, double y);
+		int				get_height(s_biome_info &biome_info, double x, double z);
 		double			get_density_cave(double x, double y, double z);
 		void			get_biome_info(s_biome_info &biome_info
 							, double x, double z);
-		uint32_t		get_block_type(s_biome_info &biome_info, double y
-							, double height);
+		uint32_t		get_block_type(s_biome_info &biome_info, int y);
 		e_biome_type	get_biome_type(double temp, double prec);
 
 		uint32_t		m_seed;

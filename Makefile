@@ -6,7 +6,7 @@
 #    By: trobicho <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/11/02 20:38:42 by trobicho          #+#    #+#              #
-#    Updated: 2019/11/28 17:50:09 by trobicho         ###   ########.fr        #
+#    Updated: 2019/12/04 20:09:32 by trobicho         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -32,7 +32,9 @@ else
 		-lvulkan -lglfw -lm -L ../QGen/my_lib_cpp/ -ltrl
 endif
 
-SRCS_NAME	=	main.cpp \
+SRCS_NAME	=	main_tree_test.cpp \
+				Lsystem.cpp \
+				Turtle.cpp \
 				Vdb_test.cpp \
 				My_vulkan.cpp \
 				init_swap_chain.cpp \
@@ -51,6 +53,8 @@ SRCS_NAME	=	main.cpp \
 				Mesh.cpp
 
 HDRS_NAME	=	Vdb_test.h \
+				Lsystem.h \
+				Turtle.h \
 				libvdb.h \
 				Root_node.h \
 				Internal_node.h \

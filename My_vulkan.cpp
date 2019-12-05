@@ -6,7 +6,7 @@
 /*   By: trobicho <trobicho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/09 17:05:36 by trobicho          #+#    #+#             */
-/*   Updated: 2019/12/02 10:38:42 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/12/03 14:56:58 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -343,7 +343,7 @@ int		My_vulkan::create_vertex_index_buffer()
 
 	buffer_size = sizeof(uint32_t) * ALLOC_INDEX_BUF_SIZE;
 	if (create_buffer(buffer_size, VK_BUFFER_USAGE_TRANSFER_DST_BIT
-		| VK_BUFFER_USAGE_VERTEX_BUFFER_BIT
+		| VK_BUFFER_USAGE_INDEX_BUFFER_BIT
 		, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT
 		, m_vertex_index_buffer, m_vertex_index_buffer_memory) == -1)
 	{
@@ -1083,7 +1083,7 @@ int		My_vulkan::command_pool_create()
 	pool_info = (VkCommandPoolCreateInfo){};
 	pool_info.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
 	pool_info.queueFamilyIndex = queue_indice;
-	pool_info.flags = 0;
+	pool_info.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
 	if (vkCreateCommandPool(m_device, &pool_info, NULL
 			, &m_command_pool) != VK_SUCCESS)
 	{

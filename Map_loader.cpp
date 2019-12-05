@@ -6,12 +6,13 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/28 17:47:20 by trobicho          #+#    #+#             */
-/*   Updated: 2019/12/02 10:39:37 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/12/03 16:52:07 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Map_loader.h"
 #include <iostream>
+#include <cstring>
 
 Map_loader::Map_loader(Vdb_test &my_vdb, My_vulkan &vulk, Player &player)
 					: m_vdb(my_vdb), m_vulk(vulk), m_player(player)
@@ -40,33 +41,61 @@ static s_vec3i
 
 void	Map_loader::thread_loader()
 {
-	s_vbox		box;
-	uint32_t	value;
+	int up;
 
 	while (!m_quit)
 	{
 		if (m_update == false)
 		{
+			up = 0;
 			glm::vec3	p_pos = m_player.get_cam_pos();
 			s_vec3i	i_pos = s_vec3i((int)p_pos.x, (int)p_pos.y, (int)p_pos.z);
-			if (i_pos.x > 0 && i_pos.z > 0)
+			up = load_pos(i_pos);
+			i_pos = s_vec3i((int)p_pos.x + (1 << CHUNK_LOG_X), (int)p_pos.y
+					, (int)p_pos.z);
+			up += load_pos(i_pos);
+			i_pos = s_vec3i((int)p_pos.x - (1 << CHUNK_LOG_X), (int)p_pos.y
+					, (int)p_pos.z);
+			up += load_pos(i_pos);
+			i_pos = s_vec3i((int)p_pos.x, (int)p_pos.y
+					, (int)p_pos.z + (1 << CHUNK_LOG_Z));
+			up += load_pos(i_pos);
+			i_pos = s_vec3i((int)p_pos.x, (int)p_pos.y
+					, (int)p_pos.z - (1 << CHUNK_LOG_Z));
+			up += load_pos(i_pos);
+			if (up > 0)
 			{
-				if (m_vdb.get_interresting_node(s_vec3i(i_pos.x, 0, i_pos.z), value)
-						->get_child_slog().x >= CHUNK_LOG_X)
-				{
-					std::cout << "load new chunk" << std::endl;
-					box.len = s_vec3i(1 << CHUNK_LOG_X, 1 << CHUNK_LOG_Y, 1 << CHUNK_LOG_Z);
-					box.origin = s_vec3i((i_pos.x >> CHUNK_LOG_X) << CHUNK_LOG_X
-							, 0, (i_pos.z >> CHUNK_LOG_Z) << CHUNK_LOG_Z);
-					generate_one_chunck(box);
-					mesh_one_chunck(box);
-					std::cout << "new vbo size = " << m_mesh.vertex_buffer.size() << std::endl;
-					std::cout << "new ibo size = " << m_mesh.index_buffer.size() << std::endl << std::endl;
-					m_update = true;
-				}
+				std::cout << "new vbo size = " << m_mesh.vertex_buffer.size()
+					<< std::endl;
+				std::cout << "new ibo size = " << m_mesh.index_buffer.size()
+					<< std::endl << std::endl;
+				m_update = true;
 			}
 		}
 	}
+}
+
+
+int		Map_loader::load_pos(s_vec3i pos)
+{
+	uint32_t		value;
+	s_vbox			box;
+	const Node_v	*node;
+
+	if ((node = m_vdb.get_interresting_node(s_vec3i(pos.x, 0, pos.z), value))
+			!= nullptr && node->get_child_slog().x >= CHUNK_LOG_X)
+	{
+		std::cout << "load new chunk" << std::endl;
+		box.len = s_vec3i(1 << CHUNK_LOG_X, 1 << CHUNK_LOG_Y
+				, 1 << CHUNK_LOG_Z);
+		box.origin = s_vec3i((pos.x >> CHUNK_LOG_X) << CHUNK_LOG_X
+				, 0, (pos.z >> CHUNK_LOG_Z) << CHUNK_LOG_Z);
+		generate_one_chunck(box);
+		mesh_one_chunck(box, m_nb_chunk);
+		m_nb_chunk++;
+		return (1);
+	}
+	return (0);
 }
 
 int		Map_loader::update()
@@ -85,6 +114,11 @@ int		Map_loader::update()
 				* (m_mesh.vertex_buffer.size() - m_old_size_vbo);
 	copy_size_idx = sizeof(m_mesh.index_buffer[0])
 				* (m_mesh.index_buffer.size() - m_old_size_ibo);
+	if (copy_size == 0 || copy_size_idx == 0)
+	{
+		m_update = false;
+		return (0);
+	}
 	if (m_vulk.create_buffer(copy_size, VK_BUFFER_USAGE_TRANSFER_SRC_BIT
 		, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT
 		| VK_MEMORY_PROPERTY_HOST_COHERENT_BIT

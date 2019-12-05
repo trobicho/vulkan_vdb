@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/02 20:39:09 by trobicho          #+#    #+#             */
-/*   Updated: 2019/12/02 16:07:17 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/12/03 17:21:52 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,7 +90,8 @@ int	main()
 	
 	xr = 0;
 	zr = 0;
-	Player		player(glm::vec3((float)xr, 130.0f, (float)zr));
+	Player		player(glm::vec3((float)xr, (float)CLOUD_HEIGHT + 10
+					, (float)zr));
 	
 	My_vulkan	my_vulkan(win, player.get_cam_ref().ubo);
 	Map_loader	map_loader(my_vdb, my_vulkan, player);

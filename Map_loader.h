@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/28 17:47:30 by trobicho          #+#    #+#             */
-/*   Updated: 2019/12/02 09:47:28 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/12/03 16:43:51 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,9 +19,9 @@
 #include <chrono>
 #include <array>
 
-#define CHUNK_LOG_X		(6)
-#define CHUNK_LOG_Y		(7)
-#define CHUNK_LOG_Z		(6)
+#define CHUNK_LOG_X		(5)
+#define CHUNK_LOG_Y		(8)
+#define CHUNK_LOG_Z		(5)
 
 #define	MAX_CHUNK		1024
 
@@ -42,6 +42,7 @@ class	Map_loader
 		~Map_loader(){};
 
 		void			thread_loader();
+		int				load_pos(s_vec3i pos);
 		int				generate_one_chunck(s_vbox &box);
 		int				mesh_one_chunck(s_vbox &box);
 		const Mesh&		get_mesh_ref() const {return (m_mesh);}
