@@ -6,7 +6,7 @@
 /*   By: trobicho <trobicho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/04 17:13:03 by trobicho          #+#    #+#             */
-/*   Updated: 2019/12/05 00:51:53 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/12/07 04:29:00 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,29 @@
 #include "Vdb_test.h"
 #include "Moore_accessor.h"
 #include "Lsystem.h"
+#include "Space_colonisation.h"
+#include "my_lib.h"
 
 bool	m_update = false;
+
+static void	generate_attractor(s_space_col_info &sc_inf, int n
+				, glm::vec3 center, double r)
+{
+	int			nb_att = 0;
+	glm::vec3	v;
+
+	while (nb_att < n)
+	{
+		v.x = trl::rand_uniform_int(-r, r);
+		v.y = trl::rand_uniform_int(-r, r);
+		v.z = trl::rand_uniform_int(-r, r);
+		if (length(v) > r)
+			continue;
+		v += center;
+		sc_inf.attractor.push_back(v);
+		nb_att++;
+	}
+}
 
 static int		update(My_vulkan &vulk, Mesh &mesh)
 {
@@ -116,7 +137,7 @@ int		main()
 	GLFWwindow *win = glfwCreateWindow(1920, 1080, "Vulkan"
 		, glfwGetPrimaryMonitor(), NULL);
 	
-	Player		player(glm::vec3(0, 5, -5));
+	Player		player(glm::vec3(80, 0, 80));
 	
 	My_vulkan	my_vulkan(win, player.get_cam_ref().ubo);
 
@@ -138,8 +159,20 @@ int		main()
 	Moore_accessor	m_a = Moore_accessor(vdb);
 	Mesh			mesh(m_a);
 	Lsystem			lsystem(mesh);
+	
+	s_space_col_info	info;
 
-	lsystem.plant3d();
+	info.attractor.reserve(2000);
+	info.branch.reserve(2000);
+
+	info.branch.push_back(Branch(glm::vec3(100, 0, 100)));
+	info.di = 8.0;
+	info.dk = 2.5;
+
+	generate_attractor(info, 1000, glm::vec3(100.0, 25.0, 100.0), 20);
+	Space_colonisation	space_col(info, vdb);
+	space_col.grow_full(400);
+	vdb.mesh(mesh);
 	m_update = true;
 	update(my_vulkan, mesh);
 	main_loop(my_vulkan, mesh, win);

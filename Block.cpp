@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/19 21:20:09 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/28 18:12:32 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/12/07 04:31:36 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,12 @@ glm::vec4	get_color_from_block_type(uint32_t block)
 			break;
 		case bl_sand:
 			return (glm::vec4(0.9f, 0.9f, 0.0f, 1.0f));
+			break;
+		case bl_wood:
+			return (glm::vec4(0.48f, 0.35f, 0.25f, 1.0f));
+			break;
+		case bl_leaf:
+			return (glm::vec4(0.1f, 0.8f, 0.1f, 1.0f));
 			break;
 		default:
 			return (glm::vec4(0.7f, 0.1f, 0.1f, 1.0f));

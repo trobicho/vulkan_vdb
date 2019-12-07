@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/19 21:20:01 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/28 18:11:33 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/12/07 04:31:26 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,8 @@ enum	e_block_type
 	bl_grass,
 	bl_ice,
 	bl_sand,
+	bl_wood,
+	bl_leaf,
 };
 
 glm::vec4	get_color_from_block_type(uint32_t block);

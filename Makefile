@@ -6,7 +6,7 @@
 #    By: trobicho <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/11/02 20:38:42 by trobicho          #+#    #+#              #
-#    Updated: 2019/12/05 18:52:50 by trobicho         ###   ########.fr        #
+#    Updated: 2019/12/07 04:43:23 by trobicho         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -32,7 +32,8 @@ else
 		-lvulkan -lglfw -lm -L ../QGen/my_lib_cpp/ -ltrl
 endif
 
-SRCS_NAME	=	main.cpp \
+SRCS_NAME	=	main_tree_test.cpp \
+				Space_colonisation.cpp \
 				Lsystem.cpp \
 				Turtle.cpp \
 				Vdb_test.cpp \
@@ -53,6 +54,7 @@ SRCS_NAME	=	main.cpp \
 				Mesh.cpp
 
 HDRS_NAME	=	Vdb_test.h \
+				Space_colonisation.h \
 				Lsystem.h \
 				Turtle.h \
 				libvdb.h \
