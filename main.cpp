@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/02 20:39:09 by trobicho          #+#    #+#             */
-/*   Updated: 2019/12/03 17:21:52 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/12/08 01:34:01 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,7 +106,7 @@ int	main()
 	map_loader.generate_one_chunck(box);
 	map_loader.mesh_one_chunck(box);
 
-	s_user		user(player);
+	s_user		user(player, my_vdb);
 	player.get_cam_ref().ubo.sun_pos = glm::vec3(xr, 300, zr);
 
 	glfwSetInputMode(win, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
@@ -115,6 +115,8 @@ int	main()
 	glfwSetWindowUserPointer(win, &user);
 	glfwSetKeyCallback(win, key_call);
 	glfwSetCursorPosCallback(win, cursor_call);
+	glfwSetCursorPosCallback(win, cursor_call);
+	glfwSetMouseButtonCallback(win, mouse_button_call);
 
 	if (my_vulkan.init())
 	{

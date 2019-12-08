@@ -6,7 +6,7 @@
 /*   By: trobicho <trobicho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/04 17:13:03 by trobicho          #+#    #+#             */
-/*   Updated: 2019/12/07 04:29:00 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/12/08 01:31:33 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,7 +141,8 @@ int		main()
 	
 	My_vulkan	my_vulkan(win, player.get_cam_ref().ubo);
 
-	s_user		user(player);
+	Vdb_test		vdb;
+	s_user		user(player, vdb);
 
 	glfwSetInputMode(win, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	if (glfwRawMouseMotionSupported())
@@ -155,7 +156,6 @@ int		main()
 		std::cout << "Unable to initialize Vulkan !" << std::endl;
 	}
 
-	Vdb_test		vdb;
 	Moore_accessor	m_a = Moore_accessor(vdb);
 	Mesh			mesh(m_a);
 	Lsystem			lsystem(mesh);

@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/02 21:06:27 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/30 19:47:56 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/12/08 01:53:43 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,15 @@ void		Vdb_test::set_vox(uint32_t value, s_vec3i v)
 		&& v.x < m_max.x && v.y < m_max.y && v.z < m_max.z)
 	{
 		m_root_static.set_vox(value, v.x, v.y, v.z);
+	}
+}
+
+void		Vdb_test::unset_vox(s_vec3i v)
+{
+	if (v.x >= m_min.x && v.y >= m_min.y && v.z >= m_min.z
+		&& v.x < m_max.x && v.y < m_max.y && v.z < m_max.z)
+	{
+		m_root_static.unset_vox(v.x, v.y, v.z);
 	}
 }
 

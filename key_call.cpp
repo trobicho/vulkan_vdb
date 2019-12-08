@@ -6,11 +6,12 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/12 07:23:05 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/29 14:24:42 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/12/08 02:00:43 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "key_call.h"
+#include "Ray.h"
 #include <cmath>
 #include <iostream>
 #include <glm/gtx/rotate_vector.hpp>
@@ -97,5 +98,24 @@ void	cursor_call(GLFWwindow* window, double x_pos, double y_pos)
 		cam.right = glm::normalize(glm::cross(cam.up, cam.dir));
 		last_x = x_pos;
 		last_y = y_pos;
+	}
+}
+
+void	mouse_button_call(GLFWwindow* window, int button, int action, int mod)
+{
+	s_user			*user;
+
+	user = (s_user*)glfwGetWindowUserPointer(window);
+	Camera	&cam = user->player.get_cam_ref();
+	if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS)
+	{
+		Ray	ray(cam.pos, cam.dir);
+		if (ray.launch(user->vdb, 5))
+		{
+			s_vec3i pos = ray.get_pos();
+			std::cout << "toucher : " << pos.x << ", " << pos.y << ", " << pos.z << std::endl;
+			user->vdb.unset_vox(ray.get_pos());
+		}
+		s_vec3i pos = ray.get_pos();
 	}
 }

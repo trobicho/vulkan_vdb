@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/02 20:38:22 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/30 04:06:47 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/12/08 01:52:23 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ class Internal_node: public Node<Value>
 		~Internal_node();
 
 		void		do_set_vox(Value v, int32_t x, int32_t y, int32_t z);
+		void		do_unset_vox(int32_t x, int32_t y, int32_t z);
 		Value		do_get_vox(int32_t x, int32_t y, int32_t z) const;
 		Value		pruning();
 		int			do_remove_node_by_slog(s_vec3i node_pos, uint32_t slog);
@@ -121,6 +122,22 @@ void	Internal_node<Value, Child, Log2X, Log2Y, Log2Z>
 			, (z >> Child::sLog2Z) << Child::sLog2Z);
 		m_internal_data[internal_offset].child->set_vox(value, x, y, z);
 		m_child_mask.set(internal_offset);
+	}
+}
+
+template <class Value, class Child, int Log2X, int Log2Y, int Log2Z>
+void	Internal_node<Value, Child, Log2X, Log2Y, Log2Z>
+		::do_unset_vox(int32_t x, int32_t y, int32_t z)
+{
+	unsigned int	internal_offset =
+		(((x & (1 << sLog2X) - 1) >> Child::sLog2X) << (Log2Y + Log2Z))
+		+ (((y & (1 << sLog2Y) - 1) >> Child::sLog2Y) << Log2Z)
+		+ ((z & (1 << sLog2Z) - 1) >> Child::sLog2Z);
+
+	if (m_child_mask[internal_offset])
+		m_internal_data[internal_offset].child->unset_vox(x, y, z);
+	else if (m_value_mask[internal_offset])
+	{
 	}
 }
 

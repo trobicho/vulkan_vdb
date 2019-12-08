@@ -6,7 +6,7 @@
 #    By: trobicho <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/11/02 20:38:42 by trobicho          #+#    #+#              #
-#    Updated: 2019/12/07 04:43:23 by trobicho         ###   ########.fr        #
+#    Updated: 2019/12/08 01:31:42 by trobicho         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -32,7 +32,7 @@ else
 		-lvulkan -lglfw -lm -L ../QGen/my_lib_cpp/ -ltrl
 endif
 
-SRCS_NAME	=	main_tree_test.cpp \
+SRCS_NAME	=	main.cpp \
 				Space_colonisation.cpp \
 				Lsystem.cpp \
 				Turtle.cpp \
@@ -51,7 +51,8 @@ SRCS_NAME	=	main_tree_test.cpp \
 				Block.cpp \
 				Moore_accessor.cpp \
 				Map_loader.cpp \
-				Mesh.cpp
+				Mesh.cpp \
+				Ray.cpp
 
 HDRS_NAME	=	Vdb_test.h \
 				Space_colonisation.h \
@@ -76,7 +77,8 @@ HDRS_NAME	=	Vdb_test.h \
 				Block.h \
 				Moore_accessor.h \
 				Map_loader.h \
-				Mesh.h
+				Mesh.h \
+				Ray.cpp
 
 OBJS_NAME	=	$(SRCS_NAME:.cpp=.o)
 

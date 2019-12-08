@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/28 17:47:30 by trobicho          #+#    #+#             */
-/*   Updated: 2019/12/03 16:43:51 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/12/08 02:06:31 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@ struct	s_chunk
 	uint32_t	size;
 	uint32_t	size_idx;
 	bool		in_vbo;
+	bool		need_remesh = false;
 	s_vec3i		origin;
 };
 

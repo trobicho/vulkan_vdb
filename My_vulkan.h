@@ -6,7 +6,7 @@
 /*   By: trobicho <trobicho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/09 17:05:37 by trobicho          #+#    #+#             */
-/*   Updated: 2019/12/03 14:48:07 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/12/08 01:55:02 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -144,6 +144,6 @@ class	My_vulkan
 		VkImageView				m_depth_img_view;
 
 		int						m_update;
-		bool					m_debug = true;
+		bool					m_debug = false;
 		s_ubo					&m_ubo;
 };

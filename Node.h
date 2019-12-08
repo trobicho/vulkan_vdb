@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/04 06:38:12 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/30 03:52:14 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/12/08 01:51:56 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,11 @@ class	Node
 		inline const int	get_sSize() const {return (do_get_sSize());}
 		inline void			set_vox(Value value, int32_t x, int32_t y, int32_t z)
 		{
-			return (do_set_vox(value, x, y, z));
+			do_set_vox(value, x, y, z);
+		}
+		inline void			unset_vox(int32_t x, int32_t y, int32_t z)
+		{
+			do_unset_vox(x, y, z);
 		}
 		inline Value		get_vox(int32_t x, int32_t y, int32_t z) const
 		{
@@ -58,6 +62,7 @@ class	Node
 		virtual s_vec3i		do_get_child_slog() const = 0;
 		virtual const int	do_get_sSize() const = 0;
 		virtual void		do_set_vox(Value value, int32_t x, int32_t y, int32_t z) = 0;
+		virtual void		do_unset_vox(int32_t x, int32_t y, int32_t z) = 0;
 		virtual Value		do_get_vox(int32_t x, int32_t y, int32_t z) const = 0;
 		virtual int			do_remove_node_by_slog(s_vec3i node_pos
 								, uint32_t slog) = 0;

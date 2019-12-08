@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/02 21:06:37 by trobicho          #+#    #+#             */
-/*   Updated: 2019/12/03 16:42:55 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/12/08 01:41:33 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ class	Vdb_test
 		~Vdb_test(){};
 
 		void		set_vox(uint32_t value, s_vec3i v);
+		void		unset_vox(s_vec3i v);
 		uint32_t	get_vox(s_vec3i v) const;
 		int			remove_node_by_slog(s_vec3i node_pos, uint32_t slog);
 		const Node_v
