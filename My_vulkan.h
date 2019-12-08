@@ -6,7 +6,7 @@
 /*   By: trobicho <trobicho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/09 17:05:37 by trobicho          #+#    #+#             */
-/*   Updated: 2019/12/08 01:55:02 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/12/08 07:26:55 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,10 +127,12 @@ class	My_vulkan
 		std::vector<VkBuffer> 	m_uniform_buffer;
 		std::vector<VkDeviceMemory>
 								m_uniform_buffer_memory;
+		/*
 		VkBuffer				m_vertex_buffer;
 		VkDeviceMemory			m_vertex_buffer_memory;
 		VkBuffer				m_vertex_index_buffer;
 		VkDeviceMemory			m_vertex_index_buffer_memory;
+		*/
 		VkDescriptorSetLayout	m_desc_set_layout;
 		std::vector<VkDescriptorSet>
 								m_desc_set;

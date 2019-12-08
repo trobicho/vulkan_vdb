@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/28 17:47:30 by trobicho          #+#    #+#             */
-/*   Updated: 2019/12/08 02:06:31 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/12/08 07:26:32 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,13 +27,17 @@
 
 struct	s_chunk
 {
-	uint32_t	start_offset;
-	uint32_t	start_offset_idx;
-	uint32_t	size;
-	uint32_t	size_idx;
-	bool		in_vbo;
-	bool		need_remesh = false;
-	s_vec3i		origin;
+	s_chunk(Moore_accessor &moore_access): mesh(moore_access);
+	int			update(My_vulkan &vulk);
+
+	Mesh			mesh;
+	bool			in_vbo;
+	bool			need_remesh = false;
+	s_vec3i			origin;
+	VkBuffer		vertex_buffer;
+	VkDeviceMemory	vertex_buffer_memory;
+	VkBuffer		vertex_index_buffer;
+	VkDeviceMemory	vertex_index_buffer_memory;
 };
 
 class	Map_loader
@@ -59,9 +63,8 @@ class	Map_loader
 		const Player	&m_player;
 		My_vulkan		&m_vulk;
 		Moore_accessor	m_moore_access;
-		Mesh			m_mesh;
 		Map				m_map;
-		std::array<s_chunk, MAX_CHUNK>
+		std::vector<s_chunk>
 						m_chunk;
 		uint32_t		m_nb_chunk = 0;
 		bool			m_update = false;
