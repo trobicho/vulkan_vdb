@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/08 01:19:01 by trobicho          #+#    #+#             */
-/*   Updated: 2019/12/08 01:25:58 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/12/09 09:49:57 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ Ray::Ray(glm::vec3 ro, glm::vec3 rd): m_ro(ro), m_rd(rd)
 		m_side_dist.z = (m_pos.z + 1.0 - m_ro.z) * m_delta_dist.z;
 }
 
-int		Ray::launch(Vdb_test &vdb, int max_dist)
+uint32_t	Ray::launch(Vdb_test &vdb, int max_dist)
 {
 	int					s;
 	uint32_t			found = 0;
@@ -93,4 +93,14 @@ double	Ray::calc_dist()
 	else
 		m_d = (m_pos.z - m_ro.z + (1 - m_step.z) / 2.0) / m_rd.z;
 	return (m_d);
+}
+
+s_vec3i	Ray::get_adj_pos() const
+{
+	if (m_side == 0)
+		return (s_vec3i){m_pos.x - m_step.x, m_pos.y, m_pos.z};
+	else if (m_side == 1)
+		return (s_vec3i){m_pos.x, m_pos.y - m_step.y, m_pos.z};
+	else
+		return (s_vec3i){m_pos.x, m_pos.y, m_pos.z - m_step.z};
 }

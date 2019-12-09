@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/19 21:20:01 by trobicho          #+#    #+#             */
-/*   Updated: 2019/12/07 04:31:26 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/12/09 09:47:00 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 
 enum	e_block_type
 {
+	bl_air = 0,
 	bl_stone = 1,
 	bl_bedrock,
 	bl_dirt,

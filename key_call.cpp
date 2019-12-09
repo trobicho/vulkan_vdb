@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/12 07:23:05 by trobicho          #+#    #+#             */
-/*   Updated: 2019/12/09 09:10:51 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/12/09 10:08:58 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,14 +109,29 @@ void	mouse_button_call(GLFWwindow* window, int button, int action, int mod)
 	Camera	&cam = user->player.get_cam_ref();
 	if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS)
 	{
+		e_block_type	block;
 		Ray	ray(cam.pos, cam.dir);
-		if (ray.launch(user->vdb, 5))
+		if ((block = (e_block_type)ray.launch(user->vdb, 5)) != 0)
 		{
 			s_vec3i pos = ray.get_pos();
 			std::cout << "toucher : " << pos.x << ", " << pos.y << ", " << pos.z << std::endl;
 			user->vdb.unset_vox(ray.get_pos());
 			user->map_loader.block_change(ray.get_pos());
+			user->player.set_block_type(block);
 		}
 		s_vec3i pos = ray.get_pos();
+	}
+	if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS)
+	{
+		Ray	ray(cam.pos, cam.dir);
+		if (ray.launch(user->vdb, 5))
+		{
+			s_vec3i pos = ray.get_adj_pos();
+			if (user->vdb.get_vox(pos) == 0)
+			{
+				user->vdb.set_vox(user->player.get_block_type(), pos);
+				user->map_loader.block_change(pos);
+			}
+		}
 	}
 }
