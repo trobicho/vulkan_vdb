@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/28 17:47:20 by trobicho          #+#    #+#             */
-/*   Updated: 2019/12/08 07:18:55 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/12/09 08:29:54 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,6 @@ Map_loader::Map_loader(Vdb_test &my_vdb, My_vulkan &vulk, Player &player)
 					: m_vdb(my_vdb), m_vulk(vulk), m_player(player)
 					, m_map(0), m_moore_access(m_vdb)
 {
-	m_mesh.reset();
 	m_chunk.reserve(1024);
 }
 
@@ -110,6 +109,21 @@ int		Map_loader::update()
 			m_chunk[i].update(m_vulk);
 		}
 	}
+	if (m_vulk.command_buffer_record(m_chunk) == -1)
+		return (-1);
+	m_update = false;
+	return (0);
+}
+
+void	s_chunk::command_buffer_binder(VkCommandBuffer &cmd_buffer)
+{
+	VkBuffer vertex_buffers[] = {m_vertex_buffer};
+	VkDeviceSize offsets[] = {0};
+	vkCmdBindVertexBuffers(cmd_buffer, 0, 1
+			, (const VkBuffer*)vertex_buffers, offsets);
+	vkCmdBindIndexBuffer(cmd_buffer, m_vertex_index_buffer, 0
+			, VK_INDEX_TYPE_UINT32);
+	vkCmdDrawIndexed(cmd_buffer, mesh.index_buffer.size(), 1, 0, 0, 0);
 }
 
 int		s_chunk::update(My_vulkan &vulk)
@@ -125,14 +139,17 @@ int		s_chunk::update(My_vulkan &vulk)
 	const VkDevice	&device_ref = vulk.get_device_ref();
 	
 	copy_size = mesh.vertex_buffer.size() * sizeof(mesh.vertex_buffer[0]);
-	if (m_vulk.create_buffer(copy_size, VK_BUFFER_USAGE_TRANSFER_SRC_BIT
+	copy_size_idx = mesh.index_buffer.size() * sizeof(mesh.index_buffer[0]);
+	if (alloc_buffer(vulk, copy_size, copy_size_idx) == -1)
+		return (-1);
+	if (vulk.create_buffer(copy_size, VK_BUFFER_USAGE_TRANSFER_SRC_BIT
 		, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT
 		| VK_MEMORY_PROPERTY_HOST_COHERENT_BIT
 		, staging_buffer, staging_buffer_memory) == -1)
 	{
 		return (-1);
 	}
-	if (m_vulk.create_buffer(copy_size_idx, VK_BUFFER_USAGE_TRANSFER_SRC_BIT
+	if (vulk.create_buffer(copy_size_idx, VK_BUFFER_USAGE_TRANSFER_SRC_BIT
 		, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT
 		| VK_MEMORY_PROPERTY_HOST_COHERENT_BIT
 		, staging_buffer_idx, staging_buffer_memory_idx) == -1)
@@ -141,11 +158,39 @@ int		s_chunk::update(My_vulkan &vulk)
 	}
 	vkMapMemory(device_ref, staging_buffer_memory, 0, copy_size, 0, &data);
 	vkMapMemory(device_ref, staging_buffer_memory_idx, 0, copy_size_idx, 0, &data_idx);
-	memcpy(((char*)data), mesh.vertex_buffer.data()
-			, mesh.vertex_buffer.size() * sizeof(mesh.vertex_buffer[0]));
-	memcpy(((char*)data_idx) + offset_data_ibo
-			, m_mesh.index_buffer.data() + m_chunk[i].start_offset_idx
-			, m_chunk[i].size_idx * sizeof(m_mesh.index_buffer[0]));
+	memcpy(((char*)data), mesh.vertex_buffer.data(), copy_size);
+	memcpy(((char*)data_idx), mesh.index_buffer.data(), copy_size_idx);
+	vkUnmapMemory(device_ref, staging_buffer_memory);
+	vkUnmapMemory(device_ref, staging_buffer_memory_idx);
+	if (vulk.copy_staging_to_buffer(m_vertex_buffer
+			, staging_buffer, staging_buffer_memory
+			, copy_size) == -1)
+		return (-1);
+	if (vulk.copy_staging_to_buffer(m_vertex_index_buffer
+			, staging_buffer_idx, staging_buffer_memory_idx
+			, copy_size_idx) == -1)
+		return (-1);
+	return (0);
+}
+
+int		s_chunk::alloc_buffer(My_vulkan &vulk, VkDeviceSize vbo_size
+			, VkDeviceSize ibo_size)
+{
+	if (vulk.create_buffer(vbo_size, VK_BUFFER_USAGE_TRANSFER_DST_BIT
+		| VK_BUFFER_USAGE_VERTEX_BUFFER_BIT
+		, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT
+		, m_vertex_buffer, m_vertex_buffer_memory) == -1)
+	{
+		return (-1);
+	}
+	if (vulk.create_buffer(ibo_size, VK_BUFFER_USAGE_TRANSFER_DST_BIT
+		| VK_BUFFER_USAGE_INDEX_BUFFER_BIT
+		, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT
+		, m_vertex_index_buffer, m_vertex_index_buffer_memory) == -1)
+	{
+		return (-1);
+	}
+	return (0);
 }
 
 /*
@@ -250,13 +295,11 @@ int		Map_loader::mesh_one_chunck(s_vbox &box)
 int		Map_loader::mesh_one_chunck(s_vbox &box, uint32_t chunk_id)
 {
 	auto	time = std::chrono::high_resolution_clock::now();
-	m_vdb.mesh(m_mesh, box);
+	m_vdb.mesh(m_chunk[chunk_id].mesh, box);
 	auto	mtime = std::chrono::high_resolution_clock::now();
 	auto	time_mesh = std::chrono::duration<float
 		, std::chrono::seconds::period>(mtime - time).count();
 	std::cout << "time to mesh = " << time_mesh << std::endl;
-	m_chunk[chunk_id].size = m_mesh.vertex_buffer.size() - m_chunk[chunk_id].start_offset;
-	m_chunk[chunk_id].size_idx = m_mesh.index_buffer.size() - m_chunk[chunk_id].start_offset_idx;
 	m_chunk[chunk_id].origin = box.origin;
 	m_chunk[chunk_id].in_vbo = false;
 	return (0);

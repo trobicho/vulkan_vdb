@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/28 17:47:30 by trobicho          #+#    #+#             */
-/*   Updated: 2019/12/08 07:26:32 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/12/09 08:06:44 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,21 +25,6 @@
 
 #define	MAX_CHUNK		1024
 
-struct	s_chunk
-{
-	s_chunk(Moore_accessor &moore_access): mesh(moore_access);
-	int			update(My_vulkan &vulk);
-
-	Mesh			mesh;
-	bool			in_vbo;
-	bool			need_remesh = false;
-	s_vec3i			origin;
-	VkBuffer		vertex_buffer;
-	VkDeviceMemory	vertex_buffer_memory;
-	VkBuffer		vertex_index_buffer;
-	VkDeviceMemory	vertex_index_buffer_memory;
-};
-
 class	Map_loader
 {
 	public:
@@ -50,7 +35,6 @@ class	Map_loader
 		int				load_pos(s_vec3i pos);
 		int				generate_one_chunck(s_vbox &box);
 		int				mesh_one_chunck(s_vbox &box);
-		const Mesh&		get_mesh_ref() const {return (m_mesh);}
 		const Vdb_test&	get_vdb_ref() const {return (m_vdb);}
 		bool			has_update() const {return (m_update);}
 		void			quit(){m_quit = true;}
@@ -58,6 +42,9 @@ class	Map_loader
 
 	private:
 		int				mesh_one_chunck(s_vbox &box, uint32_t chunk_id);
+		void			command_buffer_binder(VkCommandBuffer &cmd_buffer
+							, VkDescriptorSet &desc_set
+							, VkPipelineLayout &pipeline_layout);
 
 		Vdb_test		&m_vdb;
 		const Player	&m_player;

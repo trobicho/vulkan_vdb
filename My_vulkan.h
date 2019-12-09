@@ -6,7 +6,7 @@
 /*   By: trobicho <trobicho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/09 17:05:37 by trobicho          #+#    #+#             */
-/*   Updated: 2019/12/08 07:26:55 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/12/09 08:14:41 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,28 @@ struct s_ubo
 	glm::vec3	sun_pos;
 };
 
+class	My_vulkan;
+
+struct	s_chunk
+{
+	s_chunk(Moore_accessor &moore_access): mesh(moore_access){};
+	int			update(My_vulkan &vulk);
+	int			alloc_buffer(My_vulkan &vulk, VkDeviceSize vbo_size
+					, VkDeviceSize ibo_size);
+	void		command_buffer_binder(VkCommandBuffer &cmd_buffer);
+
+	Mesh			mesh;
+	bool			in_vbo;
+	bool			need_remesh = false;
+	s_vec3i			origin;
+
+	private:
+		VkBuffer		m_vertex_buffer;
+		VkDeviceMemory	m_vertex_buffer_memory;
+		VkBuffer		m_vertex_index_buffer;
+		VkDeviceMemory	m_vertex_index_buffer_memory;
+};
+
 class	My_vulkan
 {
 	public:
@@ -40,7 +62,7 @@ class	My_vulkan
 		int			update_uniform_buffer(uint32_t img_index);
 		const VkDevice
 					&get_device_ref() const {return (const VkDevice&)(m_device);}
-		int			command_buffer_record(uint32_t nb_idx);
+		int			command_buffer_record(std::vector<s_chunk> &chunk_vec);
 		int			create_buffer(VkDeviceSize size, VkBufferUsageFlags usage
 						, VkMemoryPropertyFlags properties, VkBuffer &buffer
 						, VkDeviceMemory &buffer_mem);
@@ -49,12 +71,10 @@ class	My_vulkan
 						, uint32_t src_offset = 0, uint32_t dst_offset = 0); 
 		int			begin_single_time_command(VkCommandBuffer &command_buffer);
 		int			end_single_time_command(VkCommandBuffer &command_buffer);
-		int			copy_staging_to_vbo(VkBuffer &staging_buffer
+		int			copy_staging_to_buffer(VkBuffer dst
+						, VkBuffer &staging_buffer
 						, VkDeviceMemory &staging_buffer_memory
-						, VkDeviceSize copy_size, uint32_t offset);
-		int			copy_staging_to_ibo(VkBuffer &staging_buffer
-						, VkDeviceMemory &staging_buffer_memory
-						, VkDeviceSize copy_size, uint32_t offset);
+						, VkDeviceSize copy_size, uint32_t offset = 0);
 		/*
 		int			copy_vertex_buffer();
 		int			copy_vertex_index_buffer();

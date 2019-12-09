@@ -6,7 +6,7 @@
 /*   By: trobicho <trobicho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/09 17:05:36 by trobicho          #+#    #+#             */
-/*   Updated: 2019/12/03 14:56:58 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/12/09 08:16:04 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,10 +57,12 @@ My_vulkan::~My_vulkan()
 	vkFreeMemory(m_device, m_depth_img_memory, nullptr);
 	vkFreeMemory(m_device, m_texture_img_memory, nullptr);
 	vkDestroyDescriptorSetLayout(m_device, m_desc_set_layout, nullptr);
+	/*
 	vkDestroyBuffer(m_device, m_vertex_index_buffer, nullptr);
 	vkFreeMemory(m_device, m_vertex_index_buffer_memory, nullptr);
 	vkDestroyBuffer(m_device, m_vertex_buffer, nullptr);
 	vkFreeMemory(m_device, m_vertex_buffer_memory, nullptr);
+	*/
 	vkDestroySurfaceKHR(m_instance, m_surface, nullptr);
 	vkDestroyInstance(m_instance, nullptr);
 	vkDestroyDevice(m_device, nullptr);
@@ -157,11 +159,11 @@ int		My_vulkan::init()
 		return (-1);
 	if (create_uniform_buffer() == -1)
 		return (-1);
+	/*
 	if (create_vertex_buffer() == -1)
 		return (-1);
 	if (create_vertex_index_buffer() == -1)
 		return (-1);
-	/*
 	if (copy_vertex_buffer() == -1)
 		return (-1);
 	if (copy_vertex_index_buffer() == -1)
@@ -322,6 +324,7 @@ int		My_vulkan::create_img_buffer(uint32_t width, uint32_t height
 	return (0);
 }
 
+/*
 int		My_vulkan::create_vertex_buffer()
 {
 	VkDeviceSize	buffer_size;
@@ -351,6 +354,7 @@ int		My_vulkan::create_vertex_index_buffer()
 	}
 	return (0);
 }
+*/
 
 /*
 int		My_vulkan::copy_vertex_buffer()
@@ -392,21 +396,11 @@ int		My_vulkan::copy_vertex_index_buffer()
 }
 */
 
-int		My_vulkan::copy_staging_to_vbo(VkBuffer &staging_buffer
+int		My_vulkan::copy_staging_to_buffer(VkBuffer dst, VkBuffer &staging_buffer
 			, VkDeviceMemory &staging_buffer_memory, VkDeviceSize copy_size
 			, uint32_t offset)
 {
-	copy_buffer(staging_buffer, m_vertex_buffer, copy_size, 0, offset);
-	vkDestroyBuffer(m_device, staging_buffer, nullptr);
-	vkFreeMemory(m_device, staging_buffer_memory, nullptr);
-	return (0);
-}
-
-int		My_vulkan::copy_staging_to_ibo(VkBuffer &staging_buffer
-			, VkDeviceMemory &staging_buffer_memory, VkDeviceSize copy_size
-			, uint32_t offset)
-{
-	copy_buffer(staging_buffer, m_vertex_index_buffer, copy_size, 0, offset);
+	copy_buffer(staging_buffer, dst, copy_size, 0, offset);
 	vkDestroyBuffer(m_device, staging_buffer, nullptr);
 	vkFreeMemory(m_device, staging_buffer_memory, nullptr);
 	return (0);
@@ -1116,7 +1110,7 @@ int		My_vulkan::command_buffer_create()
 	return (0);
 }
 
-int		My_vulkan::command_buffer_record(uint32_t nb_idx)
+int		My_vulkan::command_buffer_record(std::vector<s_chunk> &chunk_vec)
 {
 	int							i;
 	uint32_t					img_count;
@@ -1154,6 +1148,7 @@ int		My_vulkan::command_buffer_record(uint32_t nb_idx)
 			, VK_SUBPASS_CONTENTS_INLINE);
 		vkCmdBindPipeline(m_command_buffer[i]
 			, VK_PIPELINE_BIND_POINT_GRAPHICS, m_graphics_pipeline);
+		/*
 		VkBuffer vertex_buffers[] = {m_vertex_buffer};
 		VkDeviceSize offsets[] = {0};
 		vkCmdBindVertexBuffers(m_command_buffer[i], 0, 1
@@ -1164,6 +1159,14 @@ int		My_vulkan::command_buffer_record(uint32_t nb_idx)
 				, VK_PIPELINE_BIND_POINT_GRAPHICS, m_pipeline_layout
 				, 0, 1, &m_desc_set[i], 0, nullptr);
 		vkCmdDrawIndexed(m_command_buffer[i], nb_idx, 1, 0, 0, 0);
+		*/
+		vkCmdBindDescriptorSets(m_command_buffer[i]
+				, VK_PIPELINE_BIND_POINT_GRAPHICS, m_pipeline_layout
+				, 0, 1, &m_desc_set[i], 0, nullptr);
+		for (auto &chunk: chunk_vec)
+		{
+			chunk.command_buffer_binder(m_command_buffer[i]);
+		}
 		vkCmdEndRenderPass(m_command_buffer[i]);
 		if (vkEndCommandBuffer(m_command_buffer[i]) != VK_SUCCESS)
 		{
