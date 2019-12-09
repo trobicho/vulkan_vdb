@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/12 07:23:05 by trobicho          #+#    #+#             */
-/*   Updated: 2019/12/08 02:00:43 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/12/09 09:10:51 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,6 +115,7 @@ void	mouse_button_call(GLFWwindow* window, int button, int action, int mod)
 			s_vec3i pos = ray.get_pos();
 			std::cout << "toucher : " << pos.x << ", " << pos.y << ", " << pos.z << std::endl;
 			user->vdb.unset_vox(ray.get_pos());
+			user->map_loader.block_change(ray.get_pos());
 		}
 		s_vec3i pos = ray.get_pos();
 	}

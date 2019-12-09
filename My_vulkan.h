@@ -6,7 +6,7 @@
 /*   By: trobicho <trobicho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/09 17:05:37 by trobicho          #+#    #+#             */
-/*   Updated: 2019/12/09 08:14:41 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/12/09 09:03:27 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,10 +34,20 @@ class	My_vulkan;
 struct	s_chunk
 {
 	s_chunk(Moore_accessor &moore_access): mesh(moore_access){};
+	~s_chunk()
+	{
+		/*
+		vkDestroyBuffer(device_ref, m_vertex_index_buffer, nullptr);
+		vkFreeMemory(device_ref, m_vertex_index_buffer_memory, nullptr);
+		vkDestroyBuffer(device_ref, m_vertex_buffer, nullptr);
+		vkFreeMemory(device_ref, m_vertex_buffer_memory, nullptr);
+		*/;
+	}
 	int			update(My_vulkan &vulk);
 	int			alloc_buffer(My_vulkan &vulk, VkDeviceSize vbo_size
 					, VkDeviceSize ibo_size);
 	void		command_buffer_binder(VkCommandBuffer &cmd_buffer);
+	void		reset(My_vulkan &vulk);
 
 	Mesh			mesh;
 	bool			in_vbo;

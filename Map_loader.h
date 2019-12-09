@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/28 17:47:30 by trobicho          #+#    #+#             */
-/*   Updated: 2019/12/09 08:06:44 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/12/09 09:07:51 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@ class	Map_loader
 		~Map_loader(){};
 
 		void			thread_loader();
+		void			block_change(s_vec3i block);
 		int				load_pos(s_vec3i pos);
 		int				generate_one_chunck(s_vbox &box);
 		int				mesh_one_chunck(s_vbox &box);

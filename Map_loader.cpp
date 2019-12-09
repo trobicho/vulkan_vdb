@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/28 17:47:20 by trobicho          #+#    #+#             */
-/*   Updated: 2019/12/09 08:29:54 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/12/09 09:17:20 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,6 +76,34 @@ void	Map_loader::thread_loader()
 	}
 }
 
+void	Map_loader::block_change(s_vec3i block)
+{
+	s_vbox			box;
+
+	for (int i = 0; i < m_nb_chunk; ++i)
+	{
+		if (m_chunk[i].in_vbo && m_chunk[i].origin.x <= block.x
+			&& m_chunk[i].origin.x + (1 << CHUNK_LOG_X) > block.x
+			&& m_chunk[i].origin.y <= block.y
+			&& m_chunk[i].origin.y + (1 << CHUNK_LOG_Y) > block.y
+			&& m_chunk[i].origin.z <= block.z
+			&& m_chunk[i].origin.z + (1 << CHUNK_LOG_Z) > block.z)
+		{
+			std::cout << "find the changing chunk ("
+						<< m_chunk[i].origin.x << ", "
+						<< m_chunk[i].origin.y << ", "
+						<< m_chunk[i].origin.z << ")" << std::endl;
+			m_chunk[i].reset(m_vulk);
+			box.origin = m_chunk[i].origin;
+			box.len = s_vec3i(1 << CHUNK_LOG_X, 1 << CHUNK_LOG_Y
+					, 1 << CHUNK_LOG_Z);
+			mesh_one_chunck(box, i);
+			m_update = true;
+			break;
+		}
+	}
+}
+
 
 int		Map_loader::load_pos(s_vec3i pos)
 {
@@ -113,6 +141,17 @@ int		Map_loader::update()
 		return (-1);
 	m_update = false;
 	return (0);
+}
+
+void	s_chunk::reset(My_vulkan &vulk)
+{
+	const auto	&device_ref = vulk.get_device_ref();
+
+	vkDestroyBuffer(device_ref, m_vertex_index_buffer, nullptr);
+	vkFreeMemory(device_ref, m_vertex_index_buffer_memory, nullptr);
+	vkDestroyBuffer(device_ref, m_vertex_buffer, nullptr);
+	vkFreeMemory(device_ref, m_vertex_buffer_memory, nullptr);
+	mesh.reset();
 }
 
 void	s_chunk::command_buffer_binder(VkCommandBuffer &cmd_buffer)
@@ -170,6 +209,7 @@ int		s_chunk::update(My_vulkan &vulk)
 			, staging_buffer_idx, staging_buffer_memory_idx
 			, copy_size_idx) == -1)
 		return (-1);
+	in_vbo = true;
 	return (0);
 }
 
