@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/11 07:00:55 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/28 18:55:12 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/12/09 13:11:12 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,27 +91,27 @@ void	Mesh::get_needed_face(std::bitset<6> &f_b, s_vec3i v, void *node_ptr)
 
 	neigh_v = (s_vec3i){v.x, v.y + (1 << node_slog.y) , v.z};
 	moore_node = my_vdb.get_interresting_node(neigh_v, value);
-	if (!value || moore_node->get_sSize() < node->get_sSize())
+	if (!value || moore_node->get_child_slog().x < node_slog.x)
 		f_b.set(0);
 	neigh_v = (s_vec3i){v.x, v.y - 1, v.z};
 	moore_node = my_vdb.get_interresting_node(neigh_v, value);
-	if (!value || moore_node->get_sSize() < node->get_sSize())
+	if (!value || moore_node->get_child_slog().x < node_slog.x)
 		f_b.set(1);
 	neigh_v = (s_vec3i){v.x, v.y, v.z + (1 << node_slog.z)};
 	moore_node = my_vdb.get_interresting_node(neigh_v, value);
-	if (!value || moore_node->get_sSize() < node->get_sSize())
+	if (!value || moore_node->get_child_slog().x < node_slog.x)
 		f_b.set(2);
 	neigh_v = (s_vec3i){v.x, v.y, v.z - 1};
 	moore_node = my_vdb.get_interresting_node(neigh_v, value);
-	if (!value || moore_node->get_sSize() < node->get_sSize())
+	if (!value || moore_node->get_child_slog().x < node_slog.x)
 		f_b.set(3);
 	neigh_v = (s_vec3i){v.x + (1 << node_slog.x), v.y, v.z};
 	moore_node = my_vdb.get_interresting_node(neigh_v, value);
-	if (!value || moore_node->get_sSize() < node->get_sSize())
+	if (!value || moore_node->get_child_slog().x < node_slog.x)
 		f_b.set(4);
 	neigh_v = (s_vec3i){v.x - 1, v.y, v.z};
 	moore_node = my_vdb.get_interresting_node(neigh_v, value);
-	if (!value || moore_node->get_sSize() < node->get_sSize())
+	if (!value || moore_node->get_child_slog().x < node_slog.x)
 		f_b.set(5);
 }
 
@@ -426,17 +426,17 @@ uint8_t		Mesh::get_ao(int idx)
 	switch (idx)
 	{
 		case 0:	
-			return (vertex_ao(m_moore_access[3], m_moore_access[1]
-					, m_moore_access[0]));
+			return (vertex_ao(m_moore_access[10], m_moore_access[9]
+					, m_moore_access[12]));
 		case 1:	
-			return (vertex_ao(m_moore_access[1], m_moore_access[5]
-					, m_moore_access[2]));
+			return (vertex_ao(m_moore_access[10], m_moore_access[11]
+					, m_moore_access[14]));
 		case 2:	
-			return (vertex_ao(m_moore_access[7], m_moore_access[5]
-					, m_moore_access[8]));
+			return (vertex_ao(m_moore_access[16], m_moore_access[17]
+					, m_moore_access[14]));
 		case 3:	
-			return (vertex_ao(m_moore_access[7], m_moore_access[3]
-					, m_moore_access[6]));
+			return (vertex_ao(m_moore_access[16], m_moore_access[15]
+					, m_moore_access[12]));
 		case 4:	
 			return (vertex_ao(m_moore_access[21], m_moore_access[19]
 					, m_moore_access[18]));

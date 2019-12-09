@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/23 04:53:19 by trobicho          #+#    #+#             */
-/*   Updated: 2019/12/02 15:09:12 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/12/09 13:01:33 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,8 +57,10 @@ void	Moore_accessor::find_neigh(s_vec3i v, Node_v *node)
 							m_neigh[y * 9 + z * 3 + x] = true;
 						continue;
 					}
+					else if (m_vdb.get_vox(vox))
+						m_neigh[y * 9 + z * 3 + x] = true;
 				}
-				if (m_vdb.get_vox(vox))
+				else if (m_vdb.get_vox(vox))
 					m_neigh[y * 9 + z * 3 + x] = true;
 			}
 		}

@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/28 17:47:30 by trobicho          #+#    #+#             */
-/*   Updated: 2019/12/09 09:07:51 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/12/09 13:20:09 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,9 +19,9 @@
 #include <chrono>
 #include <array>
 
-#define CHUNK_LOG_X		(5)
+#define CHUNK_LOG_X		(4)
 #define CHUNK_LOG_Y		(8)
-#define CHUNK_LOG_Z		(5)
+#define CHUNK_LOG_Z		(4)
 
 #define	MAX_CHUNK		1024
 

@@ -6,14 +6,18 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/02 21:06:27 by trobicho          #+#    #+#             */
-/*   Updated: 2019/12/08 01:53:43 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/12/09 13:32:17 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Vdb_test.h"
 
-Vdb_test::Vdb_test(): m_min(0, 0, 0), m_max(1048575, 512, 1048575)
+Vdb_test::Vdb_test(): m_min(0, 0, 0)
 {
+	m_max.x = (1 << m_root_static.get_slog().x);
+	m_max.y = (1 << m_root_static.get_slog().y);
+	m_max.z = (1 << m_root_static.get_slog().z);
+	std::cout << m_max.x << ", " << m_max.y << ", " << m_max.z << std::endl;
 }
 
 void		Vdb_test::set_vox(uint32_t value, s_vec3i v)
@@ -82,9 +86,9 @@ void		Vdb_test::mesh(Mesh &mesh, const s_vbox &box) const
 	if (box.origin.x >= m_min.x
 		&& box.origin.y >= m_min.y 
 		&& box.origin.z >= m_min.z
-		&& box.origin.x + box.len.x < m_max.x
-		&& box.origin.y + box.len.y < m_max.y 
-		&& box.origin.z + box.len.z < m_max.z)
+		&& box.origin.x + box.len.x <= m_max.x
+		&& box.origin.y + box.len.y <= m_max.y 
+		&& box.origin.z + box.len.z <= m_max.z)
 	{
 		m_root_static.mesh(mesh, box);
 	}

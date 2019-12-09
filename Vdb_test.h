@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/02 21:06:37 by trobicho          #+#    #+#             */
-/*   Updated: 2019/12/08 01:41:33 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/12/09 13:24:11 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 
 #include "libvdb.h"
 
-using	Leaf = Leaf_node<uint32_t, 3>;
-using	Internal_L3 = Internal_node<uint32_t, Leaf, 2>;
+using	Leaf = Leaf_node<uint32_t, 2>;
+using	Internal_L3 = Internal_node<uint32_t, Leaf, 2, 3, 2>;
 using	Internal_L2 = Internal_node<uint32_t, Internal_L3, 8, 2, 8>;
 using	Internal_L1 = Internal_node<uint32_t, Internal_L2, 8, 1, 8>;
 using	Node_v = Node<uint32_t>;
