@@ -6,13 +6,14 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/28 17:47:20 by trobicho          #+#    #+#             */
-/*   Updated: 2019/12/10 19:51:30 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/12/10 20:40:43 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Map_loader.h"
 #include <iostream>
 #include <cstring>
+#include <thread>
 
 Map_loader::Map_loader(Vdb_test &my_vdb, My_vulkan &vulk, Player &player)
 					: m_vdb(my_vdb), m_vulk(vulk), m_player(player)
@@ -49,17 +50,17 @@ void	Map_loader::thread_loader()
 	int up;
 	int i = 0;
 
+	std::thread thread(&Map_loader::unload_far_chunk, this);
 	while (!m_quit)
 	{
 		if (m_update == false)
 		{
 			search_new_chunk();
 			tag_unload_far_chunk();
-			if (m_need_unload > 100)
-				unload_far_chunk();
 			i++;
 		}
 	}
+	thread.join();
 }
 
 void	Map_loader::search_new_chunk()
@@ -73,6 +74,8 @@ void	Map_loader::search_new_chunk()
 	while (next_chunk_in_radius(i_pos, pos, m_meshing_radius))
 	{
 		update += load_pos(pos);
+		if (update > 5)
+			break;
 	}
 	if (update > 0)
 		m_update = true;
@@ -82,23 +85,26 @@ void	Map_loader::unload_far_chunk()
 {
 	int i = 0;
 
-	while (i < m_nb_chunk)
+	while (!m_quit)
 	{
-		if (m_chunk[i].has_unload)
+		while (i < m_nb_chunk)
 		{
-			if (m_chunk[i].in_vbo)
-				m_chunk[i].unload(m_vulk);
-			else
-				m_chunk[i].mesh.reset();
-			m_chunk.erase(m_chunk.begin() + i);
-			m_nb_chunk--;
-			m_need_unload--;
-			continue;
+			if (m_chunk[i].has_unload)
+			{
+				if (m_chunk[i].in_vbo)
+					m_chunk[i].unload(m_vulk);
+				else
+					m_chunk[i].mesh.reset();
+				m_chunk.erase(m_chunk.begin() + i);
+				m_nb_chunk--;
+				m_need_unload--;
+				continue;
+			}
+			i++;
 		}
-		i++;
+		if (m_need_unload < 0)
+			m_need_unload = 0;
 	}
-	if (m_need_unload < 0)
-		m_need_unload = 0;
 }
 
 void	Map_loader::tag_unload_far_chunk()
