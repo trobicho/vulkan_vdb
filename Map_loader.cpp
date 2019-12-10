@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/28 17:47:20 by trobicho          #+#    #+#             */
-/*   Updated: 2019/12/10 17:07:43 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/12/10 19:51:30 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,12 +47,17 @@ static s_vec3i
 void	Map_loader::thread_loader()
 {
 	int up;
+	int i = 0;
 
 	while (!m_quit)
 	{
 		if (m_update == false)
 		{
 			search_new_chunk();
+			tag_unload_far_chunk();
+			if (m_need_unload > 100)
+				unload_far_chunk();
+			i++;
 		}
 	}
 }
@@ -69,12 +74,34 @@ void	Map_loader::search_new_chunk()
 	{
 		update += load_pos(pos);
 	}
-	std::cout << std::endl;
 	if (update > 0)
 		m_update = true;
 }
 
 void	Map_loader::unload_far_chunk()
+{
+	int i = 0;
+
+	while (i < m_nb_chunk)
+	{
+		if (m_chunk[i].has_unload)
+		{
+			if (m_chunk[i].in_vbo)
+				m_chunk[i].unload(m_vulk);
+			else
+				m_chunk[i].mesh.reset();
+			m_chunk.erase(m_chunk.begin() + i);
+			m_nb_chunk--;
+			m_need_unload--;
+			continue;
+		}
+		i++;
+	}
+	if (m_need_unload < 0)
+		m_need_unload = 0;
+}
+
+void	Map_loader::tag_unload_far_chunk()
 {
 	glm::vec3	p_pos = m_player.get_cam_pos();
 	s_vec3i		i_pos = s_vec3i((int)p_pos.x, (int)p_pos.y, (int)p_pos.z);
@@ -84,16 +111,7 @@ void	Map_loader::unload_far_chunk()
 	{
 		if (taxicab_chunk_dist(i_pos, m_chunk[i].origin)
 			> m_unload_meshing_radius)
-		{
-			std::cout << taxicab_chunk_dist(i_pos, m_chunk[i].origin) << std::endl;
-			if (m_chunk[i].in_vbo)
-				m_chunk[i].unload(m_vulk);
-			else
-				m_chunk[i].mesh.reset();
-			m_chunk.erase(m_chunk.begin() + i);
-			m_nb_chunk--;
-			continue;
-		}
+			m_chunk[i].need_unload = true;
 		i++;
 	}
 }
@@ -145,7 +163,8 @@ void	Map_loader::block_change(s_vec3i block)
 
 	for (int i = 0; i < m_nb_chunk; ++i)
 	{
-		if (m_chunk[i].in_vbo && m_chunk[i].origin.x <= block.x
+		if (m_chunk[i].in_vbo && !m_chunk[i].need_unload 
+			&& m_chunk[i].origin.x <= block.x
 			&& m_chunk[i].origin.x + (1 << CHUNK_LOG_X) > block.x
 			&& m_chunk[i].origin.y <= block.y
 			&& m_chunk[i].origin.y + (1 << CHUNK_LOG_Y) > block.y
@@ -197,7 +216,11 @@ int		Map_loader::load_pos(s_vec3i pos)
 		{
 			if (m_chunk[i].origin.x == box.origin.x
 				&& m_chunk[i].origin.z == box.origin.z)
+			{
+				if (m_chunk[i].need_unload)
+					m_chunk[i].need_unload = false;
 				return (0);
+			}
 		}
 		m_chunk.push_back(s_chunk(m_moore_access));
 		mesh_one_chunck(box, m_nb_chunk);
@@ -209,12 +232,16 @@ int		Map_loader::load_pos(s_vec3i pos)
 
 int		Map_loader::update()
 {
-	unload_far_chunk();
 	for (int i = 0; i < m_nb_chunk; ++i)
 	{
-		if (!m_chunk[i].in_vbo)
+		if (!m_chunk[i].in_vbo && !m_chunk[i].need_unload)
 		{
 			m_chunk[i].update(m_vulk);
+		}
+		else if (m_chunk[i].need_unload && !m_chunk[i].has_unload)
+		{
+			m_chunk[i].has_unload = true;
+			m_need_unload++;
 		}
 	}
 	if (m_vulk.command_buffer_record(m_chunk) == -1)

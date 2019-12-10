@@ -6,7 +6,7 @@
 /*   By: trobicho <trobicho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/09 17:05:37 by trobicho          #+#    #+#             */
-/*   Updated: 2019/12/10 15:21:17 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/12/10 19:30:54 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,8 @@ struct	s_chunk
 	Mesh			mesh;
 	bool			in_vbo;
 	bool			need_remesh = false;
+	bool			need_unload = false;
+	bool			has_unload = false;
 	s_vec3i			origin;
 
 	private:

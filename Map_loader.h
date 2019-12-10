@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/28 17:47:30 by trobicho          #+#    #+#             */
-/*   Updated: 2019/12/10 17:09:05 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/12/10 19:35:03 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,7 @@ class	Map_loader
 
 	private:
 		void			search_new_chunk();
+		void			tag_unload_far_chunk();
 		void			unload_far_chunk();
 		int				mesh_one_chunck(s_vbox &box, uint32_t chunk_id);
 		int				next_chunk_in_radius(s_vec3i center
@@ -75,4 +76,5 @@ class	Map_loader
 		uint32_t		m_meshing_radius = 4;
 		uint32_t		m_unload_meshing_radius = 12;
 		uint32_t		m_generate_radius = 3;
+		int				m_need_unload = 0;
 };

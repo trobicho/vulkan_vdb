@@ -6,7 +6,7 @@
 /*   By: trobicho <trobicho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/09 17:05:36 by trobicho          #+#    #+#             */
-/*   Updated: 2019/12/09 08:16:04 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/12/10 19:49:38 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1165,7 +1165,8 @@ int		My_vulkan::command_buffer_record(std::vector<s_chunk> &chunk_vec)
 				, 0, 1, &m_desc_set[i], 0, nullptr);
 		for (auto &chunk: chunk_vec)
 		{
-			chunk.command_buffer_binder(m_command_buffer[i]);
+			if (chunk.need_unload == false)
+				chunk.command_buffer_binder(m_command_buffer[i]);
 		}
 		vkCmdEndRenderPass(m_command_buffer[i]);
 		if (vkEndCommandBuffer(m_command_buffer[i]) != VK_SUCCESS)
