@@ -6,7 +6,7 @@
 /*   By: trobicho <trobicho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/09 17:05:37 by trobicho          #+#    #+#             */
-/*   Updated: 2019/12/09 09:03:27 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/12/10 15:21:17 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,7 @@ struct	s_chunk
 					, VkDeviceSize ibo_size);
 	void		command_buffer_binder(VkCommandBuffer &cmd_buffer);
 	void		reset(My_vulkan &vulk);
+	void		unload(My_vulkan &vulk);
 
 	Mesh			mesh;
 	bool			in_vbo;

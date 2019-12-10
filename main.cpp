@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/02 20:39:09 by trobicho          #+#    #+#             */
-/*   Updated: 2019/12/09 09:09:41 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/12/10 13:54:17 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,8 +88,8 @@ int	main()
 	//----------TEST---------
 	*/
 	
-	xr = 0;
-	zr = 0;
+	xr = 1024;
+	zr = 1024;
 	Player		player(glm::vec3((float)xr, (float)CLOUD_HEIGHT + 10
 					, (float)zr));
 	

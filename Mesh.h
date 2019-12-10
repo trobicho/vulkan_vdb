@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/11 06:56:37 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/28 19:04:23 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/12/10 15:36:41 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,6 +77,13 @@ class	Mesh
 	public:
 		Mesh(Moore_accessor &moore_access);
 		~Mesh(){};
+
+		Mesh& operator=(Mesh other)
+		{
+			this->vertex_buffer = other.vertex_buffer;
+			this->index_buffer = other.index_buffer;
+			return (*this);
+		}
 
 		void		reset();
 		uint32_t	get_nb_vertex() const {return(vertex_buffer.size());}

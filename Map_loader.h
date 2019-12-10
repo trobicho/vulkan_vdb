@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/28 17:47:30 by trobicho          #+#    #+#             */
-/*   Updated: 2019/12/09 13:20:09 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/12/10 17:09:05 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 #include "Moore_accessor.h"
 #include <chrono>
 #include <array>
+#include <cmath>
 
 #define CHUNK_LOG_X		(4)
 #define CHUNK_LOG_Y		(8)
@@ -29,7 +30,7 @@ class	Map_loader
 {
 	public:
 		Map_loader(Vdb_test &my_vdb, My_vulkan &vulk, Player &player);
-		~Map_loader(){};
+		~Map_loader();
 
 		void			thread_loader();
 		void			block_change(s_vec3i block);
@@ -40,9 +41,21 @@ class	Map_loader
 		bool			has_update() const {return (m_update);}
 		void			quit(){m_quit = true;}
 		int				update();
+		inline int		taxicab_chunk_dist(s_vec3i center, s_vec3i pos)
+		{
+			int dx = abs((center.x >> CHUNK_LOG_X) - (pos.x >> CHUNK_LOG_X));
+			int dz = abs((center.z >> CHUNK_LOG_Z) - (pos.z >> CHUNK_LOG_Z));
+
+			return (dx + dz);
+		}
+
 
 	private:
+		void			search_new_chunk();
+		void			unload_far_chunk();
 		int				mesh_one_chunck(s_vbox &box, uint32_t chunk_id);
+		int				next_chunk_in_radius(s_vec3i center
+							, s_vec3i &pos, int radius);
 		void			command_buffer_binder(VkCommandBuffer &cmd_buffer
 							, VkDescriptorSet &desc_set
 							, VkPipelineLayout &pipeline_layout);
@@ -59,4 +72,7 @@ class	Map_loader
 		bool			m_quit = false;
 		size_t			m_old_size_vbo = 0;
 		size_t			m_old_size_ibo = 0;
+		uint32_t		m_meshing_radius = 4;
+		uint32_t		m_unload_meshing_radius = 12;
+		uint32_t		m_generate_radius = 3;
 };

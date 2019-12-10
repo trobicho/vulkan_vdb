@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/28 17:47:20 by trobicho          #+#    #+#             */
-/*   Updated: 2019/12/09 09:17:20 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/12/10 17:07:43 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,12 @@ Map_loader::Map_loader(Vdb_test &my_vdb, My_vulkan &vulk, Player &player)
 					, m_map(0), m_moore_access(m_vdb)
 {
 	m_chunk.reserve(1024);
+}
+
+Map_loader::~Map_loader()
+{
+	for (int i = 0; i < m_nb_chunk; ++i)
+		m_chunk[i].unload(m_vulk);
 }
 
 static s_vec3i
@@ -46,34 +52,91 @@ void	Map_loader::thread_loader()
 	{
 		if (m_update == false)
 		{
-			up = 0;
-			glm::vec3	p_pos = m_player.get_cam_pos();
-			s_vec3i	i_pos = s_vec3i((int)p_pos.x, (int)p_pos.y, (int)p_pos.z);
-			up = load_pos(i_pos);
-			i_pos = s_vec3i((int)p_pos.x + (1 << CHUNK_LOG_X), (int)p_pos.y
-					, (int)p_pos.z);
-			up += load_pos(i_pos);
-			i_pos = s_vec3i((int)p_pos.x - (1 << CHUNK_LOG_X), (int)p_pos.y
-					, (int)p_pos.z);
-			up += load_pos(i_pos);
-			i_pos = s_vec3i((int)p_pos.x, (int)p_pos.y
-					, (int)p_pos.z + (1 << CHUNK_LOG_Z));
-			up += load_pos(i_pos);
-			i_pos = s_vec3i((int)p_pos.x, (int)p_pos.y
-					, (int)p_pos.z - (1 << CHUNK_LOG_Z));
-			up += load_pos(i_pos);
-			if (up > 0)
-			{
-				/*
-				std::cout << "new vbo size = " << m_mesh.vertex_buffer.size()
-					<< std::endl;
-				std::cout << "new ibo size = " << m_mesh.index_buffer.size()
-					<< std::endl << std::endl;
-					*/
-				m_update = true;
-			}
+			search_new_chunk();
 		}
 	}
+}
+
+void	Map_loader::search_new_chunk()
+{
+	glm::vec3	p_pos = m_player.get_cam_pos();
+	s_vec3i		i_pos = s_vec3i((int)p_pos.x, (int)p_pos.y, (int)p_pos.z);
+	s_vec3i		pos = i_pos;
+	int			update = 0;
+
+	update += load_pos(pos);
+	while (next_chunk_in_radius(i_pos, pos, m_meshing_radius))
+	{
+		update += load_pos(pos);
+	}
+	std::cout << std::endl;
+	if (update > 0)
+		m_update = true;
+}
+
+void	Map_loader::unload_far_chunk()
+{
+	glm::vec3	p_pos = m_player.get_cam_pos();
+	s_vec3i		i_pos = s_vec3i((int)p_pos.x, (int)p_pos.y, (int)p_pos.z);
+	int			i = 0;
+
+	while (i < m_nb_chunk)
+	{
+		if (taxicab_chunk_dist(i_pos, m_chunk[i].origin)
+			> m_unload_meshing_radius)
+		{
+			std::cout << taxicab_chunk_dist(i_pos, m_chunk[i].origin) << std::endl;
+			if (m_chunk[i].in_vbo)
+				m_chunk[i].unload(m_vulk);
+			else
+				m_chunk[i].mesh.reset();
+			m_chunk.erase(m_chunk.begin() + i);
+			m_nb_chunk--;
+			continue;
+		}
+		i++;
+	}
+}
+
+void	s_chunk::unload(My_vulkan &vulk)
+{
+	const auto	&device_ref = vulk.get_device_ref();
+
+	vkDestroyBuffer(device_ref, m_vertex_index_buffer, nullptr);
+	vkFreeMemory(device_ref, m_vertex_index_buffer_memory, nullptr);
+	vkDestroyBuffer(device_ref, m_vertex_buffer, nullptr);
+	vkFreeMemory(device_ref, m_vertex_buffer_memory, nullptr);
+	mesh.reset();
+}
+
+int		Map_loader::next_chunk_in_radius(s_vec3i center
+			, s_vec3i &pos, int radius)
+{
+	int dx = (pos.x >> CHUNK_LOG_X) - (center.x >> CHUNK_LOG_X);
+	int dz = (pos.z >> CHUNK_LOG_Z) - (center.z >> CHUNK_LOG_Z);
+
+	if (dz == 0 && dx >= 0)
+	{
+		pos.z -= (1 << CHUNK_LOG_Z);
+		if (taxicab_chunk_dist(center, pos) > radius)
+			return (0);
+	}
+	else
+	{
+		if (dx > 0)
+			pos.z -= (1 << CHUNK_LOG_Z);
+		else if (dx == 0)
+			pos.z += (dz > 0 ? -(1 << CHUNK_LOG_Z) : (1 << CHUNK_LOG_Z));
+		else
+			pos.z += (1 << CHUNK_LOG_Z);
+		if (dz > 0)
+			pos.x += (1 << CHUNK_LOG_X);
+		else if (dz == 0)
+			pos.x += (dx > 0 ? -(1 << CHUNK_LOG_X) : (1 << CHUNK_LOG_X));
+		else
+			pos.x -= (1 << CHUNK_LOG_X);
+	}
+	return (1);
 }
 
 void	Map_loader::block_change(s_vec3i block)
@@ -114,7 +177,6 @@ int		Map_loader::load_pos(s_vec3i pos)
 	if ((node = m_vdb.get_interresting_node(s_vec3i(pos.x, 0, pos.z), value))
 			!= nullptr && node->get_child_slog().x >= CHUNK_LOG_X)
 	{
-		std::cout << "load new chunk" << std::endl;
 		box.len = s_vec3i(1 << CHUNK_LOG_X, 1 << CHUNK_LOG_Y
 				, 1 << CHUNK_LOG_Z);
 		box.origin = s_vec3i((pos.x >> CHUNK_LOG_X) << CHUNK_LOG_X
@@ -125,11 +187,29 @@ int		Map_loader::load_pos(s_vec3i pos)
 		m_nb_chunk++;
 		return (1);
 	}
+	else
+	{
+		box.len = s_vec3i(1 << CHUNK_LOG_X, 1 << CHUNK_LOG_Y
+				, 1 << CHUNK_LOG_Z);
+		box.origin = s_vec3i((pos.x >> CHUNK_LOG_X) << CHUNK_LOG_X
+				, 0, (pos.z >> CHUNK_LOG_Z) << CHUNK_LOG_Z);
+		for (int i = 0; i < m_nb_chunk; ++i)
+		{
+			if (m_chunk[i].origin.x == box.origin.x
+				&& m_chunk[i].origin.z == box.origin.z)
+				return (0);
+		}
+		m_chunk.push_back(s_chunk(m_moore_access));
+		mesh_one_chunck(box, m_nb_chunk);
+		m_nb_chunk++;
+		return (1);
+	}
 	return (0);
 }
 
 int		Map_loader::update()
 {
+	unload_far_chunk();
 	for (int i = 0; i < m_nb_chunk; ++i)
 	{
 		if (!m_chunk[i].in_vbo)
