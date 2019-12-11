@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/28 17:47:20 by trobicho          #+#    #+#             */
-/*   Updated: 2019/12/11 17:00:13 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/12/11 18:42:30 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,9 +90,10 @@ void	Map_loader::unload_far_chunk()
 
 	while (!m_quit)
 	{
-		if (m_need_unload > 0)
+		if (m_need_unload > 10)
 		{
-			for (chunk_it = m_chunk.begin(); chunk_it != m_chunk.end(); ++chunk_it)
+			for (chunk_it = m_chunk.begin(); chunk_it != m_chunk.end()
+					&& m_need_unload > 0;)
 			{
 				if (chunk_it->second.has_unload)
 				{
@@ -100,11 +101,14 @@ void	Map_loader::unload_far_chunk()
 						chunk_it->second.unload(m_vulk);
 					else
 						chunk_it->second.mesh.reset();
-					m_chunk.erase(chunk_it);
+					chunk_it = m_chunk.erase(chunk_it);
 					m_nb_chunk--;
 					m_need_unload--;
 				}
+				else
+					++chunk_it;
 			}
+			usleep(200000);
 		}
 		if (m_need_unload < 0)
 			m_need_unload = 0;
@@ -264,12 +268,16 @@ int		Map_loader::update()
 	}
 	if (m_vulk.command_buffer_record(m_chunk) == -1)
 		return (-1);
+	std::cout << "update: " << m_chunk.size() << " / " << m_nb_chunk << std::endl;
 	m_update = false;
 	return (0);
 }
 
 int		Map_loader::generate_one_chunck(s_vbox &box)
 {
+	if (m_map.generate(m_vdb, box))
+		return (1);
+	/*
 	auto	time = std::chrono::high_resolution_clock::now();
 	if (m_map.generate(m_vdb, box))
 		return (1);
@@ -277,8 +285,9 @@ int		Map_loader::generate_one_chunck(s_vbox &box)
 	auto	time_gen = std::chrono::duration<float
 			, std::chrono::seconds::period>(gtime - time).count();
 	time = std::chrono::high_resolution_clock::now();
+	*/
 	m_vdb.pruning(); // one?
-	std::cout << "time to generate = " << time_gen << std::endl;
+	//std::cout << "time to generate = " << time_gen << std::endl;
 	return (0);
 }
 
@@ -315,12 +324,15 @@ int		Map_loader::mesh_one_chunck(s_vbox &box)
 
 int		Map_loader::mesh_one_chunck(s_vbox &box, s_chunk& chunk)
 {
+	m_vdb.mesh(chunk.mesh, box);
+	/*
 	auto	time = std::chrono::high_resolution_clock::now();
 	m_vdb.mesh(chunk.mesh, box);
 	auto	mtime = std::chrono::high_resolution_clock::now();
 	auto	time_mesh = std::chrono::duration<float
 		, std::chrono::seconds::period>(mtime - time).count();
 	std::cout << "time to mesh = " << time_mesh << std::endl;
+	*/
 	chunk.origin = box.origin;
 	chunk.in_vbo = false;
 	return (0);
