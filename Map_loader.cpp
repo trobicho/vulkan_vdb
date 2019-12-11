@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/28 17:47:20 by trobicho          #+#    #+#             */
-/*   Updated: 2019/12/11 19:11:09 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/12/11 19:35:39 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,8 +57,10 @@ void	Map_loader::thread_loader()
 	{
 		if (m_update == false)
 		{
+			m_update_mutex.lock();
 			search_new_chunk();
 			tag_unload_far_chunk();
+			m_update_mutex.unlock();
 			usleep(100000);
 			i++;
 		}
@@ -74,7 +76,7 @@ void	Map_loader::search_new_chunk()
 	int			update = 0;
 
 	update += load_pos(pos);
-	while (next_chunk_in_radius(i_pos, pos, m_meshing_radius))
+	while (next_chunk_in_radius(i_pos, pos, m_meshing_radius) && !m_update)
 	{
 		update += load_pos(pos);
 		if (update > 5)
@@ -129,6 +131,8 @@ void	Map_loader::tag_unload_far_chunk()
 		if (taxicab_chunk_dist(i_pos, chunk_it->second.origin)
 			> m_unload_meshing_radius)
 			chunk_it->second.need_unload = true;
+		if (m_update)
+			break;
 	}
 }
 
@@ -204,6 +208,7 @@ void	Map_loader::block_change(s_vec3i block)
 			box.origin = chunk->second.origin;
 			box.len = s_vec3i(1 << CHUNK_LOG_X, 1 << CHUNK_LOG_Y
 					, 1 << CHUNK_LOG_Z);
+			std::lock_guard<std::mutex> guard(m_mesh_mutex);
 			mesh_one_chunck(box);
 			m_update = true;
 	}
@@ -224,6 +229,9 @@ int		Map_loader::load_pos(s_vec3i pos)
 		box.origin = s_vec3i((pos.x >> CHUNK_LOG_X) << CHUNK_LOG_X
 				, 0, (pos.z >> CHUNK_LOG_Z) << CHUNK_LOG_Z);
 		generate_one_chunck(box);
+		std::lock_guard<std::mutex> guard(m_mesh_mutex);
+		if (m_update)
+			return (0);
 		mesh_one_chunck(box, m_chunk.insert(
 					{std::make_pair(box.origin.x, box.origin.z)
 					, s_chunk(m_moore_access)}).first->second);
@@ -243,6 +251,9 @@ int		Map_loader::load_pos(s_vec3i pos)
 				chunk->second.need_unload = false;
 				return (0);
 		}
+		std::lock_guard<std::mutex> guard(m_mesh_mutex);
+		if (m_update)
+			return (0);
 		mesh_one_chunck(box, m_chunk.insert(
 			{std::make_pair(box.origin.x, box.origin.z)
 			, s_chunk(m_moore_access)}).first->second);
@@ -255,6 +266,8 @@ int		Map_loader::load_pos(s_vec3i pos)
 int		Map_loader::update()
 {
 	t_chunk_cont:: iterator	chunk;
+	std::lock_guard<std::mutex> guard(m_update_mutex);
+
 	for (chunk = m_chunk.begin(); chunk != m_chunk.end(); ++chunk)
 	{
 		if (!chunk->second.in_vbo && !chunk->second.need_unload)

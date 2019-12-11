@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/28 17:47:30 by trobicho          #+#    #+#             */
-/*   Updated: 2019/12/11 18:10:59 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/12/11 19:33:08 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 #include <chrono>
 #include <array>
 #include <cmath>
+#include <mutex>
 
 #define CHUNK_LOG_X		(4)
 #define CHUNK_LOG_Y		(8)
@@ -77,4 +78,6 @@ class	Map_loader
 		uint32_t		m_unload_meshing_radius = 15;
 		uint32_t		m_generate_radius = 20;
 		int				m_need_unload = 0;
+		std::mutex		m_mesh_mutex;
+		std::mutex		m_update_mutex;
 };
