@@ -6,7 +6,7 @@
 #    By: trobicho <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/11/02 20:38:42 by trobicho          #+#    #+#              #
-#    Updated: 2019/12/08 01:31:42 by trobicho         ###   ########.fr        #
+#    Updated: 2019/12/11 14:29:30 by trobicho         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -51,6 +51,7 @@ SRCS_NAME	=	main.cpp \
 				Block.cpp \
 				Moore_accessor.cpp \
 				Map_loader.cpp \
+				Chunk.cpp \
 				Mesh.cpp \
 				Ray.cpp
 

@@ -6,7 +6,7 @@
 /*   By: trobicho <trobicho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/09 17:05:36 by trobicho          #+#    #+#             */
-/*   Updated: 2019/12/10 19:49:38 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/12/11 15:58:30 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1110,7 +1110,7 @@ int		My_vulkan::command_buffer_create()
 	return (0);
 }
 
-int		My_vulkan::command_buffer_record(std::vector<s_chunk> &chunk_vec)
+int		My_vulkan::command_buffer_record(t_chunk_cont &chunk_vec)
 {
 	int							i;
 	uint32_t					img_count;
@@ -1163,10 +1163,11 @@ int		My_vulkan::command_buffer_record(std::vector<s_chunk> &chunk_vec)
 		vkCmdBindDescriptorSets(m_command_buffer[i]
 				, VK_PIPELINE_BIND_POINT_GRAPHICS, m_pipeline_layout
 				, 0, 1, &m_desc_set[i], 0, nullptr);
-		for (auto &chunk: chunk_vec)
+		t_chunk_cont:: iterator	chunk;
+		for (chunk = chunk_vec.begin(); chunk != chunk_vec.end(); ++chunk)
 		{
-			if (chunk.need_unload == false)
-				chunk.command_buffer_binder(m_command_buffer[i]);
+			if (chunk->second.need_unload == false)
+				chunk->second.command_buffer_binder(m_command_buffer[i]);
 		}
 		vkCmdEndRenderPass(m_command_buffer[i]);
 		if (vkEndCommandBuffer(m_command_buffer[i]) != VK_SUCCESS)

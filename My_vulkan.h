@@ -6,7 +6,7 @@
 /*   By: trobicho <trobicho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/09 17:05:37 by trobicho          #+#    #+#             */
-/*   Updated: 2019/12/10 19:30:54 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/12/11 17:07:22 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 #include "Mesh.h"
 #include <vector>
+#include <unordered_map>
 #define GLFW_INCLUDE_VULKAN
 #define	ALLOC_VERTEX_BUF_SIZE	(15000000)
 #define	ALLOC_INDEX_BUF_SIZE	(30000000)
@@ -64,6 +65,18 @@ struct	s_chunk
 		VkDeviceMemory	m_vertex_index_buffer_memory;
 };
 
+using ChunkKey = std::pair<uint32_t, uint32_t>;
+
+struct Key_hash
+{
+	size_t operator()(const ChunkKey& key) const
+	{
+		return (key.first | (key.second << 10));
+	}
+};
+
+using t_chunk_cont = std::unordered_map<ChunkKey, s_chunk, Key_hash>;
+
 class	My_vulkan
 {
 	public:
@@ -75,7 +88,7 @@ class	My_vulkan
 		int			update_uniform_buffer(uint32_t img_index);
 		const VkDevice
 					&get_device_ref() const {return (const VkDevice&)(m_device);}
-		int			command_buffer_record(std::vector<s_chunk> &chunk_vec);
+		int			command_buffer_record(t_chunk_cont &chunk_vec);
 		int			create_buffer(VkDeviceSize size, VkBufferUsageFlags usage
 						, VkMemoryPropertyFlags properties, VkBuffer &buffer
 						, VkDeviceMemory &buffer_mem);

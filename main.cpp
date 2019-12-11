@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/02 20:39:09 by trobicho          #+#    #+#             */
-/*   Updated: 2019/12/10 13:54:17 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/12/11 16:55:48 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,10 +63,10 @@ int	main()
 	glfwInit();
 	glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 	glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
-	GLFWwindow *win = glfwCreateWindow(1920, 1080, "Vulkan"
-		, glfwGetPrimaryMonitor(), NULL);
-	//GLFWwindow *win = glfwCreateWindow(800, 600, "Vulkan"
-		//, NULL, NULL);
+	//GLFWwindow *win = glfwCreateWindow(1920, 1080, "Vulkan"
+		//, glfwGetPrimaryMonitor(), NULL);
+	GLFWwindow *win = glfwCreateWindow(800, 600, "Vulkan"
+		, NULL, NULL);
 
 	/*
 	//----------TEST---------

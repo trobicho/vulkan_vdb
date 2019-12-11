@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/28 17:47:30 by trobicho          #+#    #+#             */
-/*   Updated: 2019/12/10 20:47:06 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/12/11 16:00:06 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ class	Map_loader
 		void			search_new_chunk();
 		void			tag_unload_far_chunk();
 		void			unload_far_chunk();
-		int				mesh_one_chunck(s_vbox &box, uint32_t chunk_id);
+		int				mesh_one_chunck(s_vbox &box, s_chunk &chunk);
 		int				next_chunk_in_radius(s_vec3i center
 							, s_vec3i &pos, int radius);
 		void			command_buffer_binder(VkCommandBuffer &cmd_buffer
@@ -66,8 +66,8 @@ class	Map_loader
 		My_vulkan		&m_vulk;
 		Moore_accessor	m_moore_access;
 		Map				m_map;
-		std::vector<s_chunk>
-						m_chunk;
+		//std::vector<s_chunk>
+		t_chunk_cont	m_chunk;
 		uint32_t		m_nb_chunk = 0;
 		bool			m_update = false;
 		bool			m_quit = false;
