@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/28 17:47:20 by trobicho          #+#    #+#             */
-/*   Updated: 2019/12/11 18:42:30 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/12/11 19:11:09 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,7 @@ void	Map_loader::thread_loader()
 		{
 			search_new_chunk();
 			tag_unload_far_chunk();
+			usleep(100000);
 			i++;
 		}
 	}
@@ -268,7 +269,7 @@ int		Map_loader::update()
 	}
 	if (m_vulk.command_buffer_record(m_chunk) == -1)
 		return (-1);
-	std::cout << "update: " << m_chunk.size() << " / " << m_nb_chunk << std::endl;
+	std::cout << "update: " << m_nb_chunk << std::endl;
 	m_update = false;
 	return (0);
 }
