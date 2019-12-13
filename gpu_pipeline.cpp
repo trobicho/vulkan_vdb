@@ -6,7 +6,7 @@
 /*   By: trobicho <trobicho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/22 17:58:08 by trobicho          #+#    #+#             */
-/*   Updated: 2019/12/05 19:13:42 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/12/13 16:32:37 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,7 +121,15 @@ VkPipelineColorBlendStateCreateInfo		color_blend_create(void)
 	color_blend.colorWriteMask = VK_COLOR_COMPONENT_R_BIT
 		| VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT
 		| VK_COLOR_COMPONENT_A_BIT;
-	color_blend.blendEnable = VK_FALSE;
+
+	color_blend.blendEnable = VK_TRUE;
+	color_blend.srcColorBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA;
+	color_blend.dstColorBlendFactor = VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;
+	color_blend.colorBlendOp = VK_BLEND_OP_ADD;
+	color_blend.srcAlphaBlendFactor = VK_BLEND_FACTOR_ONE;
+	color_blend.dstAlphaBlendFactor = VK_BLEND_FACTOR_ZERO;
+	color_blend.alphaBlendOp = VK_BLEND_OP_ADD;
+
 	color_blend_info.sType =
 		VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;
 	color_blend_info.logicOpEnable = VK_FALSE;

@@ -6,11 +6,12 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/23 04:53:19 by trobicho          #+#    #+#             */
-/*   Updated: 2019/12/09 13:01:33 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/12/13 16:45:38 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Moore_accessor.h"
+#include "Block.h"
 
 Moore_accessor::Moore_accessor(Vdb_test &vdb): m_vdb(vdb)
 {
@@ -24,6 +25,9 @@ void	Moore_accessor::find_neigh(s_vec3i v, Node_v *node)
 	s_vec3i	log = node->get_log();
 	int nb_are = 0;
 	int nb_not = 0;
+	uint32_t	block = m_vdb.get_vox(v);
+	uint32_t	found;
+	bool		is_opaque = block_is_opaque(block);
 
 	std::bitset<6>	face;
 	face.reset();
@@ -35,7 +39,6 @@ void	Moore_accessor::find_neigh(s_vec3i v, Node_v *node)
 		face[3] = !((v.z & ((1 << log.z) - 1)) == ((1 << log.z) - 1));
 		face[4] = !((v.x & ((1 << log.x) - 1)) == 0);
 		face[5] = !((v.x & ((1 << log.x) - 1)) == ((1 << log.x) - 1));
-
 	}
 
 	for (int y = 0; y < 3; y++)
@@ -53,15 +56,17 @@ void	Moore_accessor::find_neigh(s_vec3i v, Node_v *node)
 						&& (x == 1 || (x == 0 && face[4]) || (x == 2 && face[5]))
 						&& (z == 1 || (z == 0 && face[2]) || (z == 2 && face[3])))
 					{
-						if (node->get_vox(vox.x, vox.y, vox.z))
-							m_neigh[y * 9 + z * 3 + x] = true;
+						if ((found = node->get_vox(vox.x, vox.y, vox.z)))
+						{
+							m_neigh[y * 9 + z * 3 + x] = (is_opaque == block_is_opaque(found));
+						}
 						continue;
 					}
-					else if (m_vdb.get_vox(vox))
-						m_neigh[y * 9 + z * 3 + x] = true;
+					else if ((found = m_vdb.get_vox(vox)))
+						m_neigh[y * 9 + z * 3 + x] = (is_opaque == block_is_opaque(found));
 				}
-				else if (m_vdb.get_vox(vox))
-					m_neigh[y * 9 + z * 3 + x] = true;
+				else if ((found = m_vdb.get_vox(vox)))
+					m_neigh[y * 9 + z * 3 + x] = (is_opaque == block_is_opaque(found));
 			}
 		}
 	}

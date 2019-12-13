@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/11 07:00:55 by trobicho          #+#    #+#             */
-/*   Updated: 2019/12/09 13:11:12 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/12/13 17:50:01 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,19 +21,26 @@ void	Mesh::reset()
 {
 	vertex_buffer.clear();
 	index_buffer.clear();
+	index_buffer_blend.clear();
 }
 
-int		Mesh::add_vertex(s_vertex v, uint32_t idx)
+int		Mesh::add_vertex(s_vertex v, uint32_t idx, bool is_opaque)
 {
 	vertex_buffer.push_back(v);
-	index_buffer.push_back(idx);
+	if (is_opaque)
+		index_buffer.push_back(idx);
+	else
+		index_buffer_blend.push_back(idx);
 	return (vertex_buffer.size() - 1);
 }
 
-int		Mesh::add_vertex_with_basic_index(s_vertex v)
+int		Mesh::add_vertex_with_basic_index(s_vertex v, bool is_opaque)
 {
 	vertex_buffer.push_back(v);
-	index_buffer.push_back(vertex_buffer.size() - 1);
+	if (is_opaque)
+		index_buffer.push_back(vertex_buffer.size() - 1);
+	else
+		index_buffer_blend.push_back(vertex_buffer.size() - 1);
 	return (vertex_buffer.size() - 1);
 }
 
@@ -44,9 +51,12 @@ int		Mesh::add_vertex_with_no_index(s_vertex v, uint8_t ao)
 	return (vertex_buffer.size() - 1);
 }
 
-void	Mesh::add_index(uint32_t idx)
+void	Mesh::add_index(uint32_t idx, bool is_opaque)
 {
-	index_buffer.push_back(idx);
+	if (is_opaque)
+		index_buffer.push_back(idx);
+	else
+		index_buffer_blend.push_back(idx);
 }
 
 void	Mesh::remove_vertex(uint32_t offset, uint32_t size)
@@ -271,6 +281,7 @@ void	Mesh::add_cube_from_node(s_vec3i v, e_block_type type, void *node_ptr)
 	s_vertex		vertex(glm::vec3((float)v.x, (float)v.y, (float)v.z)
 						, get_color_from_block_type(type));
 	Node_v			*node = (Node_v*)node_ptr;
+	bool			is_opaque = block_is_opaque(type);
 
 	m_moore_access.find_neigh(v, node);
 	get_needed_vertex(v_b);
@@ -280,23 +291,23 @@ void	Mesh::add_cube_from_node(s_vec3i v, e_block_type type, void *node_ptr)
 		if (vertex_buffer[v_idx[1]].ao + vertex_buffer[v_idx[3]].ao
 			> vertex_buffer[v_idx[2]].ao + vertex_buffer[v_idx[0]].ao)
 		{
-			add_index(v_idx[1]);
-			add_index(v_idx[0]);
-			add_index(v_idx[3]);
+			add_index(v_idx[1], is_opaque);
+			add_index(v_idx[0], is_opaque);
+			add_index(v_idx[3], is_opaque);
 
-			add_index(v_idx[3]);
-			add_index(v_idx[2]);
-			add_index(v_idx[1]);
+			add_index(v_idx[3], is_opaque);
+			add_index(v_idx[2], is_opaque);
+			add_index(v_idx[1], is_opaque);
 		}
 		else
 		{
-			add_index(v_idx[2]);
-			add_index(v_idx[1]);
-			add_index(v_idx[0]);
+			add_index(v_idx[2], is_opaque);
+			add_index(v_idx[1], is_opaque);
+			add_index(v_idx[0], is_opaque);
 
-			add_index(v_idx[0]);
-			add_index(v_idx[3]);
-			add_index(v_idx[2]);
+			add_index(v_idx[0], is_opaque);
+			add_index(v_idx[3], is_opaque);
+			add_index(v_idx[2], is_opaque);
 		}
 	}
 	if (!m_moore_access[MOORE_DOWN])
@@ -304,23 +315,23 @@ void	Mesh::add_cube_from_node(s_vec3i v, e_block_type type, void *node_ptr)
 		if (vertex_buffer[v_idx[7]].ao + vertex_buffer[v_idx[5]].ao
 			> vertex_buffer[v_idx[4]].ao + vertex_buffer[v_idx[6]].ao)
 		{
-			add_index(v_idx[7]);
-			add_index(v_idx[4]);
-			add_index(v_idx[5]);
+			add_index(v_idx[7], is_opaque);
+			add_index(v_idx[4], is_opaque);
+			add_index(v_idx[5], is_opaque);
 
-			add_index(v_idx[5]);
-			add_index(v_idx[6]);
-			add_index(v_idx[7]);
+			add_index(v_idx[5], is_opaque);
+			add_index(v_idx[6], is_opaque);
+			add_index(v_idx[7], is_opaque);
 		}
 		else
 		{
-			add_index(v_idx[4]);
-			add_index(v_idx[5]);
-			add_index(v_idx[6]);
+			add_index(v_idx[4], is_opaque);
+			add_index(v_idx[5], is_opaque);
+			add_index(v_idx[6], is_opaque);
 
-			add_index(v_idx[6]);
-			add_index(v_idx[7]);
-			add_index(v_idx[4]);
+			add_index(v_idx[6], is_opaque);
+			add_index(v_idx[7], is_opaque);
+			add_index(v_idx[4], is_opaque);
 		}
 	}
 	if (!m_moore_access[MOORE_FRONT])
@@ -328,23 +339,23 @@ void	Mesh::add_cube_from_node(s_vec3i v, e_block_type type, void *node_ptr)
 		if (vertex_buffer[v_idx[4]].ao + vertex_buffer[v_idx[1]].ao
 			> vertex_buffer[v_idx[0]].ao + vertex_buffer[v_idx[5]].ao)
 		{
-			add_index(v_idx[4]);
-			add_index(v_idx[0]);
-			add_index(v_idx[1]);
+			add_index(v_idx[4], is_opaque);
+			add_index(v_idx[0], is_opaque);
+			add_index(v_idx[1], is_opaque);
 
-			add_index(v_idx[1]);
-			add_index(v_idx[5]);
-			add_index(v_idx[4]);
+			add_index(v_idx[1], is_opaque);
+			add_index(v_idx[5], is_opaque);
+			add_index(v_idx[4], is_opaque);
 		}
 		else
 		{
-			add_index(v_idx[0]);
-			add_index(v_idx[1]);
-			add_index(v_idx[5]);
+			add_index(v_idx[0], is_opaque);
+			add_index(v_idx[1], is_opaque);
+			add_index(v_idx[5], is_opaque);
 
-			add_index(v_idx[5]);
-			add_index(v_idx[4]);
-			add_index(v_idx[0]);
+			add_index(v_idx[5], is_opaque);
+			add_index(v_idx[4], is_opaque);
+			add_index(v_idx[0], is_opaque);
 		}
 	}
 	if (!m_moore_access[MOORE_BACK])
@@ -352,23 +363,23 @@ void	Mesh::add_cube_from_node(s_vec3i v, e_block_type type, void *node_ptr)
 		if (vertex_buffer[v_idx[7]].ao + vertex_buffer[v_idx[2]].ao
 			> vertex_buffer[v_idx[6]].ao + vertex_buffer[v_idx[3]].ao)
 		{
-			add_index(v_idx[7]);
-			add_index(v_idx[6]);
-			add_index(v_idx[2]);
+			add_index(v_idx[7], is_opaque);
+			add_index(v_idx[6], is_opaque);
+			add_index(v_idx[2], is_opaque);
 
-			add_index(v_idx[2]);
-			add_index(v_idx[3]);
-			add_index(v_idx[7]);
+			add_index(v_idx[2], is_opaque);
+			add_index(v_idx[3], is_opaque);
+			add_index(v_idx[7], is_opaque);
 		}
 		else
 		{
-			add_index(v_idx[6]);
-			add_index(v_idx[2]);
-			add_index(v_idx[3]);
+			add_index(v_idx[6], is_opaque);
+			add_index(v_idx[2], is_opaque);
+			add_index(v_idx[3], is_opaque);
 
-			add_index(v_idx[3]);
-			add_index(v_idx[7]);
-			add_index(v_idx[6]);
+			add_index(v_idx[3], is_opaque);
+			add_index(v_idx[7], is_opaque);
+			add_index(v_idx[6], is_opaque);
 		}
 	}
 	if (!m_moore_access[MOORE_RIGHT])
@@ -376,23 +387,23 @@ void	Mesh::add_cube_from_node(s_vec3i v, e_block_type type, void *node_ptr)
 		if (vertex_buffer[v_idx[6]].ao + vertex_buffer[v_idx[1]].ao
 			> vertex_buffer[v_idx[5]].ao + vertex_buffer[v_idx[2]].ao)
 		{
-			add_index(v_idx[6]);
-			add_index(v_idx[5]);
-			add_index(v_idx[1]);
+			add_index(v_idx[6], is_opaque);
+			add_index(v_idx[5], is_opaque);
+			add_index(v_idx[1], is_opaque);
 
-			add_index(v_idx[1]);
-			add_index(v_idx[2]);
-			add_index(v_idx[6]);
+			add_index(v_idx[1], is_opaque);
+			add_index(v_idx[2], is_opaque);
+			add_index(v_idx[6], is_opaque);
 		}
 		else
 		{
-			add_index(v_idx[5]);
-			add_index(v_idx[1]);
-			add_index(v_idx[2]);
+			add_index(v_idx[5], is_opaque);
+			add_index(v_idx[1], is_opaque);
+			add_index(v_idx[2], is_opaque);
 
-			add_index(v_idx[2]);
-			add_index(v_idx[6]);
-			add_index(v_idx[5]);
+			add_index(v_idx[2], is_opaque);
+			add_index(v_idx[6], is_opaque);
+			add_index(v_idx[5], is_opaque);
 		}
 	}
 	if (!m_moore_access[MOORE_LEFT])
@@ -400,23 +411,23 @@ void	Mesh::add_cube_from_node(s_vec3i v, e_block_type type, void *node_ptr)
 		if (vertex_buffer[v_idx[4]].ao + vertex_buffer[v_idx[3]].ao
 			> vertex_buffer[v_idx[7]].ao + vertex_buffer[v_idx[0]].ao)
 		{
-			add_index(v_idx[4]);
-			add_index(v_idx[7]);
-			add_index(v_idx[3]);
+			add_index(v_idx[4], is_opaque);
+			add_index(v_idx[7], is_opaque);
+			add_index(v_idx[3], is_opaque);
 
-			add_index(v_idx[3]);
-			add_index(v_idx[0]);
-			add_index(v_idx[4]);
+			add_index(v_idx[3], is_opaque);
+			add_index(v_idx[0], is_opaque);
+			add_index(v_idx[4], is_opaque);
 		}
 		else
 		{
-			add_index(v_idx[7]);
-			add_index(v_idx[3]);
-			add_index(v_idx[0]);
+			add_index(v_idx[7], is_opaque);
+			add_index(v_idx[3], is_opaque);
+			add_index(v_idx[0], is_opaque);
 
-			add_index(v_idx[0]);
-			add_index(v_idx[4]);
-			add_index(v_idx[7]);
+			add_index(v_idx[0], is_opaque);
+			add_index(v_idx[4], is_opaque);
+			add_index(v_idx[7], is_opaque);
 		}
 	}
 }

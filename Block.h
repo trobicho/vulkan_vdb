@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/19 21:20:01 by trobicho          #+#    #+#             */
-/*   Updated: 2019/12/09 09:47:00 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/12/13 16:44:31 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,3 +29,4 @@ enum	e_block_type
 };
 
 glm::vec4	get_color_from_block_type(uint32_t block);
+bool		block_is_opaque(uint32_t block);

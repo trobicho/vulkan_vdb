@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/19 18:43:08 by trobicho          #+#    #+#             */
-/*   Updated: 2019/12/13 01:42:42 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/12/13 18:48:56 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,9 @@ double	Map::combine_test(double x, double z)
 	double	n1 = m_noise.perlin2d(8, 1., 0.6
 				, (double)x / scalar_n1
 				, (double)z / scalar_n1);
+	scalar_n2 /= (n1 + 0.1) * 10;
 	double	n2 = m_noise.perlin2d(8, 1., 0.5
-				, (double)(x + n1 * 100)/ scalar_n2
+				, (double)x / scalar_n2
 				, (double)z / scalar_n2);
 	return (n2);
 }
@@ -100,7 +101,6 @@ int			Map::generate(Vdb_test &vdb, s_vbox box)
 			for (y = 0; y < height; ++y)
 			{
 				s_vec3i	vox(x, y, z);
-				/*
 				if ((y - 1) % lerp_mod == 0)
 				{
 					d_cave = get_density_cave(x + box.origin.x
@@ -117,7 +117,6 @@ int			Map::generate(Vdb_test &vdb, s_vbox box)
 				cave_thres_d = (1.0 - (double)y / box.len.y) - cave_thres;
 				if (y > 0 && d_cave < cave_thres)
 					continue ;
-					*/
 				if (y == 0)
 					block_type = bl_bedrock;
 				else

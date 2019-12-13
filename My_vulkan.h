@@ -6,7 +6,7 @@
 /*   By: trobicho <trobicho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/09 17:05:37 by trobicho          #+#    #+#             */
-/*   Updated: 2019/12/11 17:07:22 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/12/13 17:55:29 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,11 +45,12 @@ struct	s_chunk
 		*/;
 	}
 	int			update(My_vulkan &vulk);
-	int			alloc_buffer(My_vulkan &vulk, VkDeviceSize vbo_size
-					, VkDeviceSize ibo_size);
 	void		command_buffer_binder(VkCommandBuffer &cmd_buffer);
+	void		command_buffer_binder_blend(VkCommandBuffer &cmd_buffer);
 	void		reset(My_vulkan &vulk);
 	void		unload(My_vulkan &vulk);
+	int			alloc_buffer(My_vulkan &vulk, VkDeviceSize vbo_size
+					, VkDeviceSize ibo_size, VkDeviceSize blend_size);
 
 	Mesh			mesh;
 	bool			in_vbo;
@@ -57,12 +58,15 @@ struct	s_chunk
 	bool			need_unload = false;
 	bool			has_unload = false;
 	s_vec3i			origin;
+	bool			has_blend = false;
 
 	private:
 		VkBuffer		m_vertex_buffer;
 		VkDeviceMemory	m_vertex_buffer_memory;
 		VkBuffer		m_vertex_index_buffer;
 		VkDeviceMemory	m_vertex_index_buffer_memory;
+		VkBuffer		m_index_buffer_blend;
+		VkDeviceMemory	m_index_buffer_blend_memory;
 };
 
 using ChunkKey = std::pair<uint32_t, uint32_t>;

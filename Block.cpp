@@ -6,11 +6,22 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/19 21:20:09 by trobicho          #+#    #+#             */
-/*   Updated: 2019/12/07 04:31:36 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/12/13 16:54:27 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Block.h"
+
+bool		block_is_opaque(uint32_t block)
+{
+	switch ((e_block_type)block)
+	{
+		case bl_water:
+			return (false);
+		default:
+			return (true);
+	}
+}
 
 glm::vec4	get_color_from_block_type(uint32_t block)
 {
@@ -29,7 +40,7 @@ glm::vec4	get_color_from_block_type(uint32_t block)
 			return (glm::vec4(0.1f, 0.8f, 0.1f, 1.0f));
 			break;
 		case bl_water:
-			return (glm::vec4(0.2f, 0.2f, 0.8f, 0.1f));
+			return (glm::vec4(0.2f, 0.2f, 0.8f, 0.5f));
 			break;
 		case bl_ice:
 			return (glm::vec4(0.65f, 0.65f, 0.8f, 1.0f));

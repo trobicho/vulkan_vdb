@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/28 17:47:20 by trobicho          #+#    #+#             */
-/*   Updated: 2019/12/12 21:36:14 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/12/13 19:14:38 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -210,8 +210,8 @@ void	Map_loader::block_change(s_vec3i block)
 			box.len = s_vec3i(1 << CHUNK_LOG_X, 1 << CHUNK_LOG_Y
 					, 1 << CHUNK_LOG_Z);
 			std::lock_guard<std::mutex> guard(m_mesh_mutex);
-			mesh_one_chunck(box);
-			m_update = true;
+			if (mesh_one_chunck(box) != -1)
+				m_update = true;
 	}
 }
 
@@ -233,9 +233,10 @@ int		Map_loader::load_pos(s_vec3i pos)
 		std::lock_guard<std::mutex> guard(m_mesh_mutex);
 		if (m_update)
 			return (0);
-		mesh_one_chunck(box, m_chunk.insert(
-					{std::make_pair(box.origin.x, box.origin.z)
-					, s_chunk(m_moore_access)}).first->second);
+		if (mesh_one_chunck(box, m_chunk.insert(
+				{std::make_pair(box.origin.x, box.origin.z)
+				, s_chunk(m_moore_access)}).first->second) == -1)
+				return (0);
 		m_nb_chunk++;
 		return (1);
 	}
@@ -255,9 +256,10 @@ int		Map_loader::load_pos(s_vec3i pos)
 		std::lock_guard<std::mutex> guard(m_mesh_mutex);
 		if (m_update)
 			return (0);
-		mesh_one_chunck(box, m_chunk.insert(
-			{std::make_pair(box.origin.x, box.origin.z)
-			, s_chunk(m_moore_access)}).first->second);
+		if (mesh_one_chunck(box, m_chunk.insert(
+				{std::make_pair(box.origin.x, box.origin.z)
+				, s_chunk(m_moore_access)}).first->second) == -1)
+				return (0);
 		m_nb_chunk++;
 		return (1);
 	}
@@ -312,9 +314,12 @@ int		Map_loader::mesh_one_chunck(s_vbox &box)
 	{
 		if (m_nb_chunk < MAX_CHUNK)
 		{
-			mesh_one_chunck(box, m_chunk.insert(
+			if (mesh_one_chunck(box, m_chunk.insert(
 						{std::make_pair(box.origin.x, box.origin.z)
-						, s_chunk(m_moore_access)}).first->second);
+						, s_chunk(m_moore_access)}).first->second) == -1)
+			{
+				return (-1);
+			}
 		}
 		m_update = true;
 		m_nb_chunk++;
@@ -326,9 +331,12 @@ int		Map_loader::mesh_one_chunck(s_vbox &box)
 		{
 			if (m_nb_chunk < MAX_CHUNK)
 			{
-				mesh_one_chunck(box, m_chunk.insert(
+				if (mesh_one_chunck(box, m_chunk.insert(
 							{std::make_pair(box.origin.x, box.origin.z)
-							, s_chunk(m_moore_access)}).first->second);
+							, s_chunk(m_moore_access)}).first->second) == -1)
+				{
+					return (-1);
+				}
 			}
 			m_update = true;
 			m_nb_chunk++;
@@ -348,6 +356,12 @@ int		Map_loader::mesh_one_chunck(s_vbox &box, s_chunk& chunk)
 		, std::chrono::seconds::period>(mtime - time).count();
 	std::cout << "time to mesh = " << time_mesh << std::endl;
 	*/
+	if (chunk.mesh.vertex_buffer.size() == 0
+		|| chunk.mesh.index_buffer.size() == 0)
+	{
+		m_chunk.erase({std::make_pair(box.origin.x, box.origin.z)});
+		return (-1);
+	}
 	chunk.origin = box.origin;
 	chunk.in_vbo = false;
 	return (0);

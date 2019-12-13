@@ -24,9 +24,6 @@ void main()
 	//float len = length(ubo.sun_pos - in_pos) / 10.0f;
 	//len *= len;
 	//out_color = vec4(vec3(1.0f, 1.0f, 1.0f) * (intensity / (M_PI * len)), 1.0f);
-	out_color = vec4(1.0);
-	out_color /= (4 - in_ao);
-	out_color = max(out_color, vec4(0.1));
-	out_color = min(out_color, vec4(1.0));
-	out_color *= vec4(in_color);
+	vec3	color_scalar = vec3(1.0) / (4 - in_ao);
+	out_color = vec4((in_color.xyz * color_scalar), in_color.a);
 }

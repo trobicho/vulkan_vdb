@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/11 06:56:37 by trobicho          #+#    #+#             */
-/*   Updated: 2019/12/10 15:36:41 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/12/13 17:49:52 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,10 +88,10 @@ class	Mesh
 		void		reset();
 		uint32_t	get_nb_vertex() const {return(vertex_buffer.size());}
 		uint32_t	get_nb_index() const {return(index_buffer.size());}
-		int			add_vertex(s_vertex v, uint32_t idx);
-		int			add_vertex_with_basic_index(s_vertex v);
+		int			add_vertex(s_vertex v, uint32_t idx, bool is_opaque = true);
+		int			add_vertex_with_basic_index(s_vertex v, bool is_opaque = true);
+		void		add_index(uint32_t idx, bool is_opaque = true);
 		int			add_vertex_with_no_index(s_vertex v, uint8_t ao = 3);
-		void		add_index(uint32_t idx);
 		void		remove_vertex(uint32_t offset, uint32_t size);
 		void		add_big_cube_from_node(s_vec3i v
 						, e_block_type type, void *node_ptr);
@@ -100,6 +100,7 @@ class	Mesh
 
 		std::vector<s_vertex>	vertex_buffer;
 		std::vector<uint32_t>	index_buffer;
+		std::vector<uint32_t>	index_buffer_blend;
 
 	private:
 		void		get_needed_face(std::bitset<6> &f_b
