@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/19 18:38:50 by trobicho          #+#    #+#             */
-/*   Updated: 2019/12/03 17:27:43 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/12/13 01:30:16 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,7 @@ class	Map
 		uint64_t	get_nb_vox(){return (m_nb_vox);}
 
 	private:
+		double			combine_test(double x, double z);
 		double			get_height(double x, double y);
 		int				get_height(s_biome_info &biome_info, double x, double z);
 		double			get_density_cave(double x, double y, double z);

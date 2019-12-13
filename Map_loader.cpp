@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/28 17:47:20 by trobicho          #+#    #+#             */
-/*   Updated: 2019/12/11 19:35:39 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/12/12 21:36:14 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,18 +57,21 @@ void	Map_loader::thread_loader()
 	{
 		if (m_update == false)
 		{
+			int up;
 			m_update_mutex.lock();
-			search_new_chunk();
+			up = search_new_chunk();
 			tag_unload_far_chunk();
+			if (up)
+				m_update = true;
 			m_update_mutex.unlock();
-			usleep(100000);
+			usleep(10000);
 			i++;
 		}
 	}
 	thread.join();
 }
 
-void	Map_loader::search_new_chunk()
+int		Map_loader::search_new_chunk()
 {
 	glm::vec3	p_pos = m_player.get_cam_pos();
 	s_vec3i		i_pos = s_vec3i((int)p_pos.x, (int)p_pos.y, (int)p_pos.z);
@@ -79,11 +82,10 @@ void	Map_loader::search_new_chunk()
 	while (next_chunk_in_radius(i_pos, pos, m_meshing_radius) && !m_update)
 	{
 		update += load_pos(pos);
-		if (update > 5)
+		if (update > 10)
 			break;
 	}
-	if (update > 0)
-		m_update = true;
+	return (update);
 }
 
 void	Map_loader::unload_far_chunk()
@@ -111,7 +113,6 @@ void	Map_loader::unload_far_chunk()
 				else
 					++chunk_it;
 			}
-			usleep(200000);
 		}
 		if (m_need_unload < 0)
 			m_need_unload = 0;

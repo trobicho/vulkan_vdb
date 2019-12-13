@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/19 18:43:08 by trobicho          #+#    #+#             */
-/*   Updated: 2019/12/04 00:56:22 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/12/13 01:42:42 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,19 +14,30 @@
 #include "Block.h"
 #include "Noise.h"
 
+double	Map::combine_test(double x, double z)
+{
+	double	scalar_n1 = 5000.0;
+	double	scalar_n2 = 1000.0;
+	double	n1 = m_noise.perlin2d(8, 1., 0.6
+				, (double)x / scalar_n1
+				, (double)z / scalar_n1);
+	double	n2 = m_noise.perlin2d(8, 1., 0.5
+				, (double)(x + n1 * 100)/ scalar_n2
+				, (double)z / scalar_n2);
+	return (n2);
+}
+
 int		Map::get_height(s_biome_info &biome_info, double x, double z)
 {
 	double	scalar_elev = 5000.0;
 	double	scalar_height = 700.0;
 
-	double	d_e = m_noise.perlin2d(3, 2., 0.8
-			, (double)x / scalar_elev
-			, (double)z / scalar_elev);
+	double	d_e = combine_test(x, z);
 	double	d_h = m_noise.perlin2d(5, 2., 0.8
 			, (double)z / scalar_height
 			, (double)x / scalar_height);
-	int		height = WATER_HEIGHT + (int)(((d_e - 0.5)) * WATER_HEIGHT
-					+ ((d_h - 0.5) * 2.0) * (CLOUD_HEIGHT - WATER_HEIGHT)) + 1;
+	int		height = (int)(d_e * WATER_HEIGHT)
+					+ (d_h * (CLOUD_HEIGHT - WATER_HEIGHT)) + 1;
 	return (height);
 }
 
@@ -89,6 +100,7 @@ int			Map::generate(Vdb_test &vdb, s_vbox box)
 			for (y = 0; y < height; ++y)
 			{
 				s_vec3i	vox(x, y, z);
+				/*
 				if ((y - 1) % lerp_mod == 0)
 				{
 					d_cave = get_density_cave(x + box.origin.x
@@ -105,6 +117,7 @@ int			Map::generate(Vdb_test &vdb, s_vbox box)
 				cave_thres_d = (1.0 - (double)y / box.len.y) - cave_thres;
 				if (y > 0 && d_cave < cave_thres)
 					continue ;
+					*/
 				if (y == 0)
 					block_type = bl_bedrock;
 				else
