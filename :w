@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/28 17:47:20 by trobicho          #+#    #+#             */
-/*   Updated: 2019/12/13 20:35:10 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/12/13 20:23:43 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -230,23 +230,22 @@ int		Map_loader::load_pos(s_vec3i pos)
 		box.origin = s_vec3i((pos.x >> CHUNK_LOG_X) << CHUNK_LOG_X
 				, 0, (pos.z >> CHUNK_LOG_Z) << CHUNK_LOG_Z);
 		generate_one_chunck(box);
-		s_vbox	box2 = box;
-		box2.origin.x += (1 << CHUNK_LOG_X);
-		generate_one_chunck(box2);
-		box2.origin.z += (1 << CHUNK_LOG_Z);
-		generate_one_chunck(box2);
-		box2.origin.x -= (1 << CHUNK_LOG_X);
-		generate_one_chunck(box2);
-		box2.origin.x -= (1 << CHUNK_LOG_X);
-		generate_one_chunck(box2);
-		box2.origin.z -= (1 << CHUNK_LOG_Z);
-		generate_one_chunck(box2);
-		box2.origin.z -= (1 << CHUNK_LOG_Z);
-		generate_one_chunck(box2);
-		box2.origin.x += (1 << CHUNK_LOG_X);
-		generate_one_chunck(box2);
-		box2.origin.x += (1 << CHUNK_LOG_X);
-		generate_one_chunck(box2);
+		box.origin.x += (1 << CHUNK_LOG_X);
+		generate_one_chunck(box);
+		box.origin.z += (1 << CHUNK_LOG_Z);
+		generate_one_chunck(box);
+		box.origin.x -= (1 << CHUNK_LOG_X);
+		generate_one_chunck(box);
+		box.origin.x -= (1 << CHUNK_LOG_X);
+		generate_one_chunck(box);
+		box.origin.z -= (1 << CHUNK_LOG_Z);
+		generate_one_chunck(box);
+		box.origin.z -= (1 << CHUNK_LOG_Z);
+		generate_one_chunck(box);
+		box.origin.x += (1 << CHUNK_LOG_X);
+		generate_one_chunck(box);
+		box.origin.x += (1 << CHUNK_LOG_X);
+		generate_one_chunck(box);
 		std::lock_guard<std::mutex> guard(m_mesh_mutex);
 		if (m_update)
 			return (0);
@@ -273,23 +272,6 @@ int		Map_loader::load_pos(s_vec3i pos)
 		std::lock_guard<std::mutex> guard(m_mesh_mutex);
 		if (m_update)
 			return (0);
-		s_vbox	box2 = box;
-		box2.origin.x += (1 << CHUNK_LOG_X);
-		generate_one_chunck(box2);
-		box2.origin.z += (1 << CHUNK_LOG_Z);
-		generate_one_chunck(box2);
-		box2.origin.x -= (1 << CHUNK_LOG_X);
-		generate_one_chunck(box2);
-		box2.origin.x -= (1 << CHUNK_LOG_X);
-		generate_one_chunck(box2);
-		box2.origin.z -= (1 << CHUNK_LOG_Z);
-		generate_one_chunck(box2);
-		box2.origin.z -= (1 << CHUNK_LOG_Z);
-		generate_one_chunck(box2);
-		box2.origin.x += (1 << CHUNK_LOG_X);
-		generate_one_chunck(box2);
-		box2.origin.x += (1 << CHUNK_LOG_X);
-		generate_one_chunck(box2);
 		if (mesh_one_chunck(box, m_chunk.insert(
 				{std::make_pair(box.origin.x, box.origin.z)
 				, s_chunk(m_moore_access)}).first->second) == -1)
@@ -326,10 +308,10 @@ int		Map_loader::update()
 
 int		Map_loader::generate_one_chunck(s_vbox &box)
 {
-	const Node_v	*node;
+	Node_v	*node;
 	uint32_t		value;
 
-	if ((node = m_vdb.get_interresting_node(box.origin, value))
+	if ((node = m_vdb.get_interresting_node(box, value))
 			!= nullptr && node->get_child_slog().x >= CHUNK_LOG_X)
 	{
 		if (m_map.generate(m_vdb, box))

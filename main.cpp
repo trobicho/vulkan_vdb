@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/02 20:39:09 by trobicho          #+#    #+#             */
-/*   Updated: 2019/12/12 21:16:00 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/12/13 20:31:57 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,8 +103,7 @@ int	main()
 	s_vbox box;
 	box.origin = s_vec3i(xr, 0, zr);
 	box.len = s_vec3i(1 << CHUNK_LOG_X, 1 << CHUNK_LOG_Y, 1 << CHUNK_LOG_Z);
-	map_loader.generate_one_chunck(box);
-	map_loader.mesh_one_chunck(box);
+	map_loader.load_pos(box.origin);
 
 	s_user		user(player, my_vdb, map_loader);
 	player.get_cam_ref().ubo.sun_pos = glm::vec3(xr, 300, zr);
