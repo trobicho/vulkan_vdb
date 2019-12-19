@@ -13,6 +13,6 @@ vec3 fog(vec3 color, vec3 fcolor, float depth, float density){
 }
 
 void main() {
-	out_color = vec4(fog(in_color.xyz, vec3(0.8), in_dist_obs, 0.005), 1.0);
+	out_color = vec4(fog(in_color.xyz, vec3(0.8), in_dist_obs, 0.005), in_color.a);
 	//vec4(pow(out_color.xyz, vec3(1 / 2.2))
 }

@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/02 20:39:09 by trobicho          #+#    #+#             */
-/*   Updated: 2019/12/13 20:31:57 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/12/19 16:12:42 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,6 @@ static int	main_loop(My_vulkan &my_vulkan, Map_loader &map_loader
 	vkDeviceWaitIdle(my_vulkan.get_device_ref());
 	return (0);
 }
-
 
 #include "Noise.h"
 
