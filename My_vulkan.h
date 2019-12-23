@@ -6,7 +6,7 @@
 /*   By: trobicho <trobicho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/09 17:05:37 by trobicho          #+#    #+#             */
-/*   Updated: 2019/12/13 17:55:29 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/12/21 21:19:38 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,6 +69,39 @@ struct	s_chunk
 		VkDeviceMemory	m_index_buffer_blend_memory;
 };
 
+struct	s_enemy
+{
+	s_enemy(){};
+	~s_enemy()
+	{
+		/*
+		vkDestroyBuffer(device_ref, m_vertex_index_buffer, nullptr);
+		vkFreeMemory(device_ref, m_vertex_index_buffer_memory, nullptr);
+		vkDestroyBuffer(device_ref, m_vertex_buffer, nullptr);
+		vkFreeMemory(device_ref, m_vertex_buffer_memory, nullptr);
+		*/;
+	}
+	int			update(My_vulkan &vulk, Mesh &mesh);
+	void		command_buffer_binder(VkCommandBuffer &cmd_buffer);
+	void		command_buffer_binder_blend(VkCommandBuffer &cmd_buffer);
+	void		unload(My_vulkan &vulk);
+	int			alloc_buffer(My_vulkan &vulk, VkDeviceSize vbo_size
+					, VkDeviceSize ibo_size);
+
+	bool			in_vbo;
+	bool			need_remesh = false;
+	bool			need_unload = false;
+	bool			has_unload = false;
+	int				nb_index;
+	s_vec3i			origin;
+
+	private:
+		VkBuffer		m_vertex_buffer;
+		VkDeviceMemory	m_vertex_buffer_memory;
+		VkBuffer		m_vertex_index_buffer;
+		VkDeviceMemory	m_vertex_index_buffer_memory;
+};
+
 using ChunkKey = std::pair<uint32_t, uint32_t>;
 
 struct Key_hash
@@ -80,6 +113,7 @@ struct Key_hash
 };
 
 using t_chunk_cont = std::unordered_map<ChunkKey, s_chunk, Key_hash>;
+using t_enemy_cont = s_enemy;
 
 class	My_vulkan
 {
@@ -93,6 +127,7 @@ class	My_vulkan
 		const VkDevice
 					&get_device_ref() const {return (const VkDevice&)(m_device);}
 		int			command_buffer_record(t_chunk_cont &chunk_vec);
+		int			command_buffer_record(t_enemy_cont &chunk_vec);
 		int			create_buffer(VkDeviceSize size, VkBufferUsageFlags usage
 						, VkMemoryPropertyFlags properties, VkBuffer &buffer
 						, VkDeviceMemory &buffer_mem);

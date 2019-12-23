@@ -1,20 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Enemy.h                                            :+:      :+:    :+:   */
+/*   Spider.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: trobicho <trobicho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/12/19 16:17:13 by trobicho          #+#    #+#             */
-/*   Updated: 2019/12/21 05:24:28 by trobicho         ###   ########.fr       */
+/*   Created: 2019/12/20 22:08:47 by trobicho          #+#    #+#             */
+/*   Updated: 2019/12/22 00:29:10 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Vdb_test.h"
+#include "Spider.h"
 
-class	Enemy
+Spider::Spider(): m_mesh(m_moore_access)
 {
-	public:
-		Enemy(){};
-		~Enemy(){};
-};
+}
+
+void	Spider::generate()
+{
+	m_vdb.set_vox(1, s_vec3i(0, 0, 0));
+	m_vdb.mesh(m_mesh);
+}

@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/02 20:38:22 by trobicho          #+#    #+#             */
-/*   Updated: 2019/12/08 01:52:23 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/12/21 05:52:01 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ class Internal_node: public Node<Value>
 		void		do_set_vox(Value v, int32_t x, int32_t y, int32_t z);
 		void		do_unset_vox(int32_t x, int32_t y, int32_t z);
 		Value		do_get_vox(int32_t x, int32_t y, int32_t z) const;
-		Value		pruning();
+		Value		do_pruning();
 		int			do_remove_node_by_slog(s_vec3i node_pos, uint32_t slog);
 		const Node<Value>
 					*do_get_interresting_node(s_vec3i v, Value &value) const;
@@ -205,7 +205,7 @@ const Node<Value>	*Internal_node<Value, Child, Log2X, Log2Y, Log2Z>
 }
 
 template <class Value, class Child, int Log2X, int Log2Y, int Log2Z>
-Value	Internal_node<Value, Child, Log2X, Log2Y, Log2Z>::pruning()
+Value	Internal_node<Value, Child, Log2X, Log2Y, Log2Z>::do_pruning()
 {
 	Value	val;
 
@@ -213,7 +213,7 @@ Value	Internal_node<Value, Child, Log2X, Log2Y, Log2Z>::pruning()
 	{
 		if (m_child_mask[i])
 		{
-			if ((val = m_internal_data[i].child->pruning()) != 0)
+			if ((val = m_internal_data[i].child->do_pruning()) != 0)
 			{
 				m_child_mask.set(i, false);
 				m_value_mask.set(i, true);

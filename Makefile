@@ -6,7 +6,7 @@
 #    By: trobicho <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/11/02 20:38:42 by trobicho          #+#    #+#              #
-#    Updated: 2019/12/19 13:40:32 by trobicho         ###   ########.fr        #
+#    Updated: 2019/12/21 21:16:25 by trobicho         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -32,7 +32,10 @@ else
 		-lvulkan -lglfw -lm -L ../QGen/my_lib_cpp/ -ltrl
 endif
 
-SRCS_NAME	=	main.cpp \
+SRCS_NAME	=	main_spider.cpp \
+				Spider.cpp \
+				Enemy_vbo.cpp \
+				Enemy_manager.cpp \
 				Space_colonisation.cpp \
 				Lsystem.cpp \
 				Turtle.cpp \
@@ -56,6 +59,8 @@ SRCS_NAME	=	main.cpp \
 				Ray.cpp
 
 HDRS_NAME	=	Vdb_test.h \
+				Spider.h \
+				Enemy_manager.h \
 				Space_colonisation.h \
 				Lsystem.h \
 				Turtle.h \

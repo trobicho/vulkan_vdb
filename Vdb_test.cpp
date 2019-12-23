@@ -6,13 +6,13 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/02 21:06:27 by trobicho          #+#    #+#             */
-/*   Updated: 2019/12/09 13:32:17 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/12/21 05:50:07 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Vdb_test.h"
 
-Vdb_test::Vdb_test(): m_min(0, 0, 0)
+Vdb_test::Vdb_test(Node_v &root): m_root_static(root), m_min(0, 0, 0)
 {
 	m_max.x = (1 << m_root_static.get_slog().x);
 	m_max.y = (1 << m_root_static.get_slog().y);

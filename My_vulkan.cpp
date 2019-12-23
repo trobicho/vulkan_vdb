@@ -6,7 +6,7 @@
 /*   By: trobicho <trobicho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/09 17:05:36 by trobicho          #+#    #+#             */
-/*   Updated: 2019/12/13 17:54:24 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/12/21 21:13:56 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1174,6 +1174,71 @@ int		My_vulkan::command_buffer_record(t_chunk_cont &chunk_vec)
 			if (chunk->second.need_unload == false)
 				chunk->second.command_buffer_binder_blend(m_command_buffer[i]);
 		}
+		vkCmdEndRenderPass(m_command_buffer[i]);
+		if (vkEndCommandBuffer(m_command_buffer[i]) != VK_SUCCESS)
+		{
+			printf("failed to record command buffer!\n");
+			return (-1);
+		}
+		i++;
+	}
+	return (0);
+}
+
+int		My_vulkan::command_buffer_record(t_enemy_cont &enemy_vec)
+{
+	int							i;
+	uint32_t					img_count;
+	VkCommandBufferBeginInfo	begin_info;
+	VkRenderPassBeginInfo		render_pass_info;
+	VkClearValue				clear_color;
+	std::array<VkClearValue, 2> clear_value = {};
+
+	i = 0;
+	vkGetSwapchainImagesKHR(m_device, m_swap_chain, &img_count, NULL);
+	begin_info = (VkCommandBufferBeginInfo){};
+	clear_value[0].color = {0.0f, 0.0f, 0.0f, 1.0f};
+	clear_value[1].depthStencil = {1.0f, 0};
+	while (i < img_count)
+	{
+		begin_info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+		begin_info.flags = VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT;
+		begin_info.pInheritanceInfo = NULL;
+		if (vkBeginCommandBuffer(m_command_buffer[i], &begin_info)
+			!= VK_SUCCESS)
+		{
+			printf("failed to begin recording command buffer!\n");
+			return (-1);
+		}
+		render_pass_info = (VkRenderPassBeginInfo){};
+		render_pass_info.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
+		render_pass_info.renderPass = m_render_pass;
+		render_pass_info.framebuffer = m_framebuffer[i];
+		render_pass_info.renderArea.offset = (VkOffset2D){0, 0};
+		render_pass_info.renderArea.extent = m_swap_chain_extent;
+		render_pass_info.clearValueCount =
+			static_cast<uint32_t>(clear_value.size());
+		render_pass_info.pClearValues = clear_value.data();
+		vkCmdBeginRenderPass(m_command_buffer[i], &render_pass_info
+			, VK_SUBPASS_CONTENTS_INLINE);
+		vkCmdBindPipeline(m_command_buffer[i]
+			, VK_PIPELINE_BIND_POINT_GRAPHICS, m_graphics_pipeline);
+		/*
+		VkBuffer vertex_buffers[] = {m_vertex_buffer};
+		VkDeviceSize offsets[] = {0};
+		vkCmdBindVertexBuffers(m_command_buffer[i], 0, 1
+		, (const VkBuffer*)vertex_buffers, offsets);
+		vkCmdBindIndexBuffer(m_command_buffer[i], m_vertex_index_buffer, 0
+				, VK_INDEX_TYPE_UINT32);
+		vkCmdBindDescriptorSets(m_command_buffer[i]
+				, VK_PIPELINE_BIND_POINT_GRAPHICS, m_pipeline_layout
+				, 0, 1, &m_desc_set[i], 0, nullptr);
+		vkCmdDrawIndexed(m_command_buffer[i], nb_idx, 1, 0, 0, 0);
+		*/
+		vkCmdBindDescriptorSets(m_command_buffer[i]
+				, VK_PIPELINE_BIND_POINT_GRAPHICS, m_pipeline_layout
+				, 0, 1, &m_desc_set[i], 0, nullptr);
+		enemy_vec.command_buffer_binder(m_command_buffer[i]);
 		vkCmdEndRenderPass(m_command_buffer[i]);
 		if (vkEndCommandBuffer(m_command_buffer[i]) != VK_SUCCESS)
 		{
