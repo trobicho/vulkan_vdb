@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/02 21:06:27 by trobicho          #+#    #+#             */
-/*   Updated: 2019/12/21 05:50:07 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/12/24 19:57:09 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,12 +75,12 @@ void		Vdb_test::pruning()
 	m_root_static.pruning();
 }
 
-void		Vdb_test::mesh(Mesh &mesh) const
+void		Vdb_test::mesh(Mesh_interface &mesh) const
 {
 	m_root_static.mesh(mesh);
 }
 
-void		Vdb_test::mesh(Mesh &mesh, const s_vbox &box) const
+void		Vdb_test::mesh(Mesh_interface &mesh, const s_vbox &box) const
 {
 	
 	if (box.origin.x >= m_min.x

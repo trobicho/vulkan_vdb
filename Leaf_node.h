@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/02 20:38:57 by trobicho          #+#    #+#             */
-/*   Updated: 2019/12/21 05:51:17 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/12/24 19:58:22 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,8 +31,8 @@ class Leaf_node: public Node<Value>
 		int			do_remove_node_by_slog(s_vec3i node_pos, uint32_t slog);
 		const Node<Value>
 					*do_get_interresting_node(s_vec3i v, Value &value) const;
-		void		do_mesh(Mesh &mesh) const;
-		void		do_mesh(Mesh &mesh, const s_vbox &b) const {do_mesh(mesh);}
+		void		do_mesh(Mesh_interface &mesh) const;
+		void		do_mesh(Mesh_interface &mesh, const s_vbox &b) const {do_mesh(mesh);}
 
 		static const int sSize = 1 << (Log2X + Log2Y + Log2Z);
 		static const int sLog2X = Log2X, sLog2Y = Log2Y, sLog2Z = Log2Z;
@@ -165,14 +165,14 @@ Value		Leaf_node<Value, Log2X, Log2Y, Log2Z>
 
 template <class Value, int Log2X, int Log2Y, int Log2Z>
 void		Leaf_node<Value, Log2X, Log2Y, Log2Z>
-	::do_mesh(Mesh &mesh) const
+	::do_mesh(Mesh_interface &mesh) const
 {
 	for (int i = 0; i < sSize; i++)
 	{
 		if (m_value_mask[i]) 
 		{
 			mesh.add_cube_from_node(get_pos_from_offset(i)
-					, (e_block_type)m_leaf_data[i], (void*)this);
+					, m_leaf_data[i], (void*)this);
 		}
 	}
 }

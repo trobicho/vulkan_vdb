@@ -6,7 +6,7 @@
 /*   By: trobicho <trobicho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/22 17:58:08 by trobicho          #+#    #+#             */
-/*   Updated: 2019/12/13 16:32:37 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/12/24 19:55:51 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 #include "shader.h"
 #include "gpu_pipeline.h"
 #include <stdlib.h>
-#include "Mesh.h"
+#include "Vertex.h"
 
 #include <stdio.h>
 
@@ -154,8 +154,8 @@ VkPipelineInputAssemblyStateCreateInfo	input_assembly_create(void)
 VkPipelineVertexInputStateCreateInfo	vert_input_create(void)
 {
 	VkPipelineVertexInputStateCreateInfo	vert_input_info;
-	static auto binding_description = s_vertex::get_binding_description();
-	static auto attribute_descriptions = s_vertex::get_attribute_descriptions();
+	static auto binding_description = s_vertex_bones::get_binding_description();
+	static auto attribute_descriptions = s_vertex_bones::get_attribute_descriptions();
 
 	vert_input_info = (VkPipelineVertexInputStateCreateInfo){};
 	vert_input_info.sType =

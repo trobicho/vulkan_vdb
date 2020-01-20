@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/02 21:06:37 by trobicho          #+#    #+#             */
-/*   Updated: 2019/12/21 19:07:35 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/12/24 19:57:32 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,8 +34,8 @@ class	Vdb_test
 		const Node_v
 					*get_interresting_node(s_vec3i v, uint32_t &value) const;
 		void		pruning();
-		void		mesh(Mesh &mesh) const;
-		void		mesh(Mesh &mesh, const s_vbox &box) const;
+		void		mesh(Mesh_interface &mesh) const;
+		void		mesh(Mesh_interface &mesh, const s_vbox &box) const;
 
 	private:
 		Node_v		&m_root_static;

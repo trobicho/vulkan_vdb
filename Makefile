@@ -6,7 +6,7 @@
 #    By: trobicho <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/11/02 20:38:42 by trobicho          #+#    #+#              #
-#    Updated: 2019/12/21 21:16:25 by trobicho         ###   ########.fr        #
+#    Updated: 2019/12/24 19:56:10 by trobicho         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -37,8 +37,6 @@ SRCS_NAME	=	main_spider.cpp \
 				Enemy_vbo.cpp \
 				Enemy_manager.cpp \
 				Space_colonisation.cpp \
-				Lsystem.cpp \
-				Turtle.cpp \
 				Vdb_test.cpp \
 				My_vulkan.cpp \
 				init_swap_chain.cpp \
@@ -55,15 +53,12 @@ SRCS_NAME	=	main_spider.cpp \
 				Moore_accessor.cpp \
 				Map_loader.cpp \
 				Chunk.cpp \
-				Mesh.cpp \
 				Ray.cpp
 
 HDRS_NAME	=	Vdb_test.h \
 				Spider.h \
 				Enemy_manager.h \
 				Space_colonisation.h \
-				Lsystem.h \
-				Turtle.h \
 				libvdb.h \
 				Root_node.h \
 				Internal_node.h \
@@ -83,7 +78,9 @@ HDRS_NAME	=	Vdb_test.h \
 				Block.h \
 				Moore_accessor.h \
 				Map_loader.h \
+				Mesh_interface.h \
 				Mesh.h \
+				Vertex.h \
 				Ray.cpp
 
 OBJS_NAME	=	$(SRCS_NAME:.cpp=.o)

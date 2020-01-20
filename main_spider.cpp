@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/02 20:39:09 by trobicho          #+#    #+#             */
-/*   Updated: 2019/12/21 21:35:18 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/12/25 17:00:01 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ int	main()
 	
 	Player		player(glm::vec3((float)xr, (float)1
 					, (float)zr));
-	
+
 	My_vulkan	my_vulkan(win, player.get_cam_ref().ubo);
 	Map_loader	map_loader(my_vdb, my_vulkan, player);
 

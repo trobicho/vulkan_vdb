@@ -6,7 +6,7 @@
 /*   By: trobicho <trobicho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/09 17:05:37 by trobicho          #+#    #+#             */
-/*   Updated: 2019/12/21 21:19:38 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/12/25 16:59:06 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ struct	s_chunk
 	int			alloc_buffer(My_vulkan &vulk, VkDeviceSize vbo_size
 					, VkDeviceSize ibo_size, VkDeviceSize blend_size);
 
-	Mesh			mesh;
+	Mesh<s_vertex>	mesh;
 	bool			in_vbo;
 	bool			need_remesh = false;
 	bool			need_unload = false;
@@ -81,7 +81,7 @@ struct	s_enemy
 		vkFreeMemory(device_ref, m_vertex_buffer_memory, nullptr);
 		*/;
 	}
-	int			update(My_vulkan &vulk, Mesh &mesh);
+	int			update(My_vulkan &vulk, Mesh<s_vertex_bones> &mesh);
 	void		command_buffer_binder(VkCommandBuffer &cmd_buffer);
 	void		command_buffer_binder_blend(VkCommandBuffer &cmd_buffer);
 	void		unload(My_vulkan &vulk);

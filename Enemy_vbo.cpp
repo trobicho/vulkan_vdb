@@ -6,7 +6,7 @@
 /*   By: trobicho <trobicho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/21 21:02:41 by trobicho          #+#    #+#             */
-/*   Updated: 2019/12/21 21:23:07 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/12/24 20:01:53 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ void	s_enemy::command_buffer_binder(VkCommandBuffer &cmd_buffer)
 	vkCmdDrawIndexed(cmd_buffer, nb_index, 1, 0, 0, 0);
 }
 
-int		s_enemy::update(My_vulkan &vulk, Mesh &mesh)
+int		s_enemy::update(My_vulkan &vulk, Mesh<s_vertex_bones> &mesh)
 {
 	VkBuffer		staging_buffer;
 	VkBuffer		staging_buffer_idx;

@@ -6,13 +6,13 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/04 06:38:12 by trobicho          #+#    #+#             */
-/*   Updated: 2019/12/21 05:53:13 by trobicho         ###   ########.fr       */
+/*   Updated: 2019/12/24 19:58:41 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#include "Mesh.h"
+#include "Mesh_interface.h"
 
 struct	s_vbox
 {
@@ -55,8 +55,8 @@ class	Node
 		{
 			return (do_pruning());
 		}
-		inline void			mesh(Mesh &mesh) const {do_mesh(mesh);}
-		inline void			mesh(Mesh &mesh, const s_vbox &box) const
+		inline void			mesh(Mesh_interface &mesh) const {do_mesh(mesh);}
+		inline void			mesh(Mesh_interface &mesh, const s_vbox &box) const
 								{do_mesh(mesh, box);}
 
 	private:
@@ -72,7 +72,7 @@ class	Node
 								, uint32_t slog) = 0;
 		virtual const Node<Value>
 							*do_get_interresting_node(s_vec3i v, Value &value) const = 0;
-		virtual void		do_mesh(Mesh &mesh) const = 0;
-		virtual void		do_mesh(Mesh &mesh, const s_vbox &box) const = 0;
+		virtual void		do_mesh(Mesh_interface &mesh) const = 0;
+		virtual void		do_mesh(Mesh_interface &mesh, const s_vbox &box) const = 0;
 		virtual Value		do_pruning() = 0;
 };
