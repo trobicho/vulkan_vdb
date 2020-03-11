@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/19 16:15:15 by trobicho          #+#    #+#             */
-/*   Updated: 2019/12/25 16:59:24 by trobicho         ###   ########.fr       */
+/*   Updated: 2020/03/11 10:10:56 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,14 +25,18 @@ class Spider
 		Spider();
 		~Spider(){};
 
+		void		bones_test();
 		void		generate();
 		void		add_box(s_vbox box, uint32_t value);
 					// not here namespace toolbox::
 		inline Mesh<s_vertex_bones>
 					&get_mesh_ref(){return (m_mesh);}
+		inline std::vector<glm::mat4>
+					&get_bones_ref(){return (m_bones);}
 
 	private:
 		std::vector<glm::mat4>	m_bones;
+		std::vector<glm::vec3>	m_bones_pos;
 		Internal_enemy			m_root_node = Internal_enemy(0, 0, 0);
 		Vdb_test				m_vdb = Vdb_test(m_root_node);
 		Moore_accessor			m_moore_access = Moore_accessor(m_vdb);

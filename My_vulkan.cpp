@@ -6,7 +6,7 @@
 /*   By: trobicho <trobicho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/09 17:05:36 by trobicho          #+#    #+#             */
-/*   Updated: 2019/12/21 21:13:56 by trobicho         ###   ########.fr       */
+/*   Updated: 2020/03/11 09:00:01 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1122,7 +1122,7 @@ int		My_vulkan::command_buffer_record(t_chunk_cont &chunk_vec)
 	i = 0;
 	vkGetSwapchainImagesKHR(m_device, m_swap_chain, &img_count, NULL);
 	begin_info = (VkCommandBufferBeginInfo){};
-	clear_value[0].color = {0.0f, 0.0f, 0.0f, 1.0f};
+	clear_value[0].color = {0.1f, 0.1f, 0.8f, 1.0f};
 	clear_value[1].depthStencil = {1.0f, 0};
 	while (i < img_count)
 	{
@@ -1197,7 +1197,7 @@ int		My_vulkan::command_buffer_record(t_enemy_cont &enemy_vec)
 	i = 0;
 	vkGetSwapchainImagesKHR(m_device, m_swap_chain, &img_count, NULL);
 	begin_info = (VkCommandBufferBeginInfo){};
-	clear_value[0].color = {0.0f, 0.0f, 0.0f, 1.0f};
+	clear_value[0].color = {0.1f, 0.1f, 0.8f, 1.0f};
 	clear_value[1].depthStencil = {1.0f, 0};
 	while (i < img_count)
 	{

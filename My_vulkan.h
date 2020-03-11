@@ -6,7 +6,7 @@
 /*   By: trobicho <trobicho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/09 17:05:37 by trobicho          #+#    #+#             */
-/*   Updated: 2019/12/25 16:59:06 by trobicho         ###   ########.fr       */
+/*   Updated: 2020/03/11 08:40:44 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ struct s_ubo
 	glm::mat4	model;
 	glm::mat4	view;
 	glm::mat4	proj;
-	glm::vec3	sun_pos;
+	glm::mat4	bone[17] = {glm::mat4(1.0f)};
 };
 
 class	My_vulkan;

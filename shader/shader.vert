@@ -19,7 +19,6 @@ layout(binding = 0) uniform UniformBufferObject {
 
 void main()
 {
-
 	gl_Position = ubo.proj * ubo.view * ubo.model * vec4(in_pos, 1.0);
 	//float intensity = 1000;
 	//float len = length(ubo.sun_pos - in_pos) / 10.0f;

@@ -6,7 +6,7 @@
 /*   By: trobicho <trobicho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/21 19:59:25 by trobicho          #+#    #+#             */
-/*   Updated: 2019/12/25 16:59:34 by trobicho         ###   ########.fr       */
+/*   Updated: 2020/03/11 09:26:32 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,10 @@ class Enemy_manager
 		Enemy_manager(My_vulkan &vulk);
 		~Enemy_manager(){};
 
-		int		update();
+		int			update();
+		int			init();
+		inline std::vector<glm::mat4>
+					&get_bones_ref(){return (m_spider.get_bones_ref());}
 
 	private:
 		My_vulkan	&m_vulk;

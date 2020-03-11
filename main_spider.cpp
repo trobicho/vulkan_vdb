@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/02 20:39:09 by trobicho          #+#    #+#             */
-/*   Updated: 2019/12/25 17:00:01 by trobicho         ###   ########.fr       */
+/*   Updated: 2020/03/11 09:33:04 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 #include "Enemy_manager.h"
 
 static int	main_loop(My_vulkan &my_vulkan, Map_loader &map_loader
-				, GLFWwindow *win)
+				, GLFWwindow *win, Enemy_manager &enemy_manager)
 {
 	s_user	*user = (s_user*)glfwGetWindowUserPointer(win);
 
@@ -26,6 +26,13 @@ static int	main_loop(My_vulkan &my_vulkan, Map_loader &map_loader
 	{
 		glfwPollEvents();
 		user->player.move();
+		auto &cam = user->player.get_cam_ref();
+		auto &bones = enemy_manager.get_bones_ref();
+		for (int i = 0; i < 17; ++i)
+		{
+			cam.ubo.bone[i] = bones[i];
+		}
+		enemy_manager.update();
 		user->player.update_ubo();
 		my_vulkan.draw_frame();
 	}
@@ -60,7 +67,6 @@ int	main()
 				<< v.y << ", " << v.z << "}" << std::endl;
 
 	s_user		user(player, my_vdb, map_loader);
-	player.get_cam_ref().ubo.sun_pos = glm::vec3(xr, 300, zr);
 
 	glfwSetInputMode(win, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	if (glfwRawMouseMotionSupported())
@@ -78,13 +84,13 @@ int	main()
 	}
 
 	Enemy_manager	enemy_manager = Enemy_manager(my_vulkan);
-	if (enemy_manager.update() == -1)
+	if (enemy_manager.init() == -1)
 	{
 		std::cout << "Unable to initialize Enemy command buffer !" << std::endl;
 		return (1);
 	}
 
-	main_loop(my_vulkan, map_loader, win);
+	main_loop(my_vulkan, map_loader, win, enemy_manager);
 	v = player.get_cam_pos();
 	std::cout << "m_pos = {" << v.x << ", "
 				<< v.y << ", " << v.z << "}" << std::endl;

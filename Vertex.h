@@ -6,7 +6,7 @@
 /*   By: trobicho <trobicho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/24 19:25:39 by trobicho          #+#    #+#             */
-/*   Updated: 2019/12/24 19:39:46 by trobicho         ###   ########.fr       */
+/*   Updated: 2020/01/21 11:17:55 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,12 +118,12 @@ struct	s_vertex_bones
 		attribute_descriptions[2].offset = offsetof(s_vertex_bones, index);
 		
 		attribute_descriptions[3].binding = 0;
-		attribute_descriptions[3].location = 2;
+		attribute_descriptions[3].location = 3;
 		attribute_descriptions[3].format = VK_FORMAT_R32_SFLOAT;
 		attribute_descriptions[3].offset = offsetof(s_vertex_bones, weight);
 		
 		attribute_descriptions[4].binding = 0;
-		attribute_descriptions[4].location = 2;
+		attribute_descriptions[4].location = 4;
 		attribute_descriptions[4].format = VK_FORMAT_R8_UINT;
 		attribute_descriptions[4].offset = offsetof(s_vertex_bones, ao);
 		return (attribute_descriptions);
