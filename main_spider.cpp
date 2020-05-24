@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/02 20:39:09 by trobicho          #+#    #+#             */
-/*   Updated: 2020/03/11 09:33:04 by trobicho         ###   ########.fr       */
+/*   Updated: 2020/05/21 11:20:50 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,8 +55,7 @@ int	main()
 	GLFWwindow *win = glfwCreateWindow(1920, 1080, "Vulkan"
 		, glfwGetPrimaryMonitor(), NULL);
 	
-	Player		player(glm::vec3((float)xr, (float)1
-					, (float)zr));
+	Player		player(glm::vec3((float)xr, 0.0f, (float)zr));
 
 	My_vulkan	my_vulkan(win, player.get_cam_ref().ubo);
 	Map_loader	map_loader(my_vdb, my_vulkan, player);
@@ -65,6 +64,11 @@ int	main()
 	glm::vec3 v = player.get_cam_pos();
 	std::cout << "m_pos = {" << v.x << ", "
 				<< v.y << ", " << v.z << "}" << std::endl;
+
+	s_vbox box;
+	box.origin = s_vec3i(xr, 0, zr);
+	box.len = s_vec3i(1 << CHUNK_LOG_X, 1 << CHUNK_LOG_Y, 1 << CHUNK_LOG_Z);
+	map_loader.load_pos(box.origin);
 
 	s_user		user(player, my_vdb, map_loader);
 

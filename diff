@@ -1,0 +1,1445 @@
+Seulement dans ./: Ccd_solver.cpp
+Seulement dans ./: Ccd_solver.h
+Seulement dans ./: diff
+diff ./Enemy_manager.cpp ../vox/Enemy_manager.cpp
+9c9
+< /*   Updated: 2020/03/11 09:30:30 by trobicho         ###   ########.fr       */
+---
+> /*   Updated: 2019/12/21 21:39:11 by trobicho         ###   ########.fr       */
+20c20
+< int		Enemy_manager::init()
+---
+> int		Enemy_manager::update()
+23d22
+< 	std::cout << "nb index: " << m_spider_vbo.nb_index << std::endl;
+27,32d25
+< 	return (0);
+< }
+< 
+< int		Enemy_manager::update()
+< {
+< 	m_spider.bones_test();
+Seulement dans ./: .Enemy_manager.cpp.swp
+diff ./Enemy_manager.h ../vox/Enemy_manager.h
+9c9
+< /*   Updated: 2020/03/11 09:26:32 by trobicho         ###   ########.fr       */
+---
+> /*   Updated: 2019/12/21 21:14:35 by trobicho         ###   ########.fr       */
+24,27c24
+< 		int			update();
+< 		int			init();
+< 		inline std::vector<glm::mat4>
+< 					&get_bones_ref(){return (m_spider.get_bones_ref());}
+---
+> 		int		update();
+diff ./Enemy_vbo.cpp ../vox/Enemy_vbo.cpp
+9c9
+< /*   Updated: 2019/12/24 20:01:53 by trobicho         ###   ########.fr       */
+---
+> /*   Updated: 2019/12/21 21:23:07 by trobicho         ###   ########.fr       */
+39c39
+< int		s_enemy::update(My_vulkan &vulk, Mesh<s_vertex_bones> &mesh)
+---
+> int		s_enemy::update(My_vulkan &vulk, Mesh &mesh)
+Les sous-répertoires ./.git et ../vox/.git sont identiques
+diff ./gpu_pipeline.cpp ../vox/gpu_pipeline.cpp
+9c9
+< /*   Updated: 2020/05/21 12:01:12 by trobicho         ###   ########.fr       */
+---
+> /*   Updated: 2019/12/13 16:32:37 by trobicho         ###   ########.fr       */
+18c18
+< #include "Vertex.h"
+---
+> #include "Mesh.h"
+Seulement dans ./: .gpu_pipeline.cpp.swp
+diff ./Internal_node.h ../vox/Internal_node.h
+9c9
+< /*   Updated: 2019/12/24 19:58:08 by trobicho         ###   ########.fr       */
+---
+> /*   Updated: 2019/12/21 05:52:01 by trobicho         ###   ########.fr       */
+36,37c36,37
+< 		void		do_mesh(Mesh_interface &mesh) const;
+< 		void		do_mesh(Mesh_interface &mesh, const s_vbox &box) const;
+---
+> 		void		do_mesh(Mesh &mesh) const;
+> 		void		do_mesh(Mesh &mesh, const s_vbox &box) const;
+239c239
+< 	::do_mesh(Mesh_interface &mesh) const
+---
+> 	::do_mesh(Mesh &mesh) const
+250c250
+< 				, m_internal_data[i].value, (void*)this);
+---
+> 				, (e_block_type)m_internal_data[i].value, (void*)this);
+257c257
+< 	::do_mesh(Mesh_interface &mesh, const s_vbox &box) const
+---
+> 	::do_mesh(Mesh &mesh, const s_vbox &box) const
+291c291
+< 							, m_internal_data[off].value
+---
+> 							, (e_block_type)m_internal_data[off].value
+Seulement dans ./: .key_call.cpp.swp
+diff ./Leaf_node.h ../vox/Leaf_node.h
+9c9
+< /*   Updated: 2019/12/24 19:58:22 by trobicho         ###   ########.fr       */
+---
+> /*   Updated: 2019/12/21 05:51:17 by trobicho         ###   ########.fr       */
+34,35c34,35
+< 		void		do_mesh(Mesh_interface &mesh) const;
+< 		void		do_mesh(Mesh_interface &mesh, const s_vbox &b) const {do_mesh(mesh);}
+---
+> 		void		do_mesh(Mesh &mesh) const;
+> 		void		do_mesh(Mesh &mesh, const s_vbox &b) const {do_mesh(mesh);}
+168c168
+< 	::do_mesh(Mesh_interface &mesh) const
+---
+> 	::do_mesh(Mesh &mesh) const
+175c175
+< 					, m_leaf_data[i], (void*)this);
+---
+> 					, (e_block_type)m_leaf_data[i], (void*)this);
+diff ./main.cpp ../vox/main.cpp
+9c9
+< /*   Updated: 2020/05/21 11:28:44 by trobicho         ###   ########.fr       */
+---
+> /*   Updated: 2019/12/21 05:49:01 by trobicho         ###   ########.fr       */
+109c109
+< 	//player.get_cam_ref().ubo.sun_pos = glm::vec3(xr, 300, zr);
+---
+> 	player.get_cam_ref().ubo.sun_pos = glm::vec3(xr, 300, zr);
+Seulement dans ./: .main.cpp.swp
+diff ./main_spider.cpp ../vox/main_spider.cpp
+9c9
+< /*   Updated: 2020/05/21 11:20:50 by trobicho         ###   ########.fr       */
+---
+> /*   Updated: 2019/12/21 21:35:18 by trobicho         ###   ########.fr       */
+21c21
+< 				, GLFWwindow *win, Enemy_manager &enemy_manager)
+---
+> 				, GLFWwindow *win)
+29,35d28
+< 		auto &cam = user->player.get_cam_ref();
+< 		auto &bones = enemy_manager.get_bones_ref();
+< 		for (int i = 0; i < 17; ++i)
+< 		{
+< 			cam.ubo.bone[i] = bones[i];
+< 		}
+< 		enemy_manager.update();
+58,59c51,53
+< 	Player		player(glm::vec3((float)xr, 0.0f, (float)zr));
+< 
+---
+> 	Player		player(glm::vec3((float)xr, (float)1
+> 					, (float)zr));
+> 	
+68,72d61
+< 	s_vbox box;
+< 	box.origin = s_vec3i(xr, 0, zr);
+< 	box.len = s_vec3i(1 << CHUNK_LOG_X, 1 << CHUNK_LOG_Y, 1 << CHUNK_LOG_Z);
+< 	map_loader.load_pos(box.origin);
+< 
+73a63
+> 	player.get_cam_ref().ubo.sun_pos = glm::vec3(xr, 300, zr);
+91c81
+< 	if (enemy_manager.init() == -1)
+---
+> 	if (enemy_manager.update() == -1)
+97c87
+< 	main_loop(my_vulkan, map_loader, win, enemy_manager);
+---
+> 	main_loop(my_vulkan, map_loader, win);
+diff ./Makefile ../vox/Makefile
+9c9
+< #    Updated: 2020/05/21 11:23:44 by trobicho         ###   ########.fr        #
+---
+> #    Updated: 2019/12/24 21:29:42 by trobicho         ###   ########.fr        #
+39a40,41
+> 				Lsystem.cpp \
+> 				Turtle.cpp \
+56c58
+< 				Ccd_solver.cpp \
+---
+> 				Mesh.cpp \
+62a65,66
+> 				Lsystem.h \
+> 				Turtle.h \
+82d85
+< 				Mesh_interface.h \
+84,85d86
+< 				Vertex.h \
+< 				Ccd_solver.h \
+Les sous-répertoires ./map_img et ../vox/map_img sont identiques
+diff ./Mesh.cpp ../vox/Mesh.cpp
+9c9
+< /*   Updated: 2019/12/24 19:53:37 by trobicho         ###   ########.fr       */
+---
+> /*   Updated: 2019/12/13 17:50:01 by trobicho         ###   ########.fr       */
+13a14,466
+> #include "Moore_accessor.h"
+> 
+> Mesh::Mesh(Moore_accessor &moore_access): m_moore_access(moore_access)
+> {
+> }
+> 
+> void	Mesh::reset()
+> {
+> 	vertex_buffer.clear();
+> 	index_buffer.clear();
+> 	index_buffer_blend.clear();
+> }
+> 
+> int		Mesh::add_vertex(s_vertex v, uint32_t idx, bool is_opaque)
+> {
+> 	vertex_buffer.push_back(v);
+> 	if (is_opaque)
+> 		index_buffer.push_back(idx);
+> 	else
+> 		index_buffer_blend.push_back(idx);
+> 	return (vertex_buffer.size() - 1);
+> }
+> 
+> int		Mesh::add_vertex_with_basic_index(s_vertex v, bool is_opaque)
+> {
+> 	vertex_buffer.push_back(v);
+> 	if (is_opaque)
+> 		index_buffer.push_back(vertex_buffer.size() - 1);
+> 	else
+> 		index_buffer_blend.push_back(vertex_buffer.size() - 1);
+> 	return (vertex_buffer.size() - 1);
+> }
+> 
+> int		Mesh::add_vertex_with_no_index(s_vertex v, uint8_t ao)
+> {
+> 	v.ao = ao;
+> 	vertex_buffer.push_back(v);
+> 	return (vertex_buffer.size() - 1);
+> }
+> 
+> void	Mesh::add_index(uint32_t idx, bool is_opaque)
+> {
+> 	if (is_opaque)
+> 		index_buffer.push_back(idx);
+> 	else
+> 		index_buffer_blend.push_back(idx);
+> }
+> 
+> void	Mesh::remove_vertex(uint32_t offset, uint32_t size)
+> {
+> 	bool	del;
+> 
+> 	if (offset + size >= vertex_buffer.size())
+> 		return ;
+> 	vertex_buffer.erase(vertex_buffer.begin() + offset
+> 			, vertex_buffer.begin() + offset + size);
+> 	for (int t = 0; t < index_buffer.size();)
+> 	{
+> 		del = false;
+> 		for (int i = 0; i < 3; i++)
+> 		{
+> 			if (index_buffer[t + i] >= offset
+> 				&& index_buffer[t + i] < offset + size)
+> 			{
+> 				index_buffer.erase(index_buffer.begin() + t
+> 					, index_buffer.begin() + t + 3);
+> 				del = true;
+> 				break;
+> 			}
+> 			else if (index_buffer[t + i] >= offset + size)
+> 				index_buffer[t + i] -= size;
+> 		}
+> 		if (!del)
+> 			t += 3;
+> 	}
+> }
+> 
+> void	Mesh::get_needed_face(std::bitset<6> &f_b, s_vec3i v, void *node_ptr)
+> {
+> 	const Vdb_test	&my_vdb = m_moore_access.get_vdb_ref();
+> 	const Node_v	*node = (Node_v*)node_ptr;
+> 	const Node_v	*moore_node;
+> 	s_vec3i			neigh_v;
+> 	uint32_t		value;
+> 	s_vec3i			node_slog = node->get_child_slog();
+> 
+> 	f_b.reset();
+> 
+> 	neigh_v = (s_vec3i){v.x, v.y + (1 << node_slog.y) , v.z};
+> 	moore_node = my_vdb.get_interresting_node(neigh_v, value);
+> 	if (!value || moore_node->get_child_slog().x < node_slog.x)
+> 		f_b.set(0);
+> 	neigh_v = (s_vec3i){v.x, v.y - 1, v.z};
+> 	moore_node = my_vdb.get_interresting_node(neigh_v, value);
+> 	if (!value || moore_node->get_child_slog().x < node_slog.x)
+> 		f_b.set(1);
+> 	neigh_v = (s_vec3i){v.x, v.y, v.z + (1 << node_slog.z)};
+> 	moore_node = my_vdb.get_interresting_node(neigh_v, value);
+> 	if (!value || moore_node->get_child_slog().x < node_slog.x)
+> 		f_b.set(2);
+> 	neigh_v = (s_vec3i){v.x, v.y, v.z - 1};
+> 	moore_node = my_vdb.get_interresting_node(neigh_v, value);
+> 	if (!value || moore_node->get_child_slog().x < node_slog.x)
+> 		f_b.set(3);
+> 	neigh_v = (s_vec3i){v.x + (1 << node_slog.x), v.y, v.z};
+> 	moore_node = my_vdb.get_interresting_node(neigh_v, value);
+> 	if (!value || moore_node->get_child_slog().x < node_slog.x)
+> 		f_b.set(4);
+> 	neigh_v = (s_vec3i){v.x - 1, v.y, v.z};
+> 	moore_node = my_vdb.get_interresting_node(neigh_v, value);
+> 	if (!value || moore_node->get_child_slog().x < node_slog.x)
+> 		f_b.set(5);
+> }
+> 
+> void	Mesh::get_needed_vertex(std::bitset<8> &v_b)
+> {
+> 	v_b.reset();
+> 	if (!m_moore_access[MOORE_UP])
+> 		v_b |= ((1 << 4) - 1);
+> 	if (!m_moore_access[MOORE_DOWN])
+> 		v_b |= ((1 << 4) - 1) << 4;
+> 	if (!m_moore_access[MOORE_FRONT])
+> 	{
+> 		v_b |= ((((1 << 2) - 1) << 4) | ((1 << 2) - 1));
+> 	}
+> 	if (!m_moore_access[MOORE_BACK])
+> 	{
+> 		v_b |= ((((1 << 2) - 1) << 6) | (((1 << 2) - 1) << 2));
+> 	}
+> 	if (!m_moore_access[MOORE_RIGHT])
+> 	{
+> 		v_b |= ((((1 << 2) - 1) << 5) | (((1 << 2) - 1) << 1));
+> 	}
+> 	if (!m_moore_access[MOORE_LEFT])
+> 	{
+> 		v_b |= ~((((1 << 2) - 1) << 5) | (((1 << 2) - 1) << 1));
+> 	}
+> }
+> 
+> void	Mesh::add_needed_vertex(s_vertex v, uint32_t l, std::bitset<8> &v_b
+> 			, uint32_t v_idx[8])
+> {
+> 	s_vertex	vc = v;
+> 
+> 	if (v_b[0])
+> 		v_idx[0] = add_vertex_with_no_index(vc, get_ao(0));
+> 	vc.pos.x += l;
+> 	if (v_b[1])
+> 		v_idx[1] = add_vertex_with_no_index(vc, get_ao(1));
+> 	vc.pos.z += l;
+> 	if (v_b[2])
+> 		v_idx[2] = add_vertex_with_no_index(vc, get_ao(2));
+> 	vc.pos.x -= l;
+> 	if (v_b[3])
+> 		v_idx[3] = add_vertex_with_no_index(vc, get_ao(3));
+> 
+> 	vc = v;
+> 	vc.pos.y += l;
+> 	if (v_b[4])
+> 		v_idx[4] = add_vertex_with_no_index(vc, get_ao(4));
+> 	vc.pos.x += l;
+> 	if (v_b[5])
+> 		v_idx[5] = add_vertex_with_no_index(vc, get_ao(5));
+> 	vc.pos.z += l;
+> 	if (v_b[6])
+> 		v_idx[6] = add_vertex_with_no_index(vc, get_ao(6));
+> 	vc.pos.x -= l;
+> 	if (v_b[7])
+> 		v_idx[7] = add_vertex_with_no_index(vc, get_ao(7));
+> }
+> 
+> void	Mesh::add_big_cube_from_node(s_vec3i v, e_block_type type, void *node_ptr)
+> {
+> 	std::bitset<6>	f_b;
+> 	uint32_t		v_idx[8];
+> 	Node_v			*node = (Node_v*)node_ptr;
+> 	s_vec3i			node_slog = node->get_child_slog();
+> 	s_vec3i			v_add;
+> 
+> 	get_needed_face(f_b, v, node_ptr);
+> 	if (f_b[0])
+> 	{
+> 		v_add = v;
+> 		v_add.y = v.y + (1 << node_slog.y) - 1;
+> 		for (int x = 0; x < 1 << node_slog.x; x++)
+> 		{
+> 			v_add.x = v.x + x;
+> 			for (int z = 0; z < 1 << node_slog.z; z++)
+> 			{
+> 				v_add.z = v.z + z;
+> 				add_cube_from_node(v_add, type, node_ptr);
+> 			}
+> 		}
+> 	}
+> 	if (f_b[1])
+> 	{
+> 		v_add = v;
+> 		for (int x = 0; x < 1 << node_slog.x; x++)
+> 		{
+> 			v_add.x = v.x + x;
+> 			for (int z = 0; z < 1 << node_slog.z; z++)
+> 			{
+> 				v_add.z = v.z + z;
+> 				add_cube_from_node(v_add, type, node_ptr);
+> 			}
+> 		}
+> 	}
+> 	if (f_b[2])
+> 	{
+> 		v_add = v;
+> 		v_add.z = v.z + (1 << node_slog.z) - 1;
+> 		for (int x = 0; x < 1 << node_slog.x; x++)
+> 		{
+> 			v_add.x = v.x + x;
+> 			for (int y = f_b[1] ? 1 : 0; y < (1 << node_slog.y) - (f_b[0] ? 1 : 0); y++)
+> 			{
+> 				v_add.y = v.y + y;
+> 				add_cube_from_node(v_add, type, node_ptr);
+> 			}
+> 		}
+> 	}
+> 	if (f_b[3])
+> 	{
+> 		v_add = v;
+> 		for (int x = 0; x < 1 << node_slog.x; x++)
+> 		{
+> 			v_add.x = v.x + x;
+> 			for (int y = f_b[1] ? 1 : 0; y < (1 << node_slog.y) - (f_b[0] ? 1 : 0); y++)
+> 			{
+> 				v_add.y = v.y + y;
+> 				add_cube_from_node(v_add, type, node_ptr);
+> 			}
+> 		}
+> 	}
+> 	if (f_b[4])
+> 	{
+> 		v_add = v;
+> 		v_add.x = v.x + (1 << node_slog.x) - 1;
+> 		for (int z = f_b[3] ? 1 : 0; z < (1 << node_slog.z) - (f_b[2] ? 1 : 0); z++)
+> 		{
+> 			v_add.z = v.z + z;
+> 			for (int y = f_b[1] ? 1 : 0; y < (1 << node_slog.y) - (f_b[0] ? 1 : 0); y++)
+> 			{
+> 				v_add.y = v.y + y;
+> 				add_cube_from_node(v_add, type, node_ptr);
+> 			}
+> 		}
+> 	}
+> 	if (f_b[5])
+> 	{
+> 		v_add = v;
+> 		for (int z = f_b[3] ? 1 : 0; z < (1 << node_slog.z) - (f_b[2] ? 1 : 0); z++)
+> 		{
+> 			v_add.z = v.z + z;
+> 			for (int y = f_b[1] ? 1 : 0; y < (1 << node_slog.y) - (f_b[0] ? 1 : 0); y++)
+> 			{
+> 				v_add.y = v.y + y;
+> 				add_cube_from_node(v_add, type, node_ptr);
+> 			}
+> 		}
+> 	}
+> }
+> 
+> void	Mesh::add_cube_from_node(s_vec3i v, e_block_type type, void *node_ptr)
+> {
+> 	std::bitset<8>	v_b;
+> 	uint32_t		v_idx[8];
+> 	s_vertex		vertex(glm::vec3((float)v.x, (float)v.y, (float)v.z)
+> 						, get_color_from_block_type(type));
+> 	Node_v			*node = (Node_v*)node_ptr;
+> 	bool			is_opaque = block_is_opaque(type);
+> 
+> 	m_moore_access.find_neigh(v, node);
+> 	get_needed_vertex(v_b);
+> 	add_needed_vertex(vertex, 1, v_b, v_idx); // weird
+> 	if (!m_moore_access[MOORE_UP])
+> 	{
+> 		if (vertex_buffer[v_idx[1]].ao + vertex_buffer[v_idx[3]].ao
+> 			> vertex_buffer[v_idx[2]].ao + vertex_buffer[v_idx[0]].ao)
+> 		{
+> 			add_index(v_idx[1], is_opaque);
+> 			add_index(v_idx[0], is_opaque);
+> 			add_index(v_idx[3], is_opaque);
+> 
+> 			add_index(v_idx[3], is_opaque);
+> 			add_index(v_idx[2], is_opaque);
+> 			add_index(v_idx[1], is_opaque);
+> 		}
+> 		else
+> 		{
+> 			add_index(v_idx[2], is_opaque);
+> 			add_index(v_idx[1], is_opaque);
+> 			add_index(v_idx[0], is_opaque);
+> 
+> 			add_index(v_idx[0], is_opaque);
+> 			add_index(v_idx[3], is_opaque);
+> 			add_index(v_idx[2], is_opaque);
+> 		}
+> 	}
+> 	if (!m_moore_access[MOORE_DOWN])
+> 	{
+> 		if (vertex_buffer[v_idx[7]].ao + vertex_buffer[v_idx[5]].ao
+> 			> vertex_buffer[v_idx[4]].ao + vertex_buffer[v_idx[6]].ao)
+> 		{
+> 			add_index(v_idx[7], is_opaque);
+> 			add_index(v_idx[4], is_opaque);
+> 			add_index(v_idx[5], is_opaque);
+> 
+> 			add_index(v_idx[5], is_opaque);
+> 			add_index(v_idx[6], is_opaque);
+> 			add_index(v_idx[7], is_opaque);
+> 		}
+> 		else
+> 		{
+> 			add_index(v_idx[4], is_opaque);
+> 			add_index(v_idx[5], is_opaque);
+> 			add_index(v_idx[6], is_opaque);
+> 
+> 			add_index(v_idx[6], is_opaque);
+> 			add_index(v_idx[7], is_opaque);
+> 			add_index(v_idx[4], is_opaque);
+> 		}
+> 	}
+> 	if (!m_moore_access[MOORE_FRONT])
+> 	{
+> 		if (vertex_buffer[v_idx[4]].ao + vertex_buffer[v_idx[1]].ao
+> 			> vertex_buffer[v_idx[0]].ao + vertex_buffer[v_idx[5]].ao)
+> 		{
+> 			add_index(v_idx[4], is_opaque);
+> 			add_index(v_idx[0], is_opaque);
+> 			add_index(v_idx[1], is_opaque);
+> 
+> 			add_index(v_idx[1], is_opaque);
+> 			add_index(v_idx[5], is_opaque);
+> 			add_index(v_idx[4], is_opaque);
+> 		}
+> 		else
+> 		{
+> 			add_index(v_idx[0], is_opaque);
+> 			add_index(v_idx[1], is_opaque);
+> 			add_index(v_idx[5], is_opaque);
+> 
+> 			add_index(v_idx[5], is_opaque);
+> 			add_index(v_idx[4], is_opaque);
+> 			add_index(v_idx[0], is_opaque);
+> 		}
+> 	}
+> 	if (!m_moore_access[MOORE_BACK])
+> 	{
+> 		if (vertex_buffer[v_idx[7]].ao + vertex_buffer[v_idx[2]].ao
+> 			> vertex_buffer[v_idx[6]].ao + vertex_buffer[v_idx[3]].ao)
+> 		{
+> 			add_index(v_idx[7], is_opaque);
+> 			add_index(v_idx[6], is_opaque);
+> 			add_index(v_idx[2], is_opaque);
+> 
+> 			add_index(v_idx[2], is_opaque);
+> 			add_index(v_idx[3], is_opaque);
+> 			add_index(v_idx[7], is_opaque);
+> 		}
+> 		else
+> 		{
+> 			add_index(v_idx[6], is_opaque);
+> 			add_index(v_idx[2], is_opaque);
+> 			add_index(v_idx[3], is_opaque);
+> 
+> 			add_index(v_idx[3], is_opaque);
+> 			add_index(v_idx[7], is_opaque);
+> 			add_index(v_idx[6], is_opaque);
+> 		}
+> 	}
+> 	if (!m_moore_access[MOORE_RIGHT])
+> 	{
+> 		if (vertex_buffer[v_idx[6]].ao + vertex_buffer[v_idx[1]].ao
+> 			> vertex_buffer[v_idx[5]].ao + vertex_buffer[v_idx[2]].ao)
+> 		{
+> 			add_index(v_idx[6], is_opaque);
+> 			add_index(v_idx[5], is_opaque);
+> 			add_index(v_idx[1], is_opaque);
+> 
+> 			add_index(v_idx[1], is_opaque);
+> 			add_index(v_idx[2], is_opaque);
+> 			add_index(v_idx[6], is_opaque);
+> 		}
+> 		else
+> 		{
+> 			add_index(v_idx[5], is_opaque);
+> 			add_index(v_idx[1], is_opaque);
+> 			add_index(v_idx[2], is_opaque);
+> 
+> 			add_index(v_idx[2], is_opaque);
+> 			add_index(v_idx[6], is_opaque);
+> 			add_index(v_idx[5], is_opaque);
+> 		}
+> 	}
+> 	if (!m_moore_access[MOORE_LEFT])
+> 	{
+> 		if (vertex_buffer[v_idx[4]].ao + vertex_buffer[v_idx[3]].ao
+> 			> vertex_buffer[v_idx[7]].ao + vertex_buffer[v_idx[0]].ao)
+> 		{
+> 			add_index(v_idx[4], is_opaque);
+> 			add_index(v_idx[7], is_opaque);
+> 			add_index(v_idx[3], is_opaque);
+> 
+> 			add_index(v_idx[3], is_opaque);
+> 			add_index(v_idx[0], is_opaque);
+> 			add_index(v_idx[4], is_opaque);
+> 		}
+> 		else
+> 		{
+> 			add_index(v_idx[7], is_opaque);
+> 			add_index(v_idx[3], is_opaque);
+> 			add_index(v_idx[0], is_opaque);
+> 
+> 			add_index(v_idx[0], is_opaque);
+> 			add_index(v_idx[4], is_opaque);
+> 			add_index(v_idx[7], is_opaque);
+> 		}
+> 	}
+> }
+> 
+> uint8_t		Mesh::get_ao(int idx)
+> {
+> 	switch (idx)
+> 	{
+> 		case 0:	
+> 			return (vertex_ao(m_moore_access[10], m_moore_access[9]
+> 					, m_moore_access[12]));
+> 		case 1:	
+> 			return (vertex_ao(m_moore_access[10], m_moore_access[11]
+> 					, m_moore_access[14]));
+> 		case 2:	
+> 			return (vertex_ao(m_moore_access[16], m_moore_access[17]
+> 					, m_moore_access[14]));
+> 		case 3:	
+> 			return (vertex_ao(m_moore_access[16], m_moore_access[15]
+> 					, m_moore_access[12]));
+> 		case 4:	
+> 			return (vertex_ao(m_moore_access[21], m_moore_access[19]
+> 					, m_moore_access[18]));
+> 		case 5:	
+> 			return (vertex_ao(m_moore_access[19], m_moore_access[23]
+> 					, m_moore_access[20]));
+> 		case 6:	
+> 			return (vertex_ao(m_moore_access[25], m_moore_access[23]
+> 					, m_moore_access[26]));
+> 		case 7:	
+> 			return (vertex_ao(m_moore_access[25], m_moore_access[21]
+> 					, m_moore_access[24]));
+> 		default:
+> 			return (3);
+> 	}
+> }
+diff ./Mesh.h ../vox/Mesh.h
+9c9
+< /*   Updated: 2019/12/25 02:13:53 by trobicho         ###   ########.fr       */
+---
+> /*   Updated: 2019/12/13 17:49:52 by trobicho         ###   ########.fr       */
+16a17,21
+> #define GLM_FORCE_RADIANS
+> #define GLM_FORCE_DEFAULT_ALIGNED_GENTYPES
+> #define GLM_FORCE_DEPTH_ZERO_TO_ONE
+> #include <glm/glm.hpp>
+> #include <glm/gtc/matrix_transform.hpp>
+17a23
+> #include <array>
+19,21c25,32
+< #include "Vertex.h"
+< #include <glm/gtc/matrix_transform.hpp>
+< #include "Mesh_interface.h"
+---
+> #include "Block.h"
+> 
+> struct	s_vec3i
+> {
+> 	s_vec3i(){};
+> 	s_vec3i(int32_t sx, int32_t sy, int32_t sz): x(sx), y(sy), z(sz){};
+> 	int32_t	x, y, z;
+> };
+25,26c36,75
+< template <class Vertex>
+< class	Mesh: public Mesh_interface
+---
+> struct	s_vertex
+> {
+> 	s_vertex():color(glm::vec4(0.7f, 0.7f, 0.7f, 1.0f)){};
+> 	s_vertex(glm::vec3 p_pos, glm::vec4 p_color = glm::vec4(0.7f, 0.7f, 0.7f, 1.0f)):
+> 		pos(p_pos), color(p_color){};
+> 
+> 	glm::vec3				pos;
+> 	glm::vec4				color;
+> 	uint8_t					ao = 3;
+> 
+> 	static VkVertexInputBindingDescription	get_binding_description()
+> 	{
+> 		static VkVertexInputBindingDescription binding_description = {};
+> 		binding_description.binding = 0;
+> 		binding_description.stride = sizeof(s_vertex);
+> 		binding_description.inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
+> 		return (binding_description);
+> 	}
+> 	static std::array<VkVertexInputAttributeDescription, 3>
+> 		get_attribute_descriptions() 
+> 	{
+> 		std::array<VkVertexInputAttributeDescription, 3>
+> 			attribute_descriptions = {};
+> 		attribute_descriptions[0].binding = 0;
+> 		attribute_descriptions[0].location = 0;
+> 		attribute_descriptions[0].format = VK_FORMAT_R32G32B32_SFLOAT;
+> 		attribute_descriptions[0].offset = offsetof(s_vertex, pos);
+> 		attribute_descriptions[1].binding = 0;
+> 		attribute_descriptions[1].location = 1;
+> 		attribute_descriptions[1].format = VK_FORMAT_R32G32B32A32_SFLOAT;
+> 		attribute_descriptions[1].offset = offsetof(s_vertex, color);
+> 		attribute_descriptions[2].binding = 0;
+> 		attribute_descriptions[2].location = 2;
+> 		attribute_descriptions[2].format = VK_FORMAT_R8_UINT;
+> 		attribute_descriptions[2].offset = offsetof(s_vertex, ao);
+> 		return (attribute_descriptions);
+> 	}
+> };
+> 
+> class	Mesh
+41a91,94
+> 		int			add_vertex(s_vertex v, uint32_t idx, bool is_opaque = true);
+> 		int			add_vertex_with_basic_index(s_vertex v, bool is_opaque = true);
+> 		void		add_index(uint32_t idx, bool is_opaque = true);
+> 		int			add_vertex_with_no_index(s_vertex v, uint8_t ao = 3);
+44c97
+< 						, uint32_t type, void *node_ptr);
+---
+> 						, e_block_type type, void *node_ptr);
+46c99
+< 						, uint32_t type, void *node_ptr);
+---
+> 						, e_block_type type, void *node_ptr);
+48c101
+< 		std::vector<Vertex>		vertex_buffer;
+---
+> 		std::vector<s_vertex>	vertex_buffer;
+53,57d105
+< 		int			add_vertex(Vertex v, uint32_t idx, bool is_opaque = true);
+< 		int			add_vertex_with_basic_index(Vertex v
+< 						, bool is_opaque = true);
+< 		void		add_index(uint32_t idx, bool is_opaque = true);
+< 		int			add_vertex_with_no_index(Vertex v, uint8_t ao = 3);
+61c109
+< 		void		add_needed_vertex(Vertex v, uint32_t l
+---
+> 		void		add_needed_vertex(s_vertex v, uint32_t l
+73,539d120
+< 
+< #include "Moore_accessor.h"
+< 
+< template <class Vertex>
+< Mesh<Vertex>::Mesh(Moore_accessor &moore_access): m_moore_access(moore_access)
+< {
+< }
+< 
+< template <class Vertex>
+< void	Mesh<Vertex>::reset()
+< {
+< 	vertex_buffer.clear();
+< 	index_buffer.clear();
+< 	index_buffer_blend.clear();
+< }
+< 
+< template <class Vertex>
+< int		Mesh<Vertex>::add_vertex(Vertex v, uint32_t idx, bool is_opaque)
+< {
+< 	vertex_buffer.push_back(v);
+< 	if (is_opaque)
+< 		index_buffer.push_back(idx);
+< 	else
+< 		index_buffer_blend.push_back(idx);
+< 	return (vertex_buffer.size() - 1);
+< }
+< 
+< template <class Vertex>
+< int		Mesh<Vertex>::add_vertex_with_basic_index(Vertex v, bool is_opaque)
+< {
+< 	vertex_buffer.push_back(v);
+< 	if (is_opaque)
+< 		index_buffer.push_back(vertex_buffer.size() - 1);
+< 	else
+< 		index_buffer_blend.push_back(vertex_buffer.size() - 1);
+< 	return (vertex_buffer.size() - 1);
+< }
+< 
+< template <class Vertex>
+< int		Mesh<Vertex>::add_vertex_with_no_index(Vertex v, uint8_t ao)
+< {
+< 	v.ao = ao;
+< 	vertex_buffer.push_back(v);
+< 	return (vertex_buffer.size() - 1);
+< }
+< 
+< template <class Vertex>
+< void	Mesh<Vertex>::add_index(uint32_t idx, bool is_opaque)
+< {
+< 	if (is_opaque)
+< 		index_buffer.push_back(idx);
+< 	else
+< 		index_buffer_blend.push_back(idx);
+< }
+< 
+< template <class Vertex>
+< void	Mesh<Vertex>::remove_vertex(uint32_t offset, uint32_t size)
+< {
+< 	bool	del;
+< 
+< 	if (offset + size >= vertex_buffer.size())
+< 		return ;
+< 	vertex_buffer.erase(vertex_buffer.begin() + offset
+< 			, vertex_buffer.begin() + offset + size);
+< 	for (int t = 0; t < index_buffer.size();)
+< 	{
+< 		del = false;
+< 		for (int i = 0; i < 3; i++)
+< 		{
+< 			if (index_buffer[t + i] >= offset
+< 				&& index_buffer[t + i] < offset + size)
+< 			{
+< 				index_buffer.erase(index_buffer.begin() + t
+< 					, index_buffer.begin() + t + 3);
+< 				del = true;
+< 				break;
+< 			}
+< 			else if (index_buffer[t + i] >= offset + size)
+< 				index_buffer[t + i] -= size;
+< 		}
+< 		if (!del)
+< 			t += 3;
+< 	}
+< }
+< 
+< template <class Vertex>
+< void	Mesh<Vertex>::get_needed_face(std::bitset<6> &f_b, s_vec3i v, void *node_ptr)
+< {
+< 	const Vdb_test	&my_vdb = m_moore_access.get_vdb_ref();
+< 	const Node_v	*node = (Node_v*)node_ptr;
+< 	const Node_v	*moore_node;
+< 	s_vec3i			neigh_v;
+< 	uint32_t		value;
+< 	s_vec3i			node_slog = node->get_child_slog();
+< 
+< 	f_b.reset();
+< 
+< 	neigh_v = (s_vec3i){v.x, v.y + (1 << node_slog.y) , v.z};
+< 	moore_node = my_vdb.get_interresting_node(neigh_v, value);
+< 	if (!value || moore_node->get_child_slog().x < node_slog.x)
+< 		f_b.set(0);
+< 	neigh_v = (s_vec3i){v.x, v.y - 1, v.z};
+< 	moore_node = my_vdb.get_interresting_node(neigh_v, value);
+< 	if (!value || moore_node->get_child_slog().x < node_slog.x)
+< 		f_b.set(1);
+< 	neigh_v = (s_vec3i){v.x, v.y, v.z + (1 << node_slog.z)};
+< 	moore_node = my_vdb.get_interresting_node(neigh_v, value);
+< 	if (!value || moore_node->get_child_slog().x < node_slog.x)
+< 		f_b.set(2);
+< 	neigh_v = (s_vec3i){v.x, v.y, v.z - 1};
+< 	moore_node = my_vdb.get_interresting_node(neigh_v, value);
+< 	if (!value || moore_node->get_child_slog().x < node_slog.x)
+< 		f_b.set(3);
+< 	neigh_v = (s_vec3i){v.x + (1 << node_slog.x), v.y, v.z};
+< 	moore_node = my_vdb.get_interresting_node(neigh_v, value);
+< 	if (!value || moore_node->get_child_slog().x < node_slog.x)
+< 		f_b.set(4);
+< 	neigh_v = (s_vec3i){v.x - 1, v.y, v.z};
+< 	moore_node = my_vdb.get_interresting_node(neigh_v, value);
+< 	if (!value || moore_node->get_child_slog().x < node_slog.x)
+< 		f_b.set(5);
+< }
+< 
+< template <class Vertex>
+< void	Mesh<Vertex>::get_needed_vertex(std::bitset<8> &v_b)
+< {
+< 	v_b.reset();
+< 	if (!m_moore_access[MOORE_UP])
+< 		v_b |= ((1 << 4) - 1);
+< 	if (!m_moore_access[MOORE_DOWN])
+< 		v_b |= ((1 << 4) - 1) << 4;
+< 	if (!m_moore_access[MOORE_FRONT])
+< 	{
+< 		v_b |= ((((1 << 2) - 1) << 4) | ((1 << 2) - 1));
+< 	}
+< 	if (!m_moore_access[MOORE_BACK])
+< 	{
+< 		v_b |= ((((1 << 2) - 1) << 6) | (((1 << 2) - 1) << 2));
+< 	}
+< 	if (!m_moore_access[MOORE_RIGHT])
+< 	{
+< 		v_b |= ((((1 << 2) - 1) << 5) | (((1 << 2) - 1) << 1));
+< 	}
+< 	if (!m_moore_access[MOORE_LEFT])
+< 	{
+< 		v_b |= ~((((1 << 2) - 1) << 5) | (((1 << 2) - 1) << 1));
+< 	}
+< }
+< 
+< template <class Vertex>
+< void	Mesh<Vertex>::add_needed_vertex(Vertex v, uint32_t l, std::bitset<8> &v_b
+< 			, uint32_t v_idx[8])
+< {
+< 	Vertex vc = v;
+< 
+< 	if (v_b[0])
+< 		v_idx[0] = add_vertex_with_no_index(vc, get_ao(0));
+< 	vc.pos.x += l;
+< 	if (v_b[1])
+< 		v_idx[1] = add_vertex_with_no_index(vc, get_ao(1));
+< 	vc.pos.z += l;
+< 	if (v_b[2])
+< 		v_idx[2] = add_vertex_with_no_index(vc, get_ao(2));
+< 	vc.pos.x -= l;
+< 	if (v_b[3])
+< 		v_idx[3] = add_vertex_with_no_index(vc, get_ao(3));
+< 
+< 	vc = v;
+< 	vc.pos.y += l;
+< 	if (v_b[4])
+< 		v_idx[4] = add_vertex_with_no_index(vc, get_ao(4));
+< 	vc.pos.x += l;
+< 	if (v_b[5])
+< 		v_idx[5] = add_vertex_with_no_index(vc, get_ao(5));
+< 	vc.pos.z += l;
+< 	if (v_b[6])
+< 		v_idx[6] = add_vertex_with_no_index(vc, get_ao(6));
+< 	vc.pos.x -= l;
+< 	if (v_b[7])
+< 		v_idx[7] = add_vertex_with_no_index(vc, get_ao(7));
+< }
+< 
+< template <class Vertex>
+< void	Mesh<Vertex>::add_big_cube_from_node(s_vec3i v, uint32_t type, void *node_ptr)
+< {
+< 	std::bitset<6>	f_b;
+< 	uint32_t		v_idx[8];
+< 	Node_v			*node = (Node_v*)node_ptr;
+< 	s_vec3i			node_slog = node->get_child_slog();
+< 	s_vec3i			v_add;
+< 
+< 	get_needed_face(f_b, v, node_ptr);
+< 	if (f_b[0])
+< 	{
+< 		v_add = v;
+< 		v_add.y = v.y + (1 << node_slog.y) - 1;
+< 		for (int x = 0; x < 1 << node_slog.x; x++)
+< 		{
+< 			v_add.x = v.x + x;
+< 			for (int z = 0; z < 1 << node_slog.z; z++)
+< 			{
+< 				v_add.z = v.z + z;
+< 				add_cube_from_node(v_add, type, node_ptr);
+< 			}
+< 		}
+< 	}
+< 	if (f_b[1])
+< 	{
+< 		v_add = v;
+< 		for (int x = 0; x < 1 << node_slog.x; x++)
+< 		{
+< 			v_add.x = v.x + x;
+< 			for (int z = 0; z < 1 << node_slog.z; z++)
+< 			{
+< 				v_add.z = v.z + z;
+< 				add_cube_from_node(v_add, type, node_ptr);
+< 			}
+< 		}
+< 	}
+< 	if (f_b[2])
+< 	{
+< 		v_add = v;
+< 		v_add.z = v.z + (1 << node_slog.z) - 1;
+< 		for (int x = 0; x < 1 << node_slog.x; x++)
+< 		{
+< 			v_add.x = v.x + x;
+< 			for (int y = f_b[1] ? 1 : 0; y < (1 << node_slog.y) - (f_b[0] ? 1 : 0); y++)
+< 			{
+< 				v_add.y = v.y + y;
+< 				add_cube_from_node(v_add, type, node_ptr);
+< 			}
+< 		}
+< 	}
+< 	if (f_b[3])
+< 	{
+< 		v_add = v;
+< 		for (int x = 0; x < 1 << node_slog.x; x++)
+< 		{
+< 			v_add.x = v.x + x;
+< 			for (int y = f_b[1] ? 1 : 0; y < (1 << node_slog.y) - (f_b[0] ? 1 : 0); y++)
+< 			{
+< 				v_add.y = v.y + y;
+< 				add_cube_from_node(v_add, type, node_ptr);
+< 			}
+< 		}
+< 	}
+< 	if (f_b[4])
+< 	{
+< 		v_add = v;
+< 		v_add.x = v.x + (1 << node_slog.x) - 1;
+< 		for (int z = f_b[3] ? 1 : 0; z < (1 << node_slog.z) - (f_b[2] ? 1 : 0); z++)
+< 		{
+< 			v_add.z = v.z + z;
+< 			for (int y = f_b[1] ? 1 : 0; y < (1 << node_slog.y) - (f_b[0] ? 1 : 0); y++)
+< 			{
+< 				v_add.y = v.y + y;
+< 				add_cube_from_node(v_add, type, node_ptr);
+< 			}
+< 		}
+< 	}
+< 	if (f_b[5])
+< 	{
+< 		v_add = v;
+< 		for (int z = f_b[3] ? 1 : 0; z < (1 << node_slog.z) - (f_b[2] ? 1 : 0); z++)
+< 		{
+< 			v_add.z = v.z + z;
+< 			for (int y = f_b[1] ? 1 : 0; y < (1 << node_slog.y) - (f_b[0] ? 1 : 0); y++)
+< 			{
+< 				v_add.y = v.y + y;
+< 				add_cube_from_node(v_add, type, node_ptr);
+< 			}
+< 		}
+< 	}
+< }
+< 
+< template <class Vertex>
+< void	Mesh<Vertex>::add_cube_from_node(s_vec3i v, uint32_t type, void *node_ptr)
+< {
+< 	std::bitset<8>	v_b;
+< 	uint32_t		v_idx[8];
+< 	Vertex			vertex(glm::vec3((float)v.x, (float)v.y, (float)v.z)
+< 						, type);
+< 	Node_v			*node = (Node_v*)node_ptr;
+< 	bool			is_opaque = block_is_opaque(type);
+< 
+< 	m_moore_access.find_neigh(v, node);
+< 	get_needed_vertex(v_b);
+< 	add_needed_vertex(vertex, 1, v_b, v_idx); // weird
+< 	if (!m_moore_access[MOORE_UP])
+< 	{
+< 		if (vertex_buffer[v_idx[1]].ao + vertex_buffer[v_idx[3]].ao
+< 			> vertex_buffer[v_idx[2]].ao + vertex_buffer[v_idx[0]].ao)
+< 		{
+< 			add_index(v_idx[1], is_opaque);
+< 			add_index(v_idx[0], is_opaque);
+< 			add_index(v_idx[3], is_opaque);
+< 
+< 			add_index(v_idx[3], is_opaque);
+< 			add_index(v_idx[2], is_opaque);
+< 			add_index(v_idx[1], is_opaque);
+< 		}
+< 		else
+< 		{
+< 			add_index(v_idx[2], is_opaque);
+< 			add_index(v_idx[1], is_opaque);
+< 			add_index(v_idx[0], is_opaque);
+< 
+< 			add_index(v_idx[0], is_opaque);
+< 			add_index(v_idx[3], is_opaque);
+< 			add_index(v_idx[2], is_opaque);
+< 		}
+< 	}
+< 	if (!m_moore_access[MOORE_DOWN])
+< 	{
+< 		if (vertex_buffer[v_idx[7]].ao + vertex_buffer[v_idx[5]].ao
+< 			> vertex_buffer[v_idx[4]].ao + vertex_buffer[v_idx[6]].ao)
+< 		{
+< 			add_index(v_idx[7], is_opaque);
+< 			add_index(v_idx[4], is_opaque);
+< 			add_index(v_idx[5], is_opaque);
+< 
+< 			add_index(v_idx[5], is_opaque);
+< 			add_index(v_idx[6], is_opaque);
+< 			add_index(v_idx[7], is_opaque);
+< 		}
+< 		else
+< 		{
+< 			add_index(v_idx[4], is_opaque);
+< 			add_index(v_idx[5], is_opaque);
+< 			add_index(v_idx[6], is_opaque);
+< 
+< 			add_index(v_idx[6], is_opaque);
+< 			add_index(v_idx[7], is_opaque);
+< 			add_index(v_idx[4], is_opaque);
+< 		}
+< 	}
+< 	if (!m_moore_access[MOORE_FRONT])
+< 	{
+< 		if (vertex_buffer[v_idx[4]].ao + vertex_buffer[v_idx[1]].ao
+< 			> vertex_buffer[v_idx[0]].ao + vertex_buffer[v_idx[5]].ao)
+< 		{
+< 			add_index(v_idx[4], is_opaque);
+< 			add_index(v_idx[0], is_opaque);
+< 			add_index(v_idx[1], is_opaque);
+< 
+< 			add_index(v_idx[1], is_opaque);
+< 			add_index(v_idx[5], is_opaque);
+< 			add_index(v_idx[4], is_opaque);
+< 		}
+< 		else
+< 		{
+< 			add_index(v_idx[0], is_opaque);
+< 			add_index(v_idx[1], is_opaque);
+< 			add_index(v_idx[5], is_opaque);
+< 
+< 			add_index(v_idx[5], is_opaque);
+< 			add_index(v_idx[4], is_opaque);
+< 			add_index(v_idx[0], is_opaque);
+< 		}
+< 	}
+< 	if (!m_moore_access[MOORE_BACK])
+< 	{
+< 		if (vertex_buffer[v_idx[7]].ao + vertex_buffer[v_idx[2]].ao
+< 			> vertex_buffer[v_idx[6]].ao + vertex_buffer[v_idx[3]].ao)
+< 		{
+< 			add_index(v_idx[7], is_opaque);
+< 			add_index(v_idx[6], is_opaque);
+< 			add_index(v_idx[2], is_opaque);
+< 
+< 			add_index(v_idx[2], is_opaque);
+< 			add_index(v_idx[3], is_opaque);
+< 			add_index(v_idx[7], is_opaque);
+< 		}
+< 		else
+< 		{
+< 			add_index(v_idx[6], is_opaque);
+< 			add_index(v_idx[2], is_opaque);
+< 			add_index(v_idx[3], is_opaque);
+< 
+< 			add_index(v_idx[3], is_opaque);
+< 			add_index(v_idx[7], is_opaque);
+< 			add_index(v_idx[6], is_opaque);
+< 		}
+< 	}
+< 	if (!m_moore_access[MOORE_RIGHT])
+< 	{
+< 		if (vertex_buffer[v_idx[6]].ao + vertex_buffer[v_idx[1]].ao
+< 			> vertex_buffer[v_idx[5]].ao + vertex_buffer[v_idx[2]].ao)
+< 		{
+< 			add_index(v_idx[6], is_opaque);
+< 			add_index(v_idx[5], is_opaque);
+< 			add_index(v_idx[1], is_opaque);
+< 
+< 			add_index(v_idx[1], is_opaque);
+< 			add_index(v_idx[2], is_opaque);
+< 			add_index(v_idx[6], is_opaque);
+< 		}
+< 		else
+< 		{
+< 			add_index(v_idx[5], is_opaque);
+< 			add_index(v_idx[1], is_opaque);
+< 			add_index(v_idx[2], is_opaque);
+< 
+< 			add_index(v_idx[2], is_opaque);
+< 			add_index(v_idx[6], is_opaque);
+< 			add_index(v_idx[5], is_opaque);
+< 		}
+< 	}
+< 	if (!m_moore_access[MOORE_LEFT])
+< 	{
+< 		if (vertex_buffer[v_idx[4]].ao + vertex_buffer[v_idx[3]].ao
+< 			> vertex_buffer[v_idx[7]].ao + vertex_buffer[v_idx[0]].ao)
+< 		{
+< 			add_index(v_idx[4], is_opaque);
+< 			add_index(v_idx[7], is_opaque);
+< 			add_index(v_idx[3], is_opaque);
+< 
+< 			add_index(v_idx[3], is_opaque);
+< 			add_index(v_idx[0], is_opaque);
+< 			add_index(v_idx[4], is_opaque);
+< 		}
+< 		else
+< 		{
+< 			add_index(v_idx[7], is_opaque);
+< 			add_index(v_idx[3], is_opaque);
+< 			add_index(v_idx[0], is_opaque);
+< 
+< 			add_index(v_idx[0], is_opaque);
+< 			add_index(v_idx[4], is_opaque);
+< 			add_index(v_idx[7], is_opaque);
+< 		}
+< 	}
+< }
+< 
+< template <class Vertex>
+< uint8_t		Mesh<Vertex>::get_ao(int idx)
+< {
+< 	switch (idx)
+< 	{
+< 		case 0:	
+< 			return (vertex_ao(m_moore_access[10], m_moore_access[9]
+< 					, m_moore_access[12]));
+< 		case 1:	
+< 			return (vertex_ao(m_moore_access[10], m_moore_access[11]
+< 					, m_moore_access[14]));
+< 		case 2:	
+< 			return (vertex_ao(m_moore_access[16], m_moore_access[17]
+< 					, m_moore_access[14]));
+< 		case 3:	
+< 			return (vertex_ao(m_moore_access[16], m_moore_access[15]
+< 					, m_moore_access[12]));
+< 		case 4:	
+< 			return (vertex_ao(m_moore_access[21], m_moore_access[19]
+< 					, m_moore_access[18]));
+< 		case 5:	
+< 			return (vertex_ao(m_moore_access[19], m_moore_access[23]
+< 					, m_moore_access[20]));
+< 		case 6:	
+< 			return (vertex_ao(m_moore_access[25], m_moore_access[23]
+< 					, m_moore_access[26]));
+< 		case 7:	
+< 			return (vertex_ao(m_moore_access[25], m_moore_access[21]
+< 					, m_moore_access[24]));
+< 		default:
+< 			return (3);
+< 	}
+< }
+Seulement dans ./: .Mesh.h.swp
+Seulement dans ./: Mesh_interface.h
+diff ./My_vulkan.cpp ../vox/My_vulkan.cpp
+9c9
+< /*   Updated: 2020/03/11 09:00:01 by trobicho         ###   ########.fr       */
+---
+> /*   Updated: 2019/12/21 21:13:56 by trobicho         ###   ########.fr       */
+1125c1125
+< 	clear_value[0].color = {0.1f, 0.1f, 0.8f, 1.0f};
+---
+> 	clear_value[0].color = {0.0f, 0.0f, 0.0f, 1.0f};
+1200c1200
+< 	clear_value[0].color = {0.1f, 0.1f, 0.8f, 1.0f};
+---
+> 	clear_value[0].color = {0.0f, 0.0f, 0.0f, 1.0f};
+Seulement dans ./: .My_vulkan.cpp.swp
+diff ./My_vulkan.h ../vox/My_vulkan.h
+9c9
+< /*   Updated: 2020/03/11 08:40:44 by trobicho         ###   ########.fr       */
+---
+> /*   Updated: 2019/12/21 21:19:38 by trobicho         ###   ########.fr       */
+30c30
+< 	glm::mat4	bone[17] = {glm::mat4(1.0f)};
+---
+> 	glm::vec3	sun_pos;
+55c55
+< 	Mesh<s_vertex>	mesh;
+---
+> 	Mesh			mesh;
+84c84
+< 	int			update(My_vulkan &vulk, Mesh<s_vertex_bones> &mesh);
+---
+> 	int			update(My_vulkan &vulk, Mesh &mesh);
+Seulement dans ./: .My_vulkan.h.swp
+diff ./Node.h ../vox/Node.h
+9c9
+< /*   Updated: 2019/12/24 19:58:41 by trobicho         ###   ########.fr       */
+---
+> /*   Updated: 2019/12/21 05:53:13 by trobicho         ###   ########.fr       */
+15c15
+< #include "Mesh_interface.h"
+---
+> #include "Mesh.h"
+58,59c58,59
+< 		inline void			mesh(Mesh_interface &mesh) const {do_mesh(mesh);}
+< 		inline void			mesh(Mesh_interface &mesh, const s_vbox &box) const
+---
+> 		inline void			mesh(Mesh &mesh) const {do_mesh(mesh);}
+> 		inline void			mesh(Mesh &mesh, const s_vbox &box) const
+75,76c75,76
+< 		virtual void		do_mesh(Mesh_interface &mesh) const = 0;
+< 		virtual void		do_mesh(Mesh_interface &mesh, const s_vbox &box) const = 0;
+---
+> 		virtual void		do_mesh(Mesh &mesh) const = 0;
+> 		virtual void		do_mesh(Mesh &mesh, const s_vbox &box) const = 0;
+Les sous-répertoires ./obj et ../vox/obj sont identiques
+Seulement dans ./: .Player.cpp.swp
+Les sous-répertoires ./shader et ../vox/shader sont identiques
+diff ./Spider.cpp ../vox/Spider.cpp
+9c9
+< /*   Updated: 2020/05/19 13:40:58 by trobicho         ###   ########.fr       */
+---
+> /*   Updated: 2019/12/22 00:29:10 by trobicho         ###   ########.fr       */
+14d13
+< #include "Ccd_solver.h"
+20,34d18
+< void	Spider::add_box(s_vbox box, uint32_t value)
+< {
+< 	for (int x = 0; x < box.len.x; x++)
+< 	{
+< 		for (int y = 0; y < box.len.y; y++)
+< 		{
+< 			for (int z = 0; z < box.len.z; z++)
+< 			{
+< 				m_vdb.set_vox(value, s_vec3i(box.origin.x + x
+< 					, box.origin.y + y, box.origin.z + z));
+< 			}
+< 		}
+< 	}
+< }
+< 
+37,85c21
+< 	s_vbox	body;
+< 	s_vbox	leg;
+< 	int		bone;
+< 	int		bone_pos;
+< 
+< 	m_bones.resize(17, glm::mat4(1.0));
+< 	m_bones_pos.resize(25, glm::vec3(0.0));
+< 	body.origin = s_vec3i(50, 47, 1);
+< 	body.len = s_vec3i(28, 16, 55);
+< 	m_bones_pos[0] = glm::vec3(body.origin.x + body.len.x / 2.0f
+< 							, body.origin.y + body.len.y / 2.0f
+< 							, body.origin.z + body.len.z / 2.0f);
+< 	add_box(body, 0);
+< 	for (int i = 0; i < 4; i++)
+< 	{
+< 		leg.origin = s_vec3i(25, 50, 3 + i * ((body.len.z - 8) / 4.0));
+< 		leg.len = s_vec3i(25, 3, 3);
+< 		bone = i * 2 + 1;
+< 		bone_pos = i * 3 + 1;
+< 		add_box(leg, bone);
+< 		m_bones_pos[bone_pos] = glm::vec3(leg.origin.x + leg.len.x
+< 								, leg.origin.y + leg.len.y / 2.0f
+< 								, leg.origin.z + leg.len.z / 2.0f);
+< 		leg.origin.x = 0;
+< 		add_box(leg, bone + 1);
+< 		m_bones_pos[bone_pos + 1] = glm::vec3(leg.origin.x + leg.len.x
+< 								, leg.origin.y + leg.len.y / 2.0f
+< 								, leg.origin.z + leg.len.z / 2.0f);
+< 		m_bones_pos[bone_pos + 2] = glm::vec3(leg.origin.x
+< 								, leg.origin.y + leg.len.y / 2.0f
+< 								, leg.origin.z + leg.len.z / 2.0f);
+< 
+< 		leg.origin.x = 78;
+< 		bone = 9 + i * 2;
+< 		bone_pos = 13 + i * 3;
+< 		add_box(leg, bone);
+< 		m_bones_pos[bone_pos] = glm::vec3(leg.origin.x
+< 								, leg.origin.y + leg.len.y / 2.0f
+< 								, leg.origin.z + leg.len.z / 2.0f);
+< 		leg.origin.x = 78 + 25;
+< 		add_box(leg, bone + 1);
+< 		m_bones_pos[bone_pos + 1] = glm::vec3(leg.origin.x
+< 								, leg.origin.y + leg.len.y / 2.0f
+< 								, leg.origin.z + leg.len.z / 2.0f);
+< 		m_bones_pos[bone_pos + 2] = glm::vec3(leg.origin.x + leg.len.x
+< 								, leg.origin.y + leg.len.y / 2.0f
+< 								, leg.origin.z + leg.len.z / 2.0f);
+< 	}
+< 	m_vdb.pruning();
+---
+> 	m_vdb.set_vox(1, s_vec3i(0, 0, 0));
+87,138d22
+< }
+< 
+< void	Spider::bones_test()
+< {
+< 	int			bone_id;
+< 	static int	t = 0;
+< 	static int	t_add = 1;
+< 
+< /*
+< 	m_bones[0] = glm::translate(glm::mat4(1.0f), m_bones_pos[0]);
+< 	m_bones[0] = glm::rotate(m_bones[0]
+< 			, 0.01f * t , glm::vec3(0.0f, 1.0f, 0.0f));
+< 	m_bones[0] = glm::translate(m_bones[0]
+< 					, glm::vec3(-m_bones_pos[0].x
+< 						, -m_bones_pos[0].y, -m_bones_pos[0].z));
+< 	for (bone_id = 1; bone_id < 17; bone_id++)
+< 	{
+< 		float	angle = 0.01f;
+< 		if (bone_id > 8)
+< 			angle = 0 - angle;
+< 		if (bone_id % 2)
+< 			m_bones[bone_id] = glm::translate(m_bones[0], m_bones_pos[bone_id]);
+< 		else
+< 			m_bones[bone_id] = glm::translate(m_bones[bone_id - 1], m_bones_pos[bone_id]);
+< 		m_bones[bone_id] = glm::rotate(m_bones[bone_id]
+< 				, angle * (t + (bone_id % 5) * 3), glm::vec3(0.0f, 0.0f, 1.0f));
+< 		m_bones[bone_id] = glm::translate(m_bones[bone_id]
+< 				, glm::vec3(-m_bones_pos[bone_id].x
+< 					, -m_bones_pos[bone_id].y, -m_bones_pos[bone_id].z));
+< 	}
+< 	*/
+< 	if (t > 100)
+< 		t_add = -1;
+< 	if (t < -100)
+< 		t_add = 1;
+< 	t += t_add;
+< 	one_leg_move(0, m_bones_pos[3] - glm::vec3(10.0f, t / 10.f, 0.0f));
+< }
+< 
+< void Spider::one_leg_move(int leg_id, glm::vec3 target)
+< {
+< 	std::vector<glm::mat4>::const_iterator first = m_bones.begin() + 1;
+< 	std::vector<glm::mat4>::const_iterator last = m_bones.begin() + 3;
+< 	std::vector<glm::vec3>::const_iterator first_pos = m_bones_pos.begin() + 1;
+< 	std::vector<glm::vec3>::const_iterator last_pos = m_bones_pos.begin() + 4;
+< 	std::vector<glm::mat4> leg_bones(first, last);
+< 	std::vector<glm::vec3> leg_pos(first_pos, last_pos);
+< 	Ccd_solver::ccd_solve(leg_bones, leg_pos, target);
+< 	for (int i = 0; i < 2; i++)
+< 	{
+< 		m_bones[i + 1] = leg_bones[i];
+< 	}
+diff ./Spider.h ../vox/Spider.h
+9c9
+< /*   Updated: 2020/05/06 16:33:08 by trobicho         ###   ########.fr       */
+---
+> /*   Updated: 2019/12/21 21:08:49 by trobicho         ###   ########.fr       */
+19c19
+< using	Leaf_enemy = Leaf_node<uint32_t, 3, 2, 2>;
+---
+> using	Leaf_enemy = Leaf_node<uint32_t, 2>;
+28d27
+< 		void		bones_test();
+30,35c29
+< 		void		add_box(s_vbox box, uint32_t value);
+< 					// not here namespace toolbox::
+< 		inline Mesh<s_vertex_bones>
+< 					&get_mesh_ref(){return (m_mesh);}
+< 		inline std::vector<glm::mat4>
+< 					&get_bones_ref(){return (m_bones);}
+---
+> 		inline Mesh	&get_mesh_ref(){return (m_mesh);}
+38,45c32,35
+< 		void					one_leg_move(int leg_id, glm::vec3 target);
+< 
+< 		std::vector<glm::mat4>	m_bones;
+< 		std::vector<glm::vec3>	m_bones_pos;
+< 		Internal_enemy			m_root_node = Internal_enemy(0, 0, 0);
+< 		Vdb_test				m_vdb = Vdb_test(m_root_node);
+< 		Moore_accessor			m_moore_access = Moore_accessor(m_vdb);
+< 		Mesh<s_vertex_bones>	m_mesh;
+---
+> 		Internal_enemy	m_root_node = Internal_enemy(0, 0, 0);
+> 		Vdb_test		m_vdb = Vdb_test(m_root_node);
+> 		Moore_accessor	m_moore_access = Moore_accessor(m_vdb);
+> 		Mesh			m_mesh;
+Les sous-répertoires ./textures et ../vox/textures sont identiques
+diff ./Vdb_test.cpp ../vox/Vdb_test.cpp
+9c9
+< /*   Updated: 2019/12/24 19:57:09 by trobicho         ###   ########.fr       */
+---
+> /*   Updated: 2019/12/21 05:50:07 by trobicho         ###   ########.fr       */
+78c78
+< void		Vdb_test::mesh(Mesh_interface &mesh) const
+---
+> void		Vdb_test::mesh(Mesh &mesh) const
+83c83
+< void		Vdb_test::mesh(Mesh_interface &mesh, const s_vbox &box) const
+---
+> void		Vdb_test::mesh(Mesh &mesh, const s_vbox &box) const
+diff ./Vdb_test.h ../vox/Vdb_test.h
+9c9
+< /*   Updated: 2019/12/24 19:57:32 by trobicho         ###   ########.fr       */
+---
+> /*   Updated: 2019/12/21 19:07:35 by trobicho         ###   ########.fr       */
+37,38c37,38
+< 		void		mesh(Mesh_interface &mesh) const;
+< 		void		mesh(Mesh_interface &mesh, const s_vbox &box) const;
+---
+> 		void		mesh(Mesh &mesh) const;
+> 		void		mesh(Mesh &mesh, const s_vbox &box) const;
+Seulement dans ./: Vertex.h
+Seulement dans ./: .Vertex.h.swp
+Les fichiers binaires ./vulkan_vdb et ../vox/vulkan_vdb sont différents
+Seulement dans ./: vulkan_vdb.dSYM

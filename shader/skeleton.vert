@@ -14,11 +14,14 @@ layout(binding = 0) uniform UniformBufferObject {
 	mat4	model;
 	mat4	view;
 	mat4	proj;
+	vec4	pos_enemy;
 	mat4	bone[17];
 } ubo;
 
 void main() {
-	vec4 new_pos = ubo.bone[in_bones_index] * vec4(in_pos, 1.0) * in_bones_weight;
+	vec4 new_pos = ubo.bone[in_bones_index] * vec4(in_pos, 1.0)
+		* in_bones_weight * 0.1;
+	new_pos += ubo.pos_enemy;
 	gl_Position = ubo.proj * ubo.view * ubo.model * vec4(new_pos.xyz, 1.0);
 
 	vec3	color_scalar = vec3(1.0) / (4 - in_ao);

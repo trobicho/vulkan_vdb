@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/02 20:39:09 by trobicho          #+#    #+#             */
-/*   Updated: 2019/12/21 05:49:01 by trobicho         ###   ########.fr       */
+/*   Updated: 2020/05/24 14:03:40 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,10 @@
 #include "Map_loader.h"
 #include "key_call.h"
 #include "Physic.h"
+#include "Enemy_manager.h"
 
 static int	main_loop(My_vulkan &my_vulkan, Map_loader &map_loader
-				, GLFWwindow *win)
+				, GLFWwindow *win, Enemy_manager &enemy_manager)
 {
 	s_user	*user = (s_user*)glfwGetWindowUserPointer(win);
 	Physic	physic(map_loader.get_vdb_ref());
@@ -33,7 +34,6 @@ static int	main_loop(My_vulkan &my_vulkan, Map_loader &map_loader
 		user->player.move();
 		if (user->player.has_physic())
 			physic.apply_physic_to_player(user->player);
-		user->player.update_ubo();
 		if (map_loader.has_update())
 		{
 			map_loader.update();
@@ -44,6 +44,16 @@ static int	main_loop(My_vulkan &my_vulkan, Map_loader &map_loader
 				return (-1);
 			*/
 		}
+		auto &cam = user->player.get_cam_ref();
+		auto &bones = enemy_manager.get_bones_ref();
+		for (int i = 0; i < 17; ++i)
+		{
+			cam.ubo.bone[i] = bones[i];
+		}
+		cam.ubo.pos_enemy =
+				glm::vec4(enemy_manager.get_spider_ref().get_pos(), 1.0f);
+		enemy_manager.update();
+		user->player.update_ubo();
 		my_vulkan.draw_frame();
 	}
 	map_loader.quit();
@@ -101,12 +111,12 @@ int	main()
 	std::cout << "m_pos = {" << v.x << ", "
 				<< v.y << ", " << v.z << "}" << std::endl;
 	s_vbox box;
-	box.origin = s_vec3i(xr, 0, zr);
+	box.origin = s_vec3i(0, 0, 0);
 	box.len = s_vec3i(1 << CHUNK_LOG_X, 1 << CHUNK_LOG_Y, 1 << CHUNK_LOG_Z);
 	map_loader.load_pos(box.origin);
 
 	s_user		user(player, my_vdb, map_loader);
-	player.get_cam_ref().ubo.sun_pos = glm::vec3(xr, 300, zr);
+	//player.get_cam_ref().ubo.sun_pos = glm::vec3(xr, 300, zr);
 
 	glfwSetInputMode(win, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	if (glfwRawMouseMotionSupported())
@@ -121,11 +131,18 @@ int	main()
 	{
 		std::cout << "Unable to initialize Vulkan !" << std::endl;
 	}
-
+	Enemy_manager	enemy_manager = Enemy_manager(my_vulkan, my_vdb);
+	enemy_manager.get_spider_ref().set_pos(player.get_pos()
+			+ glm::vec3(50.0f, 0.f, 0.f));
+	if (enemy_manager.init() == -1)
+	{
+		std::cout << "Unable to initialize Enemy command buffer !" << std::endl;
+		return (1);
+	}
 	map_loader.update();
 	std::thread thread(&Map_loader::thread_loader, &map_loader);
 
-	main_loop(my_vulkan, map_loader, win);
+	main_loop(my_vulkan, map_loader, win, enemy_manager);
 	thread.join();
 	v = player.get_pos();
 	std::cout << "m_pos = {" << v.x << ", "

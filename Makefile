@@ -6,7 +6,7 @@
 #    By: trobicho <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/11/02 20:38:42 by trobicho          #+#    #+#              #
-#    Updated: 2020/01/20 17:06:13 by trobicho         ###   ########.fr        #
+#    Updated: 2020/05/21 11:23:44 by trobicho         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -32,7 +32,7 @@ else
 		-lvulkan -lglfw -lm -L ../QGen/my_lib_cpp/ -ltrl
 endif
 
-SRCS_NAME	=	main_spider.cpp \
+SRCS_NAME	=	main.cpp \
 				Spider.cpp \
 				Enemy_vbo.cpp \
 				Enemy_manager.cpp \
@@ -53,6 +53,7 @@ SRCS_NAME	=	main_spider.cpp \
 				Moore_accessor.cpp \
 				Map_loader.cpp \
 				Chunk.cpp \
+				Ccd_solver.cpp \
 				Ray.cpp
 
 HDRS_NAME	=	Vdb_test.h \
@@ -81,6 +82,7 @@ HDRS_NAME	=	Vdb_test.h \
 				Mesh_interface.h \
 				Mesh.h \
 				Vertex.h \
+				Ccd_solver.h \
 				Ray.cpp
 
 OBJS_NAME	=	$(SRCS_NAME:.cpp=.o)

@@ -6,7 +6,7 @@
 /*   By: trobicho <trobicho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/22 17:58:08 by trobicho          #+#    #+#             */
-/*   Updated: 2019/12/24 19:55:51 by trobicho         ###   ########.fr       */
+/*   Updated: 2020/05/22 13:13:58 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -154,8 +154,28 @@ VkPipelineInputAssemblyStateCreateInfo	input_assembly_create(void)
 VkPipelineVertexInputStateCreateInfo	vert_input_create(void)
 {
 	VkPipelineVertexInputStateCreateInfo	vert_input_info;
-	static auto binding_description = s_vertex_bones::get_binding_description();
-	static auto attribute_descriptions = s_vertex_bones::get_attribute_descriptions();
+	static auto binding_description = s_vertex::get_binding_description();
+	static auto attribute_descriptions = s_vertex::get_attribute_descriptions();
+
+	vert_input_info = (VkPipelineVertexInputStateCreateInfo){};
+	vert_input_info.sType =
+		VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
+	vert_input_info.vertexBindingDescriptionCount = 1;
+	vert_input_info.pVertexBindingDescriptions = &binding_description;
+	vert_input_info.vertexAttributeDescriptionCount =
+		static_cast<uint32_t>(attribute_descriptions.size());
+	vert_input_info.pVertexAttributeDescriptions =
+		attribute_descriptions.data();
+	return (vert_input_info);
+}
+
+VkPipelineVertexInputStateCreateInfo	vert_bones_input_create(void)
+{
+	VkPipelineVertexInputStateCreateInfo	vert_input_info;
+	static auto binding_description = s_vertex_bones
+			::get_binding_description();
+	static auto attribute_descriptions = s_vertex_bones
+			::get_attribute_descriptions();
 
 	vert_input_info = (VkPipelineVertexInputStateCreateInfo){};
 	vert_input_info.sType =

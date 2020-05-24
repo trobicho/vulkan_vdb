@@ -6,7 +6,7 @@
 /*   By: trobicho <trobicho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/09 17:05:37 by trobicho          #+#    #+#             */
-/*   Updated: 2020/03/11 08:40:44 by trobicho         ###   ########.fr       */
+/*   Updated: 2020/05/24 13:13:19 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ struct s_ubo
 	glm::mat4	model;
 	glm::mat4	view;
 	glm::mat4	proj;
+	glm::vec4	pos_enemy;
 	glm::mat4	bone[17] = {glm::mat4(1.0f)};
 };
 
@@ -127,7 +128,7 @@ class	My_vulkan
 		const VkDevice
 					&get_device_ref() const {return (const VkDevice&)(m_device);}
 		int			command_buffer_record(t_chunk_cont &chunk_vec);
-		int			command_buffer_record(t_enemy_cont &chunk_vec);
+		int			command_enemy_record(t_enemy_cont &enemy_vec);
 		int			create_buffer(VkDeviceSize size, VkBufferUsageFlags usage
 						, VkMemoryPropertyFlags properties, VkBuffer &buffer
 						, VkDeviceMemory &buffer_mem);
@@ -172,6 +173,7 @@ class	My_vulkan
 		int			command_pool_create();
 		int			command_buffer_create();
 		int			gpu_pipeline_create();
+		int			enemy_pipeline_create();
 		int			semaphore_create();
 		int			create_img_buffer(uint32_t width, uint32_t height
 						, VkFormat format, VkImageTiling tiling
@@ -204,9 +206,11 @@ class	My_vulkan
 		VkRenderPass			m_render_pass;
 		VkPipelineLayout		m_pipeline_layout;
 		VkPipeline				m_graphics_pipeline;
+		VkPipeline				m_enemy_pipeline;
 		VkFramebuffer			*m_framebuffer;
 		VkCommandPool			m_command_pool;
 		VkCommandBuffer			*m_command_buffer;
+		VkCommandBuffer			*m_command_enemy;
 		VkSemaphore				m_semaphore_image_available; // no multiple semaphore for multiple frame ????
 		VkSemaphore				m_semaphore_render_finish;
 		std::vector<VkBuffer> 	m_uniform_buffer;
@@ -231,6 +235,6 @@ class	My_vulkan
 		VkImageView				m_depth_img_view;
 
 		int						m_update;
-		bool					m_debug = false;
+		bool					m_debug = true;
 		s_ubo					&m_ubo;
 };

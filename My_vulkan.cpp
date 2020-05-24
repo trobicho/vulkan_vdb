@@ -6,7 +6,7 @@
 /*   By: trobicho <trobicho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/09 17:05:36 by trobicho          #+#    #+#             */
-/*   Updated: 2020/03/11 09:00:01 by trobicho         ###   ########.fr       */
+/*   Updated: 2020/05/22 14:42:56 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -144,6 +144,8 @@ int		My_vulkan::init()
 	if (create_desc_layout() == -1)
 		return (-1);
 	if (gpu_pipeline_create() == -1)
+		return (-1);
+	if (enemy_pipeline_create() == -1)
 		return (-1);
 	if (command_pool_create() == -1)
 		return (-1);
@@ -752,8 +754,12 @@ int		My_vulkan::render_pass_create()
 	static VkAttachmentReference	color_attachment_ref = {};
 	static VkAttachmentDescription	depth_attachment = {};
 	static VkAttachmentReference	depth_attachment_ref = {};
-	static VkSubpassDescription		subpass = {};
-	static VkSubpassDependency		subpass_dep = {};
+	static VkAttachmentDescription	color_attachment2 = {};
+	static VkAttachmentReference	color_attachment2_ref = {};
+	static VkAttachmentDescription	depth_attachment2 = {};
+	static VkAttachmentReference	depth_attachment2_ref = {};
+	static VkSubpassDescription		subpass[2] = {};
+	static VkSubpassDependency		subpass_dep[2] = {};
 	VkRenderPassCreateInfo			render_pass_info = {};
 
 	color_attachment.format = m_swap_chain_img_format;
@@ -769,7 +775,7 @@ int		My_vulkan::render_pass_create()
 	depth_attachment.format = find_depth_format();
 	depth_attachment.samples = VK_SAMPLE_COUNT_1_BIT;
 	depth_attachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
-	depth_attachment.storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+	depth_attachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
 	depth_attachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
 	depth_attachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
 	depth_attachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
@@ -778,27 +784,61 @@ int		My_vulkan::render_pass_create()
 	depth_attachment_ref.attachment = 1;
 	depth_attachment_ref.layout =
 		VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
-	subpass.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
-	subpass.colorAttachmentCount = 1;
-	subpass.pColorAttachments = &color_attachment_ref;
-	subpass.pDepthStencilAttachment = &depth_attachment_ref;
-	subpass_dep.srcSubpass = VK_SUBPASS_EXTERNAL;
-	subpass_dep.dstSubpass = 0;
-	subpass_dep.srcStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
-	subpass_dep.srcAccessMask = 0;
-	subpass_dep.dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
-	subpass_dep.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_READ_BIT
+	subpass[0].pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
+	subpass[0].colorAttachmentCount = 1;
+	subpass[0].pColorAttachments = &color_attachment_ref;
+	subpass[0].pDepthStencilAttachment = &depth_attachment_ref;
+	subpass_dep[0].srcSubpass = VK_SUBPASS_EXTERNAL;
+	subpass_dep[0].dstSubpass = 0;
+	subpass_dep[0].srcStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+	subpass_dep[0].srcAccessMask = 0;
+	subpass_dep[0].dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+	subpass_dep[0].dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_READ_BIT
+		| VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
+
+	color_attachment2.format = m_swap_chain_img_format;
+	color_attachment2.samples = VK_SAMPLE_COUNT_1_BIT;
+	color_attachment2.loadOp = VK_ATTACHMENT_LOAD_OP_LOAD;
+	color_attachment2.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
+	color_attachment2.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+	color_attachment2.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+	color_attachment2.initialLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
+	color_attachment2.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
+	color_attachment2_ref.attachment = 2;
+	color_attachment2_ref.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+	depth_attachment2.format = find_depth_format();
+	depth_attachment2.samples = VK_SAMPLE_COUNT_1_BIT;
+	depth_attachment2.loadOp = VK_ATTACHMENT_LOAD_OP_LOAD;
+	depth_attachment2.storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+	depth_attachment2.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+	depth_attachment2.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+	depth_attachment2.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+	depth_attachment2.finalLayout =
+		VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
+	depth_attachment2_ref.attachment = 3;
+	depth_attachment2_ref.layout =
+		VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
+	subpass[1].pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
+	subpass[1].colorAttachmentCount = 1;
+	subpass[1].pColorAttachments = &color_attachment_ref;
+	subpass[1].pDepthStencilAttachment = &depth_attachment_ref;
+	subpass_dep[1].srcSubpass = 0;
+	subpass_dep[1].dstSubpass = 1;
+	subpass_dep[1].srcStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+	subpass_dep[1].srcAccessMask = 0;
+	subpass_dep[1].dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+	subpass_dep[1].dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_READ_BIT
 		| VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
 	std::array<VkAttachmentDescription, 2> attachments =
 		{color_attachment, depth_attachment};
-	render_pass_info.dependencyCount = 1;
-	render_pass_info.pDependencies = &subpass_dep;
+	render_pass_info.dependencyCount = 2;
+	render_pass_info.pDependencies = subpass_dep;
 	render_pass_info.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
 	render_pass_info.attachmentCount =
 		static_cast<uint32_t>(attachments.size());
 	render_pass_info.pAttachments = attachments.data();
-	render_pass_info.subpassCount = 1;
-	render_pass_info.pSubpasses = &subpass;
+	render_pass_info.subpassCount = 2;
+	render_pass_info.pSubpasses = subpass;
 	if (vkCreateRenderPass(m_device, &render_pass_info, NULL
 			, &m_render_pass) != VK_SUCCESS)
 	{
@@ -1091,9 +1131,13 @@ int		My_vulkan::command_buffer_create()
 {
 	uint32_t					img_count;
 	VkCommandBufferAllocateInfo alloc_info;
+	VkCommandBufferAllocateInfo alloc_info2;
 
 	vkGetSwapchainImagesKHR(m_device, m_swap_chain, &img_count, NULL);
 	if ((m_command_buffer = (VkCommandBuffer*)
+				malloc(sizeof(VkCommandBuffer) * img_count)) == NULL)
+		return (-1);
+	if ((m_command_enemy = (VkCommandBuffer*)
 				malloc(sizeof(VkCommandBuffer) * img_count)) == NULL)
 		return (-1);
 	alloc_info = (VkCommandBufferAllocateInfo){};
@@ -1101,8 +1145,15 @@ int		My_vulkan::command_buffer_create()
 	alloc_info.commandPool = m_command_pool;
 	alloc_info.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
 	alloc_info.commandBufferCount = img_count;
+	alloc_info2 = (VkCommandBufferAllocateInfo){};
+	alloc_info2.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+	alloc_info2.commandPool = m_command_pool;
+	alloc_info2.level = VK_COMMAND_BUFFER_LEVEL_SECONDARY;
+	alloc_info2.commandBufferCount = img_count;
 	if (vkAllocateCommandBuffers(m_device, &alloc_info
-			, m_command_buffer) != VK_SUCCESS)
+			, m_command_buffer) != VK_SUCCESS
+		|| vkAllocateCommandBuffers(m_device, &alloc_info2
+			, m_command_enemy) != VK_SUCCESS)
 	{
 		printf("failed to create allocate buffer!\n");
 		return (-1);
@@ -1174,6 +1225,9 @@ int		My_vulkan::command_buffer_record(t_chunk_cont &chunk_vec)
 			if (chunk->second.need_unload == false)
 				chunk->second.command_buffer_binder_blend(m_command_buffer[i]);
 		}
+		vkCmdNextSubpass(m_command_buffer[i]
+			, VK_SUBPASS_CONTENTS_SECONDARY_COMMAND_BUFFERS);
+		vkCmdExecuteCommands(m_command_buffer[i], 1, &m_command_enemy[i]);
 		vkCmdEndRenderPass(m_command_buffer[i]);
 		if (vkEndCommandBuffer(m_command_buffer[i]) != VK_SUCCESS)
 		{
@@ -1185,62 +1239,44 @@ int		My_vulkan::command_buffer_record(t_chunk_cont &chunk_vec)
 	return (0);
 }
 
-int		My_vulkan::command_buffer_record(t_enemy_cont &enemy_vec)
+int		My_vulkan::command_enemy_record(t_enemy_cont &enemy_vec)
 {
-	int							i;
-	uint32_t					img_count;
-	VkCommandBufferBeginInfo	begin_info;
-	VkRenderPassBeginInfo		render_pass_info;
-	VkClearValue				clear_color;
-	std::array<VkClearValue, 2> clear_value = {};
+	int								i;
+	uint32_t						img_count;
+	VkCommandBufferBeginInfo		begin_info;
+	VkCommandBufferInheritanceInfo	inherit_info;
+	VkRenderPassBeginInfo			render_pass_info;
 
 	i = 0;
 	vkGetSwapchainImagesKHR(m_device, m_swap_chain, &img_count, NULL);
 	begin_info = (VkCommandBufferBeginInfo){};
-	clear_value[0].color = {0.1f, 0.1f, 0.8f, 1.0f};
-	clear_value[1].depthStencil = {1.0f, 0};
+	inherit_info = (VkCommandBufferInheritanceInfo){};
 	while (i < img_count)
 	{
+		inherit_info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_INHERITANCE_INFO;
+		inherit_info.pNext = NULL;
+		inherit_info.renderPass = m_render_pass;
+		inherit_info.subpass = 1;
+		inherit_info.framebuffer = VK_NULL_HANDLE;
+		inherit_info.occlusionQueryEnable = VK_FALSE;
+		inherit_info.queryFlags = 0;
+		inherit_info.pipelineStatistics = 0;
 		begin_info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
-		begin_info.flags = VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT;
-		begin_info.pInheritanceInfo = NULL;
-		if (vkBeginCommandBuffer(m_command_buffer[i], &begin_info)
+		begin_info.flags = VK_COMMAND_BUFFER_USAGE_RENDER_PASS_CONTINUE_BIT;
+		begin_info.pInheritanceInfo = &inherit_info;
+		if (vkBeginCommandBuffer(m_command_enemy[i], &begin_info)
 			!= VK_SUCCESS)
 		{
 			printf("failed to begin recording command buffer!\n");
 			return (-1);
 		}
-		render_pass_info = (VkRenderPassBeginInfo){};
-		render_pass_info.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
-		render_pass_info.renderPass = m_render_pass;
-		render_pass_info.framebuffer = m_framebuffer[i];
-		render_pass_info.renderArea.offset = (VkOffset2D){0, 0};
-		render_pass_info.renderArea.extent = m_swap_chain_extent;
-		render_pass_info.clearValueCount =
-			static_cast<uint32_t>(clear_value.size());
-		render_pass_info.pClearValues = clear_value.data();
-		vkCmdBeginRenderPass(m_command_buffer[i], &render_pass_info
-			, VK_SUBPASS_CONTENTS_INLINE);
-		vkCmdBindPipeline(m_command_buffer[i]
-			, VK_PIPELINE_BIND_POINT_GRAPHICS, m_graphics_pipeline);
-		/*
-		VkBuffer vertex_buffers[] = {m_vertex_buffer};
-		VkDeviceSize offsets[] = {0};
-		vkCmdBindVertexBuffers(m_command_buffer[i], 0, 1
-		, (const VkBuffer*)vertex_buffers, offsets);
-		vkCmdBindIndexBuffer(m_command_buffer[i], m_vertex_index_buffer, 0
-				, VK_INDEX_TYPE_UINT32);
-		vkCmdBindDescriptorSets(m_command_buffer[i]
+		vkCmdBindPipeline(m_command_enemy[i]
+			, VK_PIPELINE_BIND_POINT_GRAPHICS, m_enemy_pipeline);
+		vkCmdBindDescriptorSets(m_command_enemy[i]
 				, VK_PIPELINE_BIND_POINT_GRAPHICS, m_pipeline_layout
 				, 0, 1, &m_desc_set[i], 0, nullptr);
-		vkCmdDrawIndexed(m_command_buffer[i], nb_idx, 1, 0, 0, 0);
-		*/
-		vkCmdBindDescriptorSets(m_command_buffer[i]
-				, VK_PIPELINE_BIND_POINT_GRAPHICS, m_pipeline_layout
-				, 0, 1, &m_desc_set[i], 0, nullptr);
-		enemy_vec.command_buffer_binder(m_command_buffer[i]);
-		vkCmdEndRenderPass(m_command_buffer[i]);
-		if (vkEndCommandBuffer(m_command_buffer[i]) != VK_SUCCESS)
+		enemy_vec.command_buffer_binder(m_command_enemy[i]);
+		if (vkEndCommandBuffer(m_command_enemy[i]) != VK_SUCCESS)
 		{
 			printf("failed to record command buffer!\n");
 			return (-1);
@@ -1321,6 +1357,87 @@ int		My_vulkan::gpu_pipeline_create()
 	pipeline_info.basePipelineIndex = -1;
 	if (vkCreateGraphicsPipelines(m_device, VK_NULL_HANDLE, 1
 			, &pipeline_info, NULL, &m_graphics_pipeline) != VK_SUCCESS)
+	{
+		printf("failed to create graphics pipeline!");
+		return (-1);
+	}
+
+	vkDestroyShaderModule(m_device, frag_shader_module, NULL);
+	vkDestroyShaderModule(m_device, vert_shader_module, NULL);
+	return (0);
+}
+
+int		My_vulkan::enemy_pipeline_create()
+{
+	char				*vert_shader;
+	char				*frag_shader;
+	int					vert_size;
+	int					frag_size;
+	VkShaderModule		vert_shader_module;
+	VkShaderModule		frag_shader_module;
+	VkPipelineLayoutCreateInfo		pipeline_layout_info;
+	VkGraphicsPipelineCreateInfo	pipeline_info;
+
+	VkPipelineRasterizationStateCreateInfo	rasterizer_info;
+	VkPipelineViewportStateCreateInfo		viewport_info;
+	VkPipelineInputAssemblyStateCreateInfo	input_assembly;
+	VkPipelineColorBlendStateCreateInfo		color_blend_info;
+	VkPipelineMultisampleStateCreateInfo	multisampling_info;
+	VkPipelineVertexInputStateCreateInfo	vert_input_info;
+	VkPipelineShaderStageCreateInfo			*shader_stage;
+	VkPipelineDepthStencilStateCreateInfo	depth_stencil_info;
+
+	vert_shader = shader_load("shader/skeleton.spv", &vert_size);
+	frag_shader = shader_load("shader/frag.spv", &frag_size);
+	printf("shader size (%d, %d)\n", vert_size, frag_size);
+	if (shader_create_module(m_device, vert_shader, vert_size
+		, &vert_shader_module) == -1)
+		return (-1);
+	if (shader_create_module(m_device, frag_shader, frag_size
+		, &frag_shader_module) == -1)
+		return (-1);
+
+	shader_stage = pipe_shader_create(vert_shader_module, frag_shader_module);
+	if (shader_stage == NULL)
+		return (-1);
+	vert_input_info = vert_bones_input_create();
+	input_assembly = input_assembly_create();
+	viewport_info = viewport_create(m_swap_chain_extent);
+	rasterizer_info = rasterizer_create();
+	multisampling_info = multisampling_create();
+	color_blend_info = color_blend_create();
+	depth_stencil_info = depth_stencil_create();
+
+	pipeline_layout_info = (VkPipelineLayoutCreateInfo){};
+	pipeline_layout_info.sType =
+		VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
+	pipeline_layout_info.setLayoutCount = 1;
+	pipeline_layout_info.pSetLayouts = &m_desc_set_layout;
+	if (vkCreatePipelineLayout(m_device, &pipeline_layout_info, NULL
+		, &m_pipeline_layout) != VK_SUCCESS)
+	{
+		printf("failed to create pipeline layout!\n");
+		return (-1);
+	}
+	pipeline_info = (VkGraphicsPipelineCreateInfo){};
+	pipeline_info.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
+	pipeline_info.stageCount = 2;
+	pipeline_info.pStages = shader_stage;
+	pipeline_info.pVertexInputState = &vert_input_info;
+	pipeline_info.pInputAssemblyState = &input_assembly;
+	pipeline_info.pViewportState = &viewport_info;
+	pipeline_info.pRasterizationState = &rasterizer_info;
+	pipeline_info.pMultisampleState = &multisampling_info;
+	pipeline_info.pDepthStencilState = &depth_stencil_info;
+	pipeline_info.pColorBlendState = &color_blend_info;
+	pipeline_info.pDynamicState = NULL;
+	pipeline_info.layout = m_pipeline_layout;
+	pipeline_info.renderPass = m_render_pass;
+	pipeline_info.subpass = 1;
+	pipeline_info.basePipelineHandle = VK_NULL_HANDLE;
+	pipeline_info.basePipelineIndex = -1;
+	if (vkCreateGraphicsPipelines(m_device, VK_NULL_HANDLE, 1
+			, &pipeline_info, NULL, &m_enemy_pipeline) != VK_SUCCESS)
 	{
 		printf("failed to create graphics pipeline!");
 		return (-1);

@@ -14,7 +14,7 @@ layout(binding = 0) uniform UniformBufferObject {
 	mat4	model;
 	mat4	view;
 	mat4	proj;
-	vec3	sun_pos;
+	mat4	bone[17];
 } ubo;
 
 void main()
