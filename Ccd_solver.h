@@ -6,7 +6,7 @@
 /*   By: trobicho <trobicho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/06 14:19:28 by trobicho          #+#    #+#             */
-/*   Updated: 2020/05/06 16:44:16 by trobicho         ###   ########.fr       */
+/*   Updated: 2020/05/26 16:22:18 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,4 +20,8 @@ class	Ccd_solver
 			, std::vector<glm::vec3> &bones_pos, glm::vec3 target);
 		static void	calc_matrix(std::vector<glm::mat4> &bones
 			, std::vector<glm::vec3> &bones_pos, int id, glm::vec3 target);
+
+	private:
+		static void apply_matrix(std::vector<glm::mat4> &bones
+				, std::vector<glm::vec3> &bones_pos, int id);
 };

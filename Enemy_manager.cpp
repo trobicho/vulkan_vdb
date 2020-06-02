@@ -6,7 +6,7 @@
 /*   By: trobicho <trobicho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/21 20:04:13 by trobicho          #+#    #+#             */
-/*   Updated: 2020/05/24 14:06:30 by trobicho         ###   ########.fr       */
+/*   Updated: 2020/05/27 16:05:55 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,7 @@
 #include "shader.h"
 #include "gpu_pipeline.h"
 
-Enemy_manager::Enemy_manager(My_vulkan &vulk, const Vdb_test &world)
-	: m_vulk(vulk), m_world(world), m_spider(world)
+Enemy_manager::Enemy_manager(My_vulkan &vulk): m_vulk(vulk)
 {
 	m_spider.generate();
 }
@@ -30,8 +29,8 @@ int		Enemy_manager::init()
 	return (0);
 }
 
-int		Enemy_manager::update()
+int		Enemy_manager::update(const Vdb_test &world)
 {
-	m_spider.bones_test();
+	m_spider.move(world);
 	return (0);
 }

@@ -31,6 +31,9 @@ void main() {
 	color.y = in_color.y * ((in_bones_index) % 3);
 	color.z = in_color.z * ((in_bones_index) % 2);
 
-	out_color = vec4((color * color_scalar), in_color.a);
+	if (in_bones_index == 0)
+		out_color = vec4((vec3(0.3, 0.3, 0.3) * color_scalar), 1.0f);
+	else
+		out_color = vec4((vec3(0.5, 0.5, 0.5) * color_scalar), 1.0f);
 	out_dist_obs = length(gl_Position);
 }

@@ -6,7 +6,7 @@
 /*   By: trobicho <trobicho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/17 23:47:42 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/28 17:55:07 by trobicho         ###   ########.fr       */
+/*   Updated: 2020/05/27 18:36:30 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,6 +97,34 @@ Physic::Physic(const Vdb_test &vdb): m_vdb(vdb)
 		, m_start_time(std::chrono::high_resolution_clock::now())
 {
 	m_last_time = m_start_time;
+}
+
+void	Physic::apply_physic(Physic_entity &entity)
+{
+	float 		time;
+	auto		current_time = std::chrono::high_resolution_clock::now();
+
+	time = std::chrono::duration<float
+			, std::chrono::seconds::period>(current_time - m_last_time).count();
+
+	glm::vec3	pos = entity.get_pos();
+	glm::vec3&	speed_vec = entity.get_velocity_vec_ref();
+	s_vec3i		vox_p((int)pos.x, (int)pos.y, (int)pos.z);
+
+	if (m_vdb.get_vox(vox_p))
+	{
+		std::cout << "PANIC !!" << std::endl;
+		//return ;
+	}
+
+	if (!entity.check_ground(m_vdb))
+		speed_vec += glm::vec3(0.f, -1.0f, 0.f) * time;
+	else
+		speed_vec = glm::vec3(0.f, 0.f, 0.f);
+	pos = entity.get_pos();
+	float l_s = length(speed_vec);
+	entity.set_pos(pos + speed_vec);
+	m_last_time = current_time;
 }
 
 void	Physic::apply_physic_to_player(Player &player)

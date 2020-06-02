@@ -6,12 +6,13 @@
 /*   By: trobicho <trobicho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/17 23:36:18 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/28 17:54:50 by trobicho         ###   ########.fr       */
+/*   Updated: 2020/05/25 15:36:13 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
+#include "Physic_entity.h"
 #include "Player.h"
 #include "Vdb_test.h"
 #include <chrono>
@@ -21,6 +22,7 @@ class	Physic
 	public:
 		Physic(const Vdb_test &vdb);
 
+		void	apply_physic(Physic_entity &entity);
 		void	apply_physic_to_player(Player &player);
 		float	check_ground(Player &player);
 		void	check_collision(Player &player);

@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/17 17:04:20 by trobicho          #+#    #+#             */
-/*   Updated: 2019/12/09 09:44:10 by trobicho         ###   ########.fr       */
+/*   Updated: 2020/05/25 15:19:27 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 #include "My_vulkan.h"
 #include "Vdb_test.h"
 #include "Mesh.h"
+#include "Physic_entity.h"
 
 #define		P_STATE_FORWARD		(1)
 #define		P_STATE_BACKWARD	(1 << 1)
@@ -28,13 +29,6 @@ enum e_mode
 {
 	DEV_MODE,
 	NORMAL_MODE,
-};
-
-struct	s_hitbox
-{
-	s_hitbox(){};
-	s_hitbox(float sw, float sh): w(sw), h(sh){};
-	float	w, h;
 };
 
 class	Camera
@@ -51,7 +45,7 @@ class	Camera
 		s_ubo		ubo;
 };
 
-class	Player
+class	Player : public Physic_entity
 {
 	public:
 		Player(glm::vec3 pos = glm::vec3(0, 130, 0));
@@ -68,10 +62,8 @@ class	Player
 		inline void			sync_to_cam(){m_pos = m_cam.pos;
 								m_pos.y -= 0.4 * m_hitbox.h;}
 
-		inline glm::vec3	get_pos() const {return (m_pos);}
 		inline e_block_type	get_block_type() const {return (m_block_type);}
 		inline glm::vec3	get_cam_pos() const {return (m_cam.pos);}
-		inline s_hitbox		get_hitbox() const {return (m_hitbox);}
 		inline glm::vec3&	get_speed_vec_ref() {return (m_speed_vec);}
 		inline glm::vec3&	get_accel_vec_ref() {return (m_accel_vec);}
 		
@@ -87,6 +79,12 @@ class	Player
 		void				alternate_mode();
 		void				touch_ground();
 		void				apply_force(float t);
+		bool				check_ground(const Vdb_test &world) {return (false);}
+		
+		inline glm::vec3	get_pos() const {return (m_pos);}
+		inline s_hitbox		get_hitbox() const {return (m_hitbox);}
+		inline glm::vec3&	get_velocity_vec_ref() {return (m_speed_vec);}
+		inline void			set_pos(glm::vec3 pos) {};
 
 	private:
 		void				move_dev();

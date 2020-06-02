@@ -6,7 +6,7 @@
 #    By: trobicho <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/11/02 20:38:42 by trobicho          #+#    #+#              #
-#    Updated: 2020/05/21 11:23:44 by trobicho         ###   ########.fr        #
+#    Updated: 2020/05/25 12:41:45 by trobicho         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -72,6 +72,7 @@ HDRS_NAME	=	Vdb_test.h \
 				validation_layer.h \
 				Player.h \
 				Physic.h \
+				Physic_entity.h \
 				key_call.h \
 				Map.h \
 				perlin.h \

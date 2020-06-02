@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/02 20:39:09 by trobicho          #+#    #+#             */
-/*   Updated: 2020/05/24 14:03:40 by trobicho         ###   ########.fr       */
+/*   Updated: 2020/05/27 16:05:21 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,8 @@ static int	main_loop(My_vulkan &my_vulkan, Map_loader &map_loader
 		user->player.move();
 		if (user->player.has_physic())
 			physic.apply_physic_to_player(user->player);
+		enemy_manager.get_spider_ref().set_target_world(user->player.get_pos());
+		physic.apply_physic(enemy_manager.get_spider_ref());
 		if (map_loader.has_update())
 		{
 			map_loader.update();
@@ -52,7 +54,7 @@ static int	main_loop(My_vulkan &my_vulkan, Map_loader &map_loader
 		}
 		cam.ubo.pos_enemy =
 				glm::vec4(enemy_manager.get_spider_ref().get_pos(), 1.0f);
-		enemy_manager.update();
+		enemy_manager.update(map_loader.get_vdb_ref());
 		user->player.update_ubo();
 		my_vulkan.draw_frame();
 	}
@@ -131,7 +133,7 @@ int	main()
 	{
 		std::cout << "Unable to initialize Vulkan !" << std::endl;
 	}
-	Enemy_manager	enemy_manager = Enemy_manager(my_vulkan, my_vdb);
+	Enemy_manager	enemy_manager = Enemy_manager(my_vulkan);
 	enemy_manager.get_spider_ref().set_pos(player.get_pos()
 			+ glm::vec3(50.0f, 0.f, 0.f));
 	if (enemy_manager.init() == -1)
