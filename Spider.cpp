@@ -6,14 +6,14 @@
 /*   By: trobicho <trobicho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/20 22:08:47 by trobicho          #+#    #+#             */
-/*   Updated: 2020/06/01 14:07:48 by trobicho         ###   ########.fr       */
+/*   Updated: 2020/06/04 08:15:12 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Spider.h"
 #include "Ccd_solver.h"
 
-Spider::Spider(): m_mesh(m_moore_access)
+Spider::Spider(): m_mesh(m_moore_access), Character(8)
 {
 }
 
@@ -48,9 +48,9 @@ bool	Spider::check_ground(const Vdb_test &world)
 		*/
 	}
 	if (best_found)
-		m_state &= (~E_STATE_FALLING);
+		m_state &= (~CHAR_STATE_FALLING);
 	else
-		m_state |= E_STATE_FALLING;
+		m_state |= CHAR_STATE_FALLING;
 	return (best_found ? true : false);
 }
 
@@ -58,7 +58,7 @@ void	Spider::move(const Vdb_test &world)
 {
 	static int phase = 0;
 	static int pause = 0;
-	if ((m_state & E_STATE_FALLING))
+	if ((m_state & CHAR_STATE_FALLING))
 		return ;
 
 	float		speed = 0.1;
@@ -137,8 +137,8 @@ void	Spider::generate()
 	m_target_leg.resize(8);
 	m_bones.resize(17, glm::mat4(1.0));
 	m_bones_pos.resize(25, glm::vec3(0.0));
-	body.origin = s_vec3i(50, 47, 1);
-	body.len = s_vec3i(28, 16, 55);
+	body.origin = s_vec3i(50, 47, 17);
+	body.len = s_vec3i(28, 16, 30);
 	m_bones_pos[0] = glm::vec3(body.origin.x + body.len.x / 2.0f
 							, body.origin.y + body.len.y / 2.0f
 							, body.origin.z + body.len.z / 2.0f);
@@ -146,8 +146,9 @@ void	Spider::generate()
 	add_box(body, 0);
 	for (int i = 0; i < 4; i++)
 	{
-		leg.origin = s_vec3i(25, 50, 3 + i * ((body.len.z - 8) / 4.0));
 		leg.len = s_vec3i(25, 3, 3);
+		leg.origin = s_vec3i(25, body.origin.y + body.len.y / 2.0 - leg.len.y
+						, body.origin.z + 4 + i * ((body.len.z - 8) / 4.0));
 		bone = i * 2 + 1;
 		bone_pos = i * 3 + 1;
 		add_box(leg, bone);

@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/19 16:15:15 by trobicho          #+#    #+#             */
-/*   Updated: 2020/05/27 15:29:16 by trobicho         ###   ########.fr       */
+/*   Updated: 2020/06/04 08:18:39 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,13 +16,12 @@
 #include "Moore_accessor.h"
 #include "Mesh.h"
 #include "Physic_entity.h"
-
-#define		E_STATE_FALLING		(1 << 2) 
+#include "Character.h"
 
 using	Leaf_enemy = Leaf_node<uint32_t, 3, 2, 2>;
 using	Internal_enemy = Internal_node<uint32_t, Leaf_enemy, 4>;
 
-class Spider : public Physic_entity
+class Spider : public Physic_entity, public Character
 {
 	public:
 		Spider();
@@ -44,6 +43,8 @@ class Spider : public Physic_entity
 		bool		check_ground(const Vdb_test &world);
 		s_hitbox	get_hitbox() const {return (m_hitbox);}
 		glm::vec3&	get_velocity_vec_ref() {return (m_speed_vec);}
+
+		int			get_state(){return (m_state);}
 
 	private:
 		void					one_leg_move(int leg_id, glm::vec3 target);

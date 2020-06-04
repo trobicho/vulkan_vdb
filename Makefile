@@ -6,7 +6,7 @@
 #    By: trobicho <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/11/02 20:38:42 by trobicho          #+#    #+#              #
-#    Updated: 2020/05/25 12:41:45 by trobicho         ###   ########.fr        #
+#    Updated: 2020/06/04 08:21:42 by trobicho         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -34,6 +34,8 @@ endif
 
 SRCS_NAME	=	main.cpp \
 				Spider.cpp \
+				Character.cpp \
+				Character_controller.cpp \
 				Enemy_vbo.cpp \
 				Enemy_manager.cpp \
 				Space_colonisation.cpp \
@@ -58,6 +60,8 @@ SRCS_NAME	=	main.cpp \
 
 HDRS_NAME	=	Vdb_test.h \
 				Spider.h \
+				Character.h \
+				Character_controller.h \
 				Enemy_manager.h \
 				Space_colonisation.h \
 				libvdb.h \
