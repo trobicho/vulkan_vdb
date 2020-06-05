@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/19 16:15:15 by trobicho          #+#    #+#             */
-/*   Updated: 2020/06/04 08:18:39 by trobicho         ###   ########.fr       */
+/*   Updated: 2020/06/05 10:10:38 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,10 +24,9 @@ using	Internal_enemy = Internal_node<uint32_t, Leaf_enemy, 4>;
 class Spider : public Physic_entity, public Character
 {
 	public:
-		Spider();
+		Spider(glm::vec3 pos);
 		~Spider(){};
 
-		void		bones_test();
 		void		generate();
 		void		add_box(s_vbox box, uint32_t value);
 					// not here namespace toolbox::
@@ -36,7 +35,6 @@ class Spider : public Physic_entity, public Character
 		inline std::vector<glm::mat4>
 					&get_bones_ref(){return (m_bones);}
 		void		set_target_world(glm::vec3 pos) {m_target_world = pos;}
-		void		move(const Vdb_test &world);
 
 		glm::vec3	get_pos() const {return (m_pos);}
 		void		set_pos(glm::vec3 pos) {m_pos = pos;}
@@ -45,14 +43,12 @@ class Spider : public Physic_entity, public Character
 		glm::vec3&	get_velocity_vec_ref() {return (m_speed_vec);}
 
 		int			get_state(){return (m_state);}
+		void		foot_to_target_world(int foot_id, glm::vec3 target_world);
 
 	private:
 		void					one_leg_move(int leg_id, glm::vec3 target);
 
 		uint32_t				m_state = 0;
-		std::vector<glm::vec3>	m_target_leg;
-		std::vector<glm::mat4>	m_bones;
-		std::vector<glm::vec3>	m_bones_pos;
 		Internal_enemy			m_root_node = Internal_enemy(0, 0, 0);
 		Vdb_test				m_vdb = Vdb_test(m_root_node);
 		Moore_accessor			m_moore_access = Moore_accessor(m_vdb);

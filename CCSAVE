@@ -6,7 +6,7 @@
 /*   By: trobicho <trobicho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/06 14:23:44 by trobicho          #+#    #+#             */
-/*   Updated: 2020/06/05 14:27:25 by trobicho         ###   ########.fr       */
+/*   Updated: 2020/06/05 13:16:30 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,16 +40,18 @@ void	Ccd_solver::calc_matrix(std::vector<glm::mat4> &bones
 	glm::vec3	r = glm::cross(v1, v2);
 	r = glm::normalize(r);
 
+	/*
 	glm::vec3	invert_bones = glm::vec3(glm::vec4(bones_pos[id], 1.0f)
 					 * (id > 0 ? glm::inverse(bones[id - 1]) : glm::mat4(1.f)));
-	bones[id] = glm::translate(bones[id], invert_bones);
+	*/
+	bones[id] = glm::translate(bones[id], bones_pos[id]);
 	bones[id] = glm::rotate(bones[id], angle, r);
-	bones[id] = glm::translate(bones[id], -invert_bones);
 	if (id > 0)
 	{
 		bones[id] = bones[id - 1] * bones[id];
 	}
-	bones_pos[id + 1] = glm::vec4(bones_pos[id + 1], 1.f) * bones[id];
+	bones[id] = glm::translate(bones[id], -bones_pos[id]);
+	bones_pos[id + 1] = glm::vec4(bones_pos[*id + 1], 1.f) * bones[id];
 }
 
 void	Ccd_solver::apply_matrix(std::vector<glm::mat4> &bones

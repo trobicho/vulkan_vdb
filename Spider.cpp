@@ -6,33 +6,34 @@
 /*   By: trobicho <trobicho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/20 22:08:47 by trobicho          #+#    #+#             */
-/*   Updated: 2020/06/04 08:15:12 by trobicho         ###   ########.fr       */
+/*   Updated: 2020/06/05 14:16:15 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Spider.h"
 #include "Ccd_solver.h"
 
-Spider::Spider(): m_mesh(m_moore_access), Character(8)
+Spider::Spider(glm::vec3 pos): m_mesh(m_moore_access), Character(8), m_pos(pos)
 {
 }
 
 bool	Spider::check_ground(const Vdb_test &world)
 {
+	return (true);
 	s_vec3i		vox((int)m_pos.x, (int)m_pos.y - 1, (int)m_pos.z);
 	glm::vec3	voxi;
 	int			found = 0;
 	int			best_found = 0;
 
-	for (int i = 0; i < m_target_leg.size(); i++)
+	for (int i = 0; i < m_feet_target_world.size(); i++)
 	{
-		voxi = m_target_leg[i] + m_pos;
+		voxi = m_feet_target_world[i];
 		vox.x = (int)voxi.x;
 		vox.y = (int)voxi.y;
 		vox.z = (int)voxi.z;
 		if ((found = world.get_vox(vox)))
 		{
-			m_pos.y += ((float)vox.y + 1.0f) - (m_pos.y + m_target_leg[i].y);
+			m_pos.y += ((float)vox.y + 1.0f) - m_feet_target_world[i].y;
 			best_found = found;
 		}
 		else
@@ -52,64 +53,6 @@ bool	Spider::check_ground(const Vdb_test &world)
 	else
 		m_state |= CHAR_STATE_FALLING;
 	return (best_found ? true : false);
-}
-
-void	Spider::move(const Vdb_test &world)
-{
-	static int phase = 0;
-	static int pause = 0;
-	if ((m_state & CHAR_STATE_FALLING))
-		return ;
-
-	float		speed = 0.1;
-	/*
-	glm::vec3 dir;
-	dir.z = 1.f;
-	dir.x = 0.f;
-	dir.y = 0.f;
-	*/
-	glm::vec3	dir = (m_target_world - m_pos);
-	if (glm::length(dir) < 10.f)
-		return ;
-	dir = glm::normalize(dir);
-
-	glm::vec3	vec = dir * 0.1f;
-	vec = glm::vec3(0.f, 0.f, 1.f) * 0.1f;
-	//m_pos += vec;
-	glm::vec3	target;
-	/*
-	float		angle = glm::acos(glm::dot(glm::vec3(0.f, 0.f, 1.f), dir));
-	m_bones[0] = glm::translate(glm::mat4(1.0f), m_bones_pos[0]);
-	m_bones[0] = glm::rotate(m_bones[0], angle, glm::vec3(0.f, 1.f, 0.f));
-	m_bones[0] = glm::translate(m_bones[0], -m_bones_pos[0]);
-	*/
-	if (pause >= 5)
-	{
-		for (int i = 0; i < 4; i++)
-		{
-			float lenx = (m_bones_pos[3 + i * 3].x
-					- m_bones_pos[2 + i * 3].x) / 4.0f;
-			target = m_bones_pos[2 + i * 3]
-						+ glm::vec3(lenx, -10.0f, 0.0f);
-			if ((i + phase) % 2)
-				target += vec * 10.0f;
-			else
-				target -= vec * 10.0f;
-			one_leg_move(i, target);
-			lenx = (m_bones_pos[3 + (i + 4) * 3].x
-					- m_bones_pos[2 + (i + 4) * 3].x) / 4.0f;
-			target = m_bones_pos[2 + (i + 4) * 3]
-						+ glm::vec3(lenx, -10.0f, 0.0f);
-			if ((i + phase) % 2)
-				target -= vec * 10.0f;
-			else
-				target += vec * 10.0f;
-			one_leg_move(i + 4, target);
-		}
-		phase = (phase + 1) % 2;
-		pause = -1;
-	}
-	pause++;
 }
 
 void	Spider::add_box(s_vbox box, uint32_t value)
@@ -134,7 +77,7 @@ void	Spider::generate()
 	int		bone;
 	int		bone_pos;
 
-	m_target_leg.resize(8);
+	m_feet_target_world.resize(8);
 	m_bones.resize(17, glm::mat4(1.0));
 	m_bones_pos.resize(25, glm::vec3(0.0));
 	body.origin = s_vec3i(50, 47, 17);
@@ -163,7 +106,7 @@ void	Spider::generate()
 		m_bones_pos[bone_pos + 2] = glm::vec3(leg.origin.x
 								, leg.origin.y + leg.len.y / 2.0f
 								, leg.origin.z + leg.len.z / 2.0f);
-		m_target_leg[i] = m_bones_pos[bone_pos + 2];
+		m_feet_target_world[i] = m_bones_pos[bone_pos + 2];
 
 		leg.origin.x = 78;
 		bone = 9 + i * 2;
@@ -180,7 +123,7 @@ void	Spider::generate()
 		m_bones_pos[bone_pos + 2] = glm::vec3(leg.origin.x + leg.len.x
 								, leg.origin.y + leg.len.y / 2.0f
 								, leg.origin.z + leg.len.z / 2.0f);
-		m_target_leg[i + 4] = m_bones_pos[bone_pos + 2];
+		m_feet_target_world[i + 4] = m_bones_pos[bone_pos + 2];
 	}
 	m_vdb.pruning();
 	m_vdb.mesh(m_mesh);
@@ -189,35 +132,19 @@ void	Spider::generate()
 		float lenx = (m_bones_pos[3 + i * 3].x
 						- m_bones_pos[2 + i * 3].x) / 4.0f;
 		one_leg_move(i, m_bones_pos[2 + i * 3]
-						+ glm::vec3(lenx, -10.0f, 0.0f));
+						+ glm::vec3(lenx, -20.0f, 0.0f));
 	}
 }
 
-void	Spider::bones_test()
+void	Spider::foot_to_target_world(int foot_id, glm::vec3 target_world)
 {
-	int			bone_id;
-	static int	t = 0;
-	static int	t_add = 1;
-	
-	for (int i = 1; i < m_bones.size(); i++)
-		m_bones[i] = glm::mat4(1.0f);
-	if (t > 100)
-		t_add = -1;
-	if (t < -100)
-		t_add = 1;
-	t += t_add;
-	for (int i = 0; i < 8; i++)
-	{
-		if (i > 3)
-			one_leg_move(i, m_bones_pos[3 + i * 3]
-					+ glm::vec3(10.0f, t / 10.f, 0.0f));
-		else
-			one_leg_move(i, m_bones_pos[3 + i * 3]
-					- glm::vec3(10.0f, t / 10.f, 0.0f));
-	}
+	glm::vec3	target = glm::vec3(glm::vec4((target_world - m_pos) * 10.f, 1.f)
+							/ m_bones[0]);
+
+	one_leg_move(foot_id, target);
 }
 
-void Spider::one_leg_move(int leg_id, glm::vec3 target)
+void	Spider::one_leg_move(int leg_id, glm::vec3 target)
 {
 	int	off = 1 + leg_id * 2;
 	int	off_pos = 1 + leg_id * 3;
@@ -234,6 +161,7 @@ void Spider::one_leg_move(int leg_id, glm::vec3 target)
 	{
 		m_bones[i + off] = m_bones[0] * leg_bones[i];
 	}
-	m_target_leg[leg_id] = glm::vec3(
-							glm::vec4(leg_pos[2], 1.f) * m_bones[0] / 10.0f);
+	m_feet_target_world[leg_id] = glm::vec3(
+							glm::vec4(leg_pos[2], 1.f) * m_bones[0] / 10.0f)
+							+ m_pos;
 }

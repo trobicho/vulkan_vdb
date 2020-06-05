@@ -6,7 +6,7 @@
 /*   By: trobicho <trobicho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/06/02 13:25:14 by trobicho          #+#    #+#             */
-/*   Updated: 2020/06/04 06:12:26 by trobicho         ###   ########.fr       */
+/*   Updated: 2020/06/05 09:53:53 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,5 +31,7 @@ class	Character_controller
 		void	update(Character &mob);
 
 	private:
+		void	swing_test(Character &mob, int feet_id);
+
 		const Vdb_test	&m_world;
 };

@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/02 20:39:09 by trobicho          #+#    #+#             */
-/*   Updated: 2020/06/04 06:16:44 by trobicho         ###   ########.fr       */
+/*   Updated: 2020/06/05 10:09:57 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,8 +134,6 @@ int	main()
 		std::cout << "Unable to initialize Vulkan !" << std::endl;
 	}
 	Enemy_manager	enemy_manager = Enemy_manager(my_vulkan, my_vdb);
-	enemy_manager.get_spider_ref().set_pos(player.get_pos()
-			+ glm::vec3(50.0f, 0.f, 0.f));
 	if (enemy_manager.init() == -1)
 	{
 		std::cout << "Unable to initialize Enemy command buffer !" << std::endl;
