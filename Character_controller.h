@@ -6,7 +6,7 @@
 /*   By: trobicho <trobicho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/06/02 13:25:14 by trobicho          #+#    #+#             */
-/*   Updated: 2020/06/05 09:53:53 by trobicho         ###   ########.fr       */
+/*   Updated: 2020/06/08 19:07:26 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,10 @@ class	Character_controller
 		void	update(Character &mob);
 
 	private:
-		void	swing_test(Character &mob, int feet_id);
+		void		swing_phase(Character &mob, int feet_id);
+		void		new_swing_phase(Character &mob, int feet_id);
+		glm::vec3	best_foot_relative_pos(Character &mob
+						, s_foot_info &foot_inf);
 
 		const Vdb_test	&m_world;
 };

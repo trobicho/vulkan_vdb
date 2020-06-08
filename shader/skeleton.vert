@@ -18,7 +18,8 @@ layout(binding = 0) uniform UniformBufferObject {
 	mat4	bone[17];
 } ubo;
 
-void main() {
+void main()
+{
 	vec4 new_pos = ubo.bone[in_bones_index] * vec4(in_pos, 1.0)
 		* in_bones_weight * 0.1;
 	new_pos += ubo.pos_enemy;

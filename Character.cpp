@@ -6,7 +6,7 @@
 /*   By: trobicho <trobicho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/06/04 08:02:35 by trobicho          #+#    #+#             */
-/*   Updated: 2020/06/05 09:09:27 by trobicho         ###   ########.fr       */
+/*   Updated: 2020/06/08 19:05:03 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ Character::Character(int nb_leg)
 	feet_inf.end_gate = 100;
 	m_feet_info.resize(m_nb_leg, feet_inf);
 	m_feet_gate.len = 256;
+	m_feet_next_target_world.resize(m_nb_leg);
 }
 
 void	Character::step(int inc)

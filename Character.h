@@ -6,7 +6,7 @@
 /*   By: trobicho <trobicho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/06/03 13:12:18 by trobicho          #+#    #+#             */
-/*   Updated: 2020/06/05 09:57:16 by trobicho         ###   ########.fr       */
+/*   Updated: 2020/06/08 19:27:10 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,11 @@ struct	s_foot_info
 	int		state;
 	int		begin_gate;
 	int		end_gate;
+
+	bool	right_side = true;
+	float	base_angle_torso;
+	float	base_height;
+	float	base_dist_torso;
 };
 
 struct	s_feet_gate
@@ -37,21 +42,35 @@ class	Character: public Skeleton_legged
 		Character(int nb_feet);
 		~Character(){};
 
-		virtual int		get_state() = 0;
-		virtual void	foot_to_target_world(int foot_id
-							, glm::vec3 target_world) = 0;
-		void			step(int inc = 1);
+		virtual	float		get_scale() const = 0;
+		virtual	glm::vec3	get_pos() const = 0;
+		virtual	glm::vec3	get_center() const = 0;
+		virtual int			get_state() = 0;
+		virtual void		ik_all() = 0;
+		virtual void		foot_to_target_world(int foot_id
+								, glm::vec3 target_world) = 0;
+		virtual void		foot_to_target_relative(int foot_id
+								, glm::vec3 target) = 0;
+		void				step(int inc = 1);
+		virtual void		move(glm::vec3 v) = 0;
 
 		std::vector<s_foot_info>&
 						get_feet_info_ref() {return (m_feet_info);}
-		s_feet_gate&	get_foot_gate_ref() {return (m_feet_gate);}
+		s_foot_info&	get_foot_info_ref(int foot_id)
+							{return (m_feet_info[foot_id]);}
+		s_feet_gate&	get_feet_gate_ref() {return (m_feet_gate);}
 		const std::vector<glm::vec3>&
 						get_feet_target_world_ref()
 							{return (m_feet_target_world);}
-		glm::vec3		get_foot_target_world(int foot_id)
+		glm::vec3&		get_foot_target_world_ref(int foot_id)
 							{return (m_feet_target_world[foot_id]);}
+		void			set_foot_next_target_world(int foot_id, glm::vec3 target)
+							{m_feet_next_target_world[foot_id] = target;}
+		glm::vec3		get_foot_next_target_world(int foot_id)
+							{return (m_feet_next_target_world[foot_id]);}
 	protected:
 		std::vector<glm::vec3>		m_feet_target_world;
+		std::vector<glm::vec3>		m_feet_next_target_world;
 		s_feet_gate					m_feet_gate;
 		std::vector<s_foot_info>	m_feet_info;
 };

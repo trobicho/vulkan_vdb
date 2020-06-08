@@ -6,7 +6,7 @@
 /*   By: trobicho <trobicho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/20 22:08:47 by trobicho          #+#    #+#             */
-/*   Updated: 2020/06/05 14:16:15 by trobicho         ###   ########.fr       */
+/*   Updated: 2020/06/08 19:42:25 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,6 +86,7 @@ void	Spider::generate()
 							, body.origin.y + body.len.y / 2.0f
 							, body.origin.z + body.len.z / 2.0f);
 	m_center = m_bones_pos[0];
+	m_feet_gate.len = 20;
 	add_box(body, 0);
 	for (int i = 0; i < 4; i++)
 	{
@@ -107,6 +108,12 @@ void	Spider::generate()
 								, leg.origin.y + leg.len.y / 2.0f
 								, leg.origin.z + leg.len.z / 2.0f);
 		m_feet_target_world[i] = m_bones_pos[bone_pos + 2];
+		m_feet_info[i].right_side = false;
+		m_feet_info[i].base_angle_torso = 0.51f + -0.4f * i;
+		m_feet_info[i].base_height = 30.f;
+		m_feet_info[i].base_dist_torso = leg.len.x + body.len.x / 2.0f;
+		m_feet_info[i].begin_gate = (i % 2) ? 0 : 10;
+		m_feet_info[i].end_gate = (i % 2) ? 10 : 20;
 
 		leg.origin.x = 78;
 		bone = 9 + i * 2;
@@ -124,6 +131,12 @@ void	Spider::generate()
 								, leg.origin.y + leg.len.y / 2.0f
 								, leg.origin.z + leg.len.z / 2.0f);
 		m_feet_target_world[i + 4] = m_bones_pos[bone_pos + 2];
+		m_feet_info[i + 4].right_side = true;
+		m_feet_info[i + 4].base_angle_torso = -0.51f + 0.4f * i;
+		m_feet_info[i + 4].base_height = 30.f;
+		m_feet_info[i + 4].base_dist_torso = leg.len.x + body.len.x / 2.0f;
+		m_feet_info[i + 4].begin_gate = (!(i % 2)) ? 0 : 10;
+		m_feet_info[i + 4].end_gate = (!(i % 2)) ? 10 : 20;
 	}
 	m_vdb.pruning();
 	m_vdb.mesh(m_mesh);
@@ -131,8 +144,16 @@ void	Spider::generate()
 	{
 		float lenx = (m_bones_pos[3 + i * 3].x
 						- m_bones_pos[2 + i * 3].x) / 4.0f;
-		one_leg_move(i, m_bones_pos[2 + i * 3]
+		foot_to_target_relative(i, m_bones_pos[2 + i * 3]
 						+ glm::vec3(lenx, -20.0f, 0.0f));
+	}
+}
+
+void	Spider::ik_all()
+{
+	for (int i = 0; i < 8; i++)
+	{
+		foot_to_target_world(i, m_feet_target_world[i]);
 	}
 }
 
@@ -141,10 +162,10 @@ void	Spider::foot_to_target_world(int foot_id, glm::vec3 target_world)
 	glm::vec3	target = glm::vec3(glm::vec4((target_world - m_pos) * 10.f, 1.f)
 							/ m_bones[0]);
 
-	one_leg_move(foot_id, target);
+	foot_to_target_relative(foot_id, target);
 }
 
-void	Spider::one_leg_move(int leg_id, glm::vec3 target)
+void	Spider::foot_to_target_relative(int leg_id, glm::vec3 target)
 {
 	int	off = 1 + leg_id * 2;
 	int	off_pos = 1 + leg_id * 3;

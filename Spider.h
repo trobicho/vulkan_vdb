@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/19 16:15:15 by trobicho          #+#    #+#             */
-/*   Updated: 2020/06/05 10:10:38 by trobicho         ###   ########.fr       */
+/*   Updated: 2020/06/08 18:01:10 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,9 +44,13 @@ class Spider : public Physic_entity, public Character
 
 		int			get_state(){return (m_state);}
 		void		foot_to_target_world(int foot_id, glm::vec3 target_world);
+		float		get_scale() const {return (0.1f);}
+		glm::vec3	get_center() const {return (m_center);}
+		void		foot_to_target_relative(int leg_id, glm::vec3 target);
+		void		ik_all();
+		void		move(glm::vec3 v) {m_pos += v;}
 
 	private:
-		void					one_leg_move(int leg_id, glm::vec3 target);
 
 		uint32_t				m_state = 0;
 		Internal_enemy			m_root_node = Internal_enemy(0, 0, 0);
