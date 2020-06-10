@@ -6,7 +6,7 @@
 /*   By: trobicho <trobicho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/06/02 13:25:14 by trobicho          #+#    #+#             */
-/*   Updated: 2020/06/08 19:07:26 by trobicho         ###   ########.fr       */
+/*   Updated: 2020/06/09 21:13:14 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #include <vector>
 #include "Character.h"
 #include "Vdb_test.h"
+#include "Feet_planner_default.h"
 
 struct	s_character_info
 {
@@ -33,8 +34,7 @@ class	Character_controller
 	private:
 		void		swing_phase(Character &mob, int feet_id);
 		void		new_swing_phase(Character &mob, int feet_id);
-		glm::vec3	best_foot_relative_pos(Character &mob
-						, s_foot_info &foot_inf);
 
-		const Vdb_test	&m_world;
+		const Vdb_test			&m_world;
+		Feet_planner_default	m_feet_planner;
 };

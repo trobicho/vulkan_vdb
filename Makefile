@@ -6,7 +6,7 @@
 #    By: trobicho <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/11/02 20:38:42 by trobicho          #+#    #+#              #
-#    Updated: 2020/06/07 11:14:18 by trobicho         ###   ########.fr        #
+#    Updated: 2020/06/09 20:59:13 by trobicho         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -36,6 +36,8 @@ SRCS_NAME	=	main.cpp \
 				Spider.cpp \
 				Character.cpp \
 				Character_controller.cpp \
+				Feet_planner_default.cpp \
+				Feet_planner.cpp \
 				Enemy_vbo.cpp \
 				Enemy_manager.cpp \
 				Space_colonisation.cpp \
@@ -62,6 +64,8 @@ HDRS_NAME	=	Vdb_test.h \
 				Spider.h \
 				Character.h \
 				Character_controller.h \
+				Feet_planner_default.h \
+				Feet_planner.h \
 				Enemy_manager.h \
 				Space_colonisation.h \
 				libvdb.h \

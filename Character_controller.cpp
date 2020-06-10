@@ -6,17 +6,25 @@
 /*   By: trobicho <trobicho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/06/02 13:33:38 by trobicho          #+#    #+#             */
-/*   Updated: 2020/06/08 19:45:04 by trobicho         ###   ########.fr       */
+/*   Updated: 2020/06/09 21:14:27 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Character_controller.h"
-#include <glm/gtx/transform.hpp>
 
 void		Character_controller::update(Character &mob)
 {
 	if (mob.get_state() & CHAR_STATE_FALLING)
+	{
+		for (int i = 0; i < mob.get_nb_feet(); i++)
+		{
+			mob.foot_to_target_relative(i
+					, Feet_planner::best_foot_relative_pos(mob
+						, i)
+					/ mob.get_scale());
+		}
 		return ;
+	}
 	if (mob.get_state() & CHAR_STATE_WALKING || true)
 	{
 		mob.move(glm::vec3(0.f, 0.f, 1.f) * 0.05f);
@@ -66,22 +74,5 @@ void		Character_controller::new_swing_phase(Character &mob, int foot_id)
 	//glm::vec3	target = mob.get_foot_target_world(foot_id);
 	glm::vec3	target;
 
-	target = best_foot_relative_pos(mob, mob.get_foot_info_ref(foot_id))
-			+ glm::vec3(0.f, 0.f, 1.f) * 0.4f + mob.get_pos();
-	mob.set_foot_next_target_world(foot_id, target);
-}
-
-glm::vec3	Character_controller::best_foot_relative_pos(Character &mob
-						, s_foot_info &foot_inf)
-{
-	glm::vec3	target = mob.get_center();
-	glm::vec3	v = foot_inf.right_side ? glm::vec3(1.f, 0.f, 0.f)
-						: glm::vec3(-1.f, 0.f, 0.f);
-	v = glm::vec4(v, 1.f) * glm::rotate(glm::mat4(1.0f)
-			, foot_inf.base_angle_torso
-			, glm::vec3(0.f, 1.f, 0.f));
-	target += v * foot_inf.base_dist_torso;
-	target.y = foot_inf.base_height;
-	target *= mob.get_scale();
-	return (target);
+	m_feet_planner.calc_next_foot_target(mob, m_world, foot_id);
 }

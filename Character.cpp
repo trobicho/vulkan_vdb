@@ -6,13 +6,13 @@
 /*   By: trobicho <trobicho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/06/04 08:02:35 by trobicho          #+#    #+#             */
-/*   Updated: 2020/06/08 19:05:03 by trobicho         ###   ########.fr       */
+/*   Updated: 2020/06/09 20:17:14 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Character.h"
 
-Character::Character(int nb_leg)
+Character::Character(int nb_leg): m_nb_feet(nb_leg)
 {
 	s_foot_info		feet_inf;
 
@@ -22,7 +22,6 @@ Character::Character(int nb_leg)
 	feet_inf.end_gate = 100;
 	m_feet_info.resize(m_nb_leg, feet_inf);
 	m_feet_gate.len = 256;
-	m_feet_next_target_world.resize(m_nb_leg);
 }
 
 void	Character::step(int inc)

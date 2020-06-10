@@ -6,7 +6,7 @@
 /*   By: trobicho <trobicho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/20 22:08:47 by trobicho          #+#    #+#             */
-/*   Updated: 2020/06/08 19:42:25 by trobicho         ###   ########.fr       */
+/*   Updated: 2020/06/09 20:16:53 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,28 +19,31 @@ Spider::Spider(glm::vec3 pos): m_mesh(m_moore_access), Character(8), m_pos(pos)
 
 bool	Spider::check_ground(const Vdb_test &world)
 {
-	return (true);
 	s_vec3i		vox((int)m_pos.x, (int)m_pos.y - 1, (int)m_pos.z);
 	glm::vec3	voxi;
 	int			found = 0;
 	int			best_found = 0;
+	float		diff_height = 0.0f;
 
-	for (int i = 0; i < m_feet_target_world.size(); i++)
+	for (int i = 0; i < m_feet_info.size(); i++)
 	{
-		voxi = m_feet_target_world[i];
+		voxi = m_feet_info[i].target_world;
+		voxi.y += diff_height;
 		vox.x = (int)voxi.x;
-		vox.y = (int)voxi.y;
+		vox.y = (int)(voxi.y - 0.1f);
 		vox.z = (int)voxi.z;
 		if ((found = world.get_vox(vox)))
 		{
-			m_pos.y += ((float)vox.y + 1.0f) - m_feet_target_world[i].y;
+			/* // feet_target_relative!!
+			if (m_feet_info[i].target_world.y + diff_height < vox.y + 1.0f)
+			{
+				m_pos.y += ((float)vox.y + 1.0f)
+					- (m_feet_info[i].target_world.y + diff_height);
+				diff_height += ((float)vox.y + 1.0f)
+					- (m_feet_info[i].target_world.y + diff_height);
+			}
+			*/
 			best_found = found;
-		}
-		else
-		{
-			vox.y -= 3;
-			if ((found = world.get_vox(vox)))
-				best_found = found;
 		}
 		/*
 		vox.y -= 1;
@@ -77,7 +80,6 @@ void	Spider::generate()
 	int		bone;
 	int		bone_pos;
 
-	m_feet_target_world.resize(8);
 	m_bones.resize(17, glm::mat4(1.0));
 	m_bones_pos.resize(25, glm::vec3(0.0));
 	body.origin = s_vec3i(50, 47, 17);
@@ -107,7 +109,7 @@ void	Spider::generate()
 		m_bones_pos[bone_pos + 2] = glm::vec3(leg.origin.x
 								, leg.origin.y + leg.len.y / 2.0f
 								, leg.origin.z + leg.len.z / 2.0f);
-		m_feet_target_world[i] = m_bones_pos[bone_pos + 2];
+		m_feet_info[i].target_world = m_bones_pos[bone_pos + 2];
 		m_feet_info[i].right_side = false;
 		m_feet_info[i].base_angle_torso = 0.51f + -0.4f * i;
 		m_feet_info[i].base_height = 30.f;
@@ -130,7 +132,7 @@ void	Spider::generate()
 		m_bones_pos[bone_pos + 2] = glm::vec3(leg.origin.x + leg.len.x
 								, leg.origin.y + leg.len.y / 2.0f
 								, leg.origin.z + leg.len.z / 2.0f);
-		m_feet_target_world[i + 4] = m_bones_pos[bone_pos + 2];
+		m_feet_info[i + 4].target_world = m_bones_pos[bone_pos + 2];
 		m_feet_info[i + 4].right_side = true;
 		m_feet_info[i + 4].base_angle_torso = -0.51f + 0.4f * i;
 		m_feet_info[i + 4].base_height = 30.f;
@@ -153,7 +155,7 @@ void	Spider::ik_all()
 {
 	for (int i = 0; i < 8; i++)
 	{
-		foot_to_target_world(i, m_feet_target_world[i]);
+		foot_to_target_world(i, m_feet_info[i].target_world);
 	}
 }
 
@@ -182,7 +184,7 @@ void	Spider::foot_to_target_relative(int leg_id, glm::vec3 target)
 	{
 		m_bones[i + off] = m_bones[0] * leg_bones[i];
 	}
-	m_feet_target_world[leg_id] = glm::vec3(
+	m_feet_info[leg_id].target_world = glm::vec3(
 							glm::vec4(leg_pos[2], 1.f) * m_bones[0] / 10.0f)
 							+ m_pos;
 }
