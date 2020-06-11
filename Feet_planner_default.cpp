@@ -6,7 +6,7 @@
 /*   By: trobicho <trobicho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/06/09 20:23:28 by trobicho          #+#    #+#             */
-/*   Updated: 2020/06/10 12:32:25 by trobicho         ###   ########.fr       */
+/*   Updated: 2020/06/11 11:09:51 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,9 @@ void	Feet_planner_default::calc_next_foot_target(Character &mob
 
 	base_target_refined_world(mob, world, foot_id, base_target);
 	mob.set_foot_next_target_world(foot_id, base_target);
+	auto &foot_inf = mob.get_foot_info_ref(foot_id);
+	foot_inf.vector_to_next_target = base_target 
+		- mob.get_foot_target_world_ref(foot_id);
 }
 
 bool	Feet_planner_default::base_target_refined_world(Character &mob
@@ -30,9 +33,8 @@ bool	Feet_planner_default::base_target_refined_world(Character &mob
 {
 	s_vec3i		vox((int)target.x, (int)target.y, (int)target.z);
 	int			floor = get_floor_column(world, vox);
-	target.y = vox.y;
+	target.y = vox.y + 1.0f;
 	return (floor ? true : false);
-		
 }
 
 int		Feet_planner_default::get_floor_column(const Vdb_test &world
@@ -48,7 +50,10 @@ int		Feet_planner_default::get_floor_column(const Vdb_test &world
 			vox.y++;
 		}
 		if (found == 0)
+		{
+			vox.y -= 1;
 			return (world.get_vox(s_vec3i(vox.x, vox.y - 1, vox.z)));
+		}
 	}
 	else
 	{
@@ -58,7 +63,6 @@ int		Feet_planner_default::get_floor_column(const Vdb_test &world
 		}
 		if (found != 0)
 		{
-			vox.y += 1;
 			return (found);
 		}
 	}

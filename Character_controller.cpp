@@ -6,7 +6,7 @@
 /*   By: trobicho <trobicho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/06/02 13:33:38 by trobicho          #+#    #+#             */
-/*   Updated: 2020/06/09 21:14:27 by trobicho         ###   ########.fr       */
+/*   Updated: 2020/06/11 11:43:33 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,10 +62,15 @@ void		Character_controller::swing_phase(Character &mob, int foot_id)
 		cur_target = mob.get_foot_next_target_world(foot_id);
 		return ;
 	}
-	glm::vec3			vec = glm::vec3(mob.get_foot_next_target_world(foot_id)
-								- cur_target);
-	float				len = glm::length(vec) / (1.0f - time_last);
-	cur_target += glm::normalize(vec) * len * (time - time_last);
+	glm::vec3	vec = foot_info.vector_to_next_target;
+	glm::vec3	center = foot_info.next_target_world - vec / 2.0f;
+
+	float		len = glm::length(vec) / (1.0f - time_last);
+	glm::mat4	temp = glm::translate(glm::mat4(1.f), center);
+	glm::vec3	r = glm::cross(glm::normalize(vec), glm::vec3(0.f, 1.f, 0.f));
+	temp = glm::rotate(temp, 3.141592f * (1.f - time), r);
+	temp = glm::translate(temp, -center);
+	cur_target = temp * glm::vec4(foot_info.next_target_world, 1.f);
 }
 
 void		Character_controller::new_swing_phase(Character &mob, int foot_id)

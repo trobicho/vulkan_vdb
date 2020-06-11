@@ -6,7 +6,7 @@
 /*   By: trobicho <trobicho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/06/03 13:12:18 by trobicho          #+#    #+#             */
-/*   Updated: 2020/06/09 20:15:26 by trobicho         ###   ########.fr       */
+/*   Updated: 2020/06/11 10:56:35 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ struct	s_foot_info
 	float		base_dist_torso;
 	glm::vec3	target_world;
 	glm::vec3	next_target_world;
+	glm::vec3	vector_to_next_target;
 };
 
 struct	s_feet_gate

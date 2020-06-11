@@ -6,7 +6,7 @@
 /*   By: trobicho <trobicho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/20 22:08:47 by trobicho          #+#    #+#             */
-/*   Updated: 2020/06/09 20:16:53 by trobicho         ###   ########.fr       */
+/*   Updated: 2020/06/10 14:51:36 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -151,18 +151,77 @@ void	Spider::generate()
 	}
 }
 
+#include <iostream>
+
 void	Spider::ik_all()
 {
+	float		avg_height = 0.f;
+	float		avg_slope_x = 0.f;
+	float		avg_slope_z = 0.f;
+	int			nb_not_swing = 0;
+	
+	m_bones[0] = glm::mat4(1.0f);
+	for (int i = 0; i < 8; i++)
+	{
+		if (m_feet_info[i].target_world.y != m_feet_info[i].target_world.y)
+			goto next_label;
+		if (m_feet_info[i].state != f_swing)
+		{
+			if (m_feet_info[i].target_world.y != m_feet_info[i].target_world.y)
+				goto next_label;
+			avg_height += m_feet_info[i].target_world.y - m_pos.y;
+			nb_not_swing++;
+		}
+	}
+	if (nb_not_swing)
+	{
+		avg_height /= (float)nb_not_swing;
+		m_pos.y += avg_height - m_feet_info[0].base_height * get_scale();
+	}
+	for (int i = 0; i < 4; i++)
+	{
+		float	dy = m_feet_info[i].target_world.y
+					- m_feet_info[i + 4].target_world.y;
+		float	dx = m_feet_info[i].target_world.x
+					- m_feet_info[i + 4].target_world.x;
+		avg_slope_z += dy / dx;
+	}
+	avg_slope_z /= 4.f;
+	if (avg_slope_z != avg_slope_z)
+		std::cout << nan << std::endl;
+	for (int i = 0; i < 2; i++)
+	{
+		float	dy = m_feet_info[i * 4 + 3].target_world.y
+					- m_feet_info[i * 4].target_world.y;
+		float	dz = m_feet_info[i * 4 + 3].target_world.z
+					- m_feet_info[i * 4].target_world.z;
+		avg_slope_x += dy / dz;
+	}
+	avg_slope_x /= 2.f;
+	std::cout << "(" << avg_slope_x << "[" << atan(avg_slope_x) << "], "
+				<< avg_slope_z << "[" << atan(avg_slope_z) << "])" << std::endl;
+	m_bones[0] = glm::translate(glm::mat4(1.0f), m_bones_pos[0]);
+	m_bones[0] = glm::rotate(m_bones[0], glm::atan(avg_slope_x)
+				, glm::vec3(-1.f, 0.f, 0.f));
+	m_bones[0] = glm::rotate(m_bones[0], glm::atan(avg_slope_z)
+				, glm::vec3(0.f, 0.f, 1.f));
+	m_bones[0] = glm::translate(m_bones[0], -m_bones_pos[0]);
+next_label:
 	for (int i = 0; i < 8; i++)
 	{
 		foot_to_target_world(i, m_feet_info[i].target_world);
 	}
+	std::cout << m_pos.y << std::endl;
 }
 
 void	Spider::foot_to_target_world(int foot_id, glm::vec3 target_world)
 {
+	/*
 	glm::vec3	target = glm::vec3(glm::vec4((target_world - m_pos) * 10.f, 1.f)
-							/ m_bones[0]);
+							* glm::inverse(m_bones[0]));
+	*/
+	glm::vec3	target = glm::vec3(glm::inverse(m_bones[0])
+					* glm::vec4((target_world - m_pos) * 10.f, 1.f));
 
 	foot_to_target_relative(foot_id, target);
 }
@@ -185,6 +244,6 @@ void	Spider::foot_to_target_relative(int leg_id, glm::vec3 target)
 		m_bones[i + off] = m_bones[0] * leg_bones[i];
 	}
 	m_feet_info[leg_id].target_world = glm::vec3(
-							glm::vec4(leg_pos[2], 1.f) * m_bones[0] / 10.0f)
+							(m_bones[0] * glm::vec4(leg_pos[2], 1.f)) / 10.0f)
 							+ m_pos;
 }

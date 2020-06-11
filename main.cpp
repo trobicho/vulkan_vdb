@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/02 20:39:09 by trobicho          #+#    #+#             */
-/*   Updated: 2020/06/05 10:09:57 by trobicho         ###   ########.fr       */
+/*   Updated: 2020/06/10 14:01:13 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,9 +100,9 @@ int	main()
 	//----------TEST---------
 	*/
 	
-	xr = 1024;
-	zr = 1024;
-	Player		player(glm::vec3((float)xr, (float)CLOUD_HEIGHT + 10
+	xr = 972;
+	zr = 1416;
+	Player		player(glm::vec3((float)xr, (float)100
 					, (float)zr));
 	
 	My_vulkan	my_vulkan(win, player.get_cam_ref().ubo);
@@ -133,7 +133,8 @@ int	main()
 	{
 		std::cout << "Unable to initialize Vulkan !" << std::endl;
 	}
-	Enemy_manager	enemy_manager = Enemy_manager(my_vulkan, my_vdb);
+	Enemy_manager	enemy_manager = Enemy_manager(my_vulkan, my_vdb
+		, player.get_pos() + glm::vec3(0.f, 0.f, 20.f));
 	if (enemy_manager.init() == -1)
 	{
 		std::cout << "Unable to initialize Enemy command buffer !" << std::endl;

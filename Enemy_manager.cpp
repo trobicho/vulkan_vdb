@@ -6,7 +6,7 @@
 /*   By: trobicho <trobicho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/21 20:04:13 by trobicho          #+#    #+#             */
-/*   Updated: 2020/06/09 12:19:07 by trobicho         ###   ########.fr       */
+/*   Updated: 2020/06/10 13:59:37 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,14 @@
 Enemy_manager::Enemy_manager(My_vulkan &vulk, const Vdb_test &world):
 	m_vulk(vulk), m_world(world), m_character_controller(world)
 	, m_spider(glm::vec3(1024, 130, 1024))
+{
+	m_spider.generate();
+}
+
+Enemy_manager::Enemy_manager(My_vulkan &vulk
+	, const Vdb_test &world, glm::vec3 pos): m_vulk(vulk), m_world(world)
+		, m_character_controller(world)
+		, m_spider(pos)
 {
 	m_spider.generate();
 }
