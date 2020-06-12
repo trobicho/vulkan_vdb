@@ -6,7 +6,7 @@
 /*   By: trobicho <trobicho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/20 22:08:47 by trobicho          #+#    #+#             */
-/*   Updated: 2020/06/10 14:51:36 by trobicho         ###   ########.fr       */
+/*   Updated: 2020/06/11 13:35:50 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,6 +114,7 @@ void	Spider::generate()
 		m_feet_info[i].base_angle_torso = 0.51f + -0.4f * i;
 		m_feet_info[i].base_height = 30.f;
 		m_feet_info[i].base_dist_torso = leg.len.x + body.len.x / 2.0f;
+		m_feet_info[i].radius = leg.len.y * get_scale();
 		m_feet_info[i].begin_gate = (i % 2) ? 0 : 10;
 		m_feet_info[i].end_gate = (i % 2) ? 10 : 20;
 
@@ -136,6 +137,7 @@ void	Spider::generate()
 		m_feet_info[i + 4].right_side = true;
 		m_feet_info[i + 4].base_angle_torso = -0.51f + 0.4f * i;
 		m_feet_info[i + 4].base_height = 30.f;
+		m_feet_info[i + 4].radius = leg.len.y * get_scale();
 		m_feet_info[i + 4].base_dist_torso = leg.len.x + body.len.x / 2.0f;
 		m_feet_info[i + 4].begin_gate = (!(i % 2)) ? 0 : 10;
 		m_feet_info[i + 4].end_gate = (!(i % 2)) ? 10 : 20;

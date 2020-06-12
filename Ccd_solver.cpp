@@ -6,7 +6,7 @@
 /*   By: trobicho <trobicho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/06 14:23:44 by trobicho          #+#    #+#             */
-/*   Updated: 2020/06/08 20:08:30 by trobicho         ###   ########.fr       */
+/*   Updated: 2020/06/11 12:37:06 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ void	Ccd_solver::ccd_solve(std::vector<glm::mat4> &bones
 	{
 		bones[i] = glm::translate(glm::mat4(1.0f), bones_pos[i]);
 	}
-	for (int a = 0; a < 8; a++)
+	for (int a = 0; a < 5; a++)
 	{
 		for (int i = bones.size() - 1; i >= 0; i--)
 		{

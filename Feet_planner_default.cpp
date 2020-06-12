@@ -6,7 +6,7 @@
 /*   By: trobicho <trobicho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/06/09 20:23:28 by trobicho          #+#    #+#             */
-/*   Updated: 2020/06/11 11:09:51 by trobicho         ###   ########.fr       */
+/*   Updated: 2020/06/11 13:39:32 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,21 @@ bool	Feet_planner_default::base_target_refined_world(Character &mob
 {
 	s_vec3i		vox((int)target.x, (int)target.y, (int)target.z);
 	int			floor = get_floor_column(world, vox);
+	s_foot_info	&foot_info = mob.get_foot_info_ref(foot_id);
+
 	target.y = vox.y + 1.0f;
+	if (target.x - vox.x < foot_info.radius
+		&& world.get_vox(s_vec3i(vox.x - 1, vox.y, vox.z)) == 0)
+		target.x = vox.x + foot_info.radius;
+	else if (target.x - vox.x > 1.f - foot_info.radius
+		&& world.get_vox(s_vec3i(vox.x + 1, vox.y, vox.z)) == 0)
+		target.x = vox.x + 1.0f - foot_info.radius;
+	if (target.z - vox.z < foot_info.radius
+		&& world.get_vox(s_vec3i(vox.x, vox.y, vox.z - 1)) == 0)
+		target.z = vox.z + foot_info.radius;
+	else if (target.z - vox.z > 1.f - foot_info.radius
+		&& world.get_vox(s_vec3i(vox.x, vox.y, vox.z + 1)) == 0)
+		target.z = vox.z + 1.0f - foot_info.radius;
 	return (floor ? true : false);
 }
 
