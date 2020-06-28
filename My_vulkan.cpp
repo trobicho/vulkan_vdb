@@ -6,7 +6,7 @@
 /*   By: trobicho <trobicho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/09 17:05:36 by trobicho          #+#    #+#             */
-/*   Updated: 2020/05/22 14:42:56 by trobicho         ###   ########.fr       */
+/*   Updated: 2020/06/24 08:21:37 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ My_vulkan::My_vulkan(GLFWwindow *win, s_ubo &ubo):
 	m_win(win), m_ubo(ubo) //try catch
 {
 }
-
+		
 My_vulkan::~My_vulkan()
 {
 	int			i;
@@ -70,7 +70,31 @@ My_vulkan::~My_vulkan()
 	glfwTerminate();
 }
 
-int My_vulkan::draw_frame()
+int		My_vulkan::init_imgui(ImGui_ImplVulkan_InitInfo &init_info)
+{
+	init_info.Instance = m_instance;
+	init_info.PhysicalDevice = m_dev_phy;
+	init_info.Device = m_device;
+	init_info.QueueFamily = queue_family(m_dev_phy, m_surface);
+	init_info.Queue = m_queue_graphic;
+	init_info.PipelineCache = VK_NULL_HANDLE;
+	init_info.Allocator = nullptr;
+	init_info.MinImageCount = MAX_FRAME_IN_FLIGHT;
+	init_info.ImageCount = m_swap_chain_img.size();
+	init_info.CheckVkResultFn = check_vk_result;
+}
+
+void	My_vulkan::check_vk_result(VkResult err)
+{
+    if (err == 0)
+        return;
+	std::cout << "[vulkan] Error: VkResult = " << (int)err << std::endl;
+    if (err < 0)
+        abort();
+}
+
+
+int		My_vulkan::draw_frame()
 {
 	uint32_t				img_index;
 	VkSubmitInfo			submit_info;
@@ -769,7 +793,7 @@ int		My_vulkan::render_pass_create()
 	color_attachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
 	color_attachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
 	color_attachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-	color_attachment.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
+	color_attachment.finalLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
 	color_attachment_ref.attachment = 0;
 	color_attachment_ref.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
 	depth_attachment.format = find_depth_format();
@@ -1159,6 +1183,33 @@ int		My_vulkan::command_buffer_create()
 		return (-1);
 	}
 	return (0);
+}
+
+VkResult	My_vulkan::create_command_buffer(VkCommandBuffer* command_buffer
+				, uint32_t command_buffer_count, VkCommandPool &command_pool)
+{
+    VkCommandBufferAllocateInfo command_buffer_alloc_info = {};
+    command_buffer_alloc_info.sType =
+		VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+    command_buffer_alloc_info.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+    command_buffer_alloc_info.commandPool = command_pool;
+    command_buffer_alloc_info.commandBufferCount = command_buffer_count;
+    return (vkAllocateCommandBuffers(m_device
+			, &command_buffer_alloc_info, command_buffer));
+}
+
+void		My_vulkan::create_command_pool(VkCommandPool* command_pool
+				, VkCommandPoolCreateFlags flags)
+{
+	int						queue_indice = queue_family(m_dev_phy, m_surface);
+    VkCommandPoolCreateInfo	command_pool_create_info = {};
+
+    command_pool_create_info.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
+    command_pool_create_info.queueFamilyIndex = queue_indice;
+    command_pool_create_info.flags = flags;
+    if (vkCreateCommandPool(m_device, &command_pool_create_info
+		, nullptr, command_pool) != VK_SUCCESS)
+        throw std::runtime_error("Could not create graphics command pool");
 }
 
 int		My_vulkan::command_buffer_record(t_chunk_cont &chunk_vec)

@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/23 04:53:19 by trobicho          #+#    #+#             */
-/*   Updated: 2019/12/13 16:45:38 by trobicho         ###   ########.fr       */
+/*   Updated: 2020/06/28 13:49:26 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,15 +58,18 @@ void	Moore_accessor::find_neigh(s_vec3i v, Node_v *node)
 					{
 						if ((found = node->get_vox(vox.x, vox.y, vox.z)))
 						{
-							m_neigh[y * 9 + z * 3 + x] = (is_opaque == block_is_opaque(found));
+							m_neigh[y * 9 + z * 3 + x] =
+								(is_opaque ? block_is_opaque(found) : true);
 						}
 						continue;
 					}
 					else if ((found = m_vdb.get_vox(vox)))
-						m_neigh[y * 9 + z * 3 + x] = (is_opaque == block_is_opaque(found));
+						m_neigh[y * 9 + z * 3 + x] =
+								(is_opaque ? block_is_opaque(found) : true);
 				}
 				else if ((found = m_vdb.get_vox(vox)))
-					m_neigh[y * 9 + z * 3 + x] = (is_opaque == block_is_opaque(found));
+					m_neigh[y * 9 + z * 3 + x] =
+						(is_opaque ? block_is_opaque(found) : true);
 			}
 		}
 	}

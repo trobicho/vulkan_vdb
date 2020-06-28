@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/17 17:19:36 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/28 11:35:07 by trobicho         ###   ########.fr       */
+/*   Updated: 2020/06/12 18:51:41 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,19 +38,22 @@ void	Player::move()
 void	Player::move_normal() //TMP
 {
 	float	accel_y = m_accel_vec.y;
-	m_accel_vec.x = 0.0f;
-	m_accel_vec.z = 0.0f;
+	float	speed = 8.f;
+
+	m_accel_vec = glm::vec3(0.f);
 	m_dir = m_cam.dir;
 	m_dir.y = 0;
 	m_dir = glm::normalize(m_dir);
 	if (m_state & P_STATE_FORWARD)
-		m_accel_vec = m_dir * 4.0f;
+		m_accel_vec += m_dir;
 	if (m_state & P_STATE_BACKWARD)
-		m_accel_vec = m_dir * -4.0f;
+		m_accel_vec += -m_dir;
 	if (m_state & P_STATE_RIGHT)
-		m_accel_vec = m_cam.right * -4.0f;
+		m_accel_vec += -m_cam.right;
 	if (m_state & P_STATE_LEFT)
-		m_accel_vec = m_cam.right * 4.0f;
+		m_accel_vec += m_cam.right;
+	if (glm::length(m_accel_vec) > 0.1f)
+		m_accel_vec = glm::normalize(m_accel_vec) * speed;
 	m_accel_vec.y = accel_y;
 }
 
@@ -68,12 +71,10 @@ void	Player::move_dev()
 
 void	Player::apply_force(float t) // get/set_time
 {
-	glm::vec3	v = m_speed_vec;
-
-	if (!is_falling() && v.y < 0.f)
-		v.y = 0;
-
+	if (!is_falling() && m_speed_vec.y < 0.f)
+		m_speed_vec.y = 0.f;
 	m_pos += m_speed_vec * t;
+
 }
 
 void	Player::touch_ground()

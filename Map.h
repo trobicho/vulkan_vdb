@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/19 18:38:50 by trobicho          #+#    #+#             */
-/*   Updated: 2019/12/13 01:30:16 by trobicho         ###   ########.fr       */
+/*   Updated: 2020/06/24 09:13:46 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,10 @@ struct	s_biome_info
 class	Map
 {
 	public:
-		Map(uint32_t seed): m_seed(seed){};
+		Map(uint32_t seed): m_seed(seed)
+		{
+			m_noise.shuffle();
+		}
 
 		int			generate(Vdb_test &vdb, s_vbox box);
 		uint64_t	get_nb_vox(){return (m_nb_vox);}

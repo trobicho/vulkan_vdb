@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/02 20:38:57 by trobicho          #+#    #+#             */
-/*   Updated: 2019/12/24 19:58:22 by trobicho         ###   ########.fr       */
+/*   Updated: 2020/06/27 21:42:44 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ template <class Value, int Log2X, int Log2Y = Log2X, int Log2Z = Log2Y>
 class Leaf_node: public Node<Value>
 {
 	public:
-		Leaf_node(int32_t x, int32_t y, int32_t z);
+		Leaf_node(int32_t x, int32_t y, int32_t z, int value = 0);
 		~Leaf_node(){};
 
 		void		do_set_vox(Value v, int32_t x, int32_t y, int32_t z);
@@ -76,9 +76,18 @@ class Leaf_node: public Node<Value>
 
 template <class Value, int Log2X, int Log2Y, int Log2Z>
 Leaf_node<Value, Log2X, Log2Y, Log2Z>
-	::Leaf_node(int32_t x, int32_t y, int32_t z): m_x(x), m_y(y), m_z(z)
+	::Leaf_node(int32_t x, int32_t y, int32_t z, int value): m_x(x), m_y(y), m_z(z)
 {
-	m_value_mask.reset();
+	if (value > 0)
+	{
+		for (int i = 0; i < sSize; ++i)
+		{
+			m_value_mask.set(i);
+			m_leaf_data[i] = value;
+		}
+	}
+	else
+		m_value_mask.reset();
 }
 
 template <class Value, int Log2X, int Log2Y, int Log2Z>

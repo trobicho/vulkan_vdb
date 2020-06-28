@@ -6,7 +6,7 @@
 #    By: trobicho <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/11/02 20:38:42 by trobicho          #+#    #+#              #
-#    Updated: 2020/06/09 20:59:13 by trobicho         ###   ########.fr        #
+#    Updated: 2020/06/15 13:24:01 by trobicho         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,6 +15,7 @@ CXXFLAGS	=	-std=c++14 -g
 NAME		=	vulkan_vdb
 
 SRCS_PATH	=	./
+SRCS_UI_PATH	=	./imgui
 HDRS_PATH	=	./
 OBJS_PATH	=	./obj
 
@@ -32,7 +33,24 @@ else
 		-lvulkan -lglfw -lm -L ../QGen/my_lib_cpp/ -ltrl
 endif
 
+SRCS_UI_NAME	=	imgui.cpp \
+					imgui_impl_vulkan.cpp \
+					imgui_impl_glfw.cpp \
+					imgui_draw.cpp \
+					imgui_widgets.cpp \
+					imgui_demo.cpp \
+
+HDRS_UI_NAME	=	imgui.h \
+					imgui_impl_vulkan.h \
+					imgui_impl_glfw.h \
+					imgui_internal.h \
+					imstb_rectpack.h \
+					imstb_textedit.h \
+					imstb_truetype.h \
+					imconfig.h \
+
 SRCS_NAME	=	main.cpp \
+				Dev_gui.cpp \
 				Spider.cpp \
 				Character.cpp \
 				Character_controller.cpp \
@@ -61,6 +79,7 @@ SRCS_NAME	=	main.cpp \
 				Ray.cpp
 
 HDRS_NAME	=	Vdb_test.h \
+				Dev_gui.h \
 				Spider.h \
 				Character.h \
 				Character_controller.h \
@@ -94,30 +113,40 @@ HDRS_NAME	=	Vdb_test.h \
 				Ccd_solver.h \
 				Ray.cpp
 
-OBJS_NAME	=	$(SRCS_NAME:.cpp=.o)
+OBJS_NAME	=	$(SRCS_NAME:.cpp=.o) $(SRCS_UI_NAME:.cpp=.o) 
 
 SRCS = $(addprefix $(SRCS_PATH)/, $(SRCS_NAME))
+SRCS_UI = $(addprefix $(SRCS_UI_PATH)/, $(SRCS_UI_NAME))
+HDRS_UI = $(addprefix $(SRCS_UI_PATH)/, $(HDRS_UI_NAME))
 HDRS = $(addprefix $(HDRS_PATH)/, $(HDRS_NAME))
 OBJS = $(addprefix $(OBJS_PATH)/, $(OBJS_NAME))
 
 all: $(NAME)
 
-$(NAME): $(SRCS) $(HDRS) $(OBJS) Makefile
-	$(CC) $(CXXFLAGS) $(INCS_FLAGS) $(SDL_IFLAGS) $(SRCS) $(LDFLAGS) $(SDL_LFLAGS) -o $(NAME)
+$(NAME): $(SRCS) $(HDRS) $(SRCS_UI) $(HDRS_UI) $(OBJS) Makefile
+	$(CC) $(CXXFLAGS) $(INCS_FLAGS) $(SRCS) $(SRCS_UI) $(LDFLAGS) -o $(NAME)
 
 $(OBJS_PATH)/%.o: $(SRCS_PATH)/%.cpp $(HDRS) Makefile
 	@mkdir $(OBJ_PATH) 2> /dev/null || true
 	@echo "\033[38;2;0;255;0m[cc]\033[0m: $< -> $@"
 	@printf "\e[1A"
-	@$(CC) $(CXXFLAGS) -I $(HDRS_PATH) $(INCS_FLAGS) $(SDL_IFLAGS) -c $< -o $@
+	@$(CC) $(CXXFLAGS) -I $(HDRS_PATH) $(INCS_FLAGS) -c $< -o $@
 	@printf "\e[0K"
 
+$(OBJS_PATH)/%.o: $(SRCS_UI_PATH)/%.cpp $(HDRS_UI) Makefile
+	@mkdir $(OBJ_PATH) 2> /dev/null || true
+	@echo "\033[38;2;0;255;0m[cc]\033[0m: $< -> $@"
+	@printf "\e[1A"
+	@$(CC) $(CXXFLAGS) -I $(SRCS_UI_PATH) $(INCS_FLAGS) -c $< -o $@
+	@printf "\e[0K"
+
+
 clean:
-	rm -f $(OBJS) $(GEN_OBJS) $(ENV_OBJS)
+	rm -f $(OBJS)
 
 fclean: clean
 	rm -f $(NAME)
 
 re: fclean all
 
-.PHONY: all clean fclean re logo test
+.PHONY: all clean fclean re

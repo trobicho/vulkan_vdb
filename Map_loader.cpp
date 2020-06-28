@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/28 17:47:20 by trobicho          #+#    #+#             */
-/*   Updated: 2019/12/13 20:35:10 by trobicho         ###   ########.fr       */
+/*   Updated: 2020/06/28 14:31:00 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,10 +61,9 @@ void	Map_loader::thread_loader()
 			m_update_mutex.lock();
 			up = search_new_chunk();
 			tag_unload_far_chunk();
-			if (up)
+			if (up > 5)
 				m_update = true;
 			m_update_mutex.unlock();
-			usleep(10000);
 			i++;
 		}
 	}
@@ -78,11 +77,19 @@ int		Map_loader::search_new_chunk()
 	s_vec3i		pos = i_pos;
 	int			update = 0;
 
-	update += load_pos(pos);
+	auto chunk = m_chunk.find(
+			std::make_pair((pos.x >> CHUNK_LOG_X) << CHUNK_LOG_X
+					, (pos.z >> CHUNK_LOG_Z) << CHUNK_LOG_Z));
+	if (chunk == m_chunk.end())
+		update += load_pos(pos);
 	while (next_chunk_in_radius(i_pos, pos, m_meshing_radius) && !m_update)
 	{
-		update += load_pos(pos);
-		if (update > 10)
+		auto chunk = m_chunk.find(
+				std::make_pair((pos.x >> CHUNK_LOG_X) << CHUNK_LOG_X
+					, (pos.z >> CHUNK_LOG_Z) << CHUNK_LOG_Z));
+		if (chunk == m_chunk.end())
+			update += load_pos(pos);
+		if (update > 15)
 			break;
 	}
 	return (update);
@@ -171,50 +178,73 @@ void	Map_loader::block_change(s_vec3i block)
 {
 	s_vbox			box;
 
-	/*
-	for (int i = 0; i < m_nb_chunk; ++i)
-	{
-		if (m_chunk[i].in_vbo && !m_chunk[i].need_unload 
-			&& m_chunk[i].origin.x <= block.x
-			&& m_chunk[i].origin.x + (1 << CHUNK_LOG_X) > block.x
-			&& m_chunk[i].origin.y <= block.y
-			&& m_chunk[i].origin.y + (1 << CHUNK_LOG_Y) > block.y
-			&& m_chunk[i].origin.z <= block.z
-			&& m_chunk[i].origin.z + (1 << CHUNK_LOG_Z) > block.z)
-		{
-			std::cout << "find the changing chunk ("
-						<< m_chunk[i].origin.x << ", "
-						<< m_chunk[i].origin.y << ", "
-						<< m_chunk[i].origin.z << ")" << std::endl;
-			m_chunk[i].reset(m_vulk);
-			box.origin = m_chunk[i].origin;
-			box.len = s_vec3i(1 << CHUNK_LOG_X, 1 << CHUNK_LOG_Y
-					, 1 << CHUNK_LOG_Z);
-			mesh_one_chunck(box, i);
-			m_update = true;
-			break;
-		}
-	}
-	*/
 	auto chunk = m_chunk.find(
 			std::make_pair((block.x >> CHUNK_LOG_X) << CHUNK_LOG_X
 					, (block.z >> CHUNK_LOG_Z) << CHUNK_LOG_Z));
 	if (chunk != m_chunk.end())
 	{
-			std::cout << "find the changing chunk ("
-						<< chunk->second.origin.x << ", "
-						<< chunk->second.origin.y << ", "
-						<< chunk->second.origin.z << ")" << std::endl;
+		std::cout << "find the changing chunk ("
+			<< chunk->second.origin.x << ", "
+			<< chunk->second.origin.y << ", "
+			<< chunk->second.origin.z << ")" << std::endl;
+		chunk->second.reset(m_vulk);
+		box.origin = chunk->second.origin;
+		box.len = s_vec3i(1 << CHUNK_LOG_X, 1 << CHUNK_LOG_Y
+				, 1 << CHUNK_LOG_Z);
+		std::lock_guard<std::mutex> guard(m_mesh_mutex);
+		if (mesh_one_chunck(box) != -1)
+			m_update = true;
+		/*-------------
+		  remesh adj_chunk as to check if solid
+		*/
+		if ((block.x >> CHUNK_LOG_X) << CHUNK_LOG_X == block.x)
+		{
+			std::cout << "mesh adj x - 1" << std::endl;
+			chunk = m_chunk.find(
+					std::make_pair(((block.x >> CHUNK_LOG_X) - 1) << CHUNK_LOG_X
+						, (block.z >> CHUNK_LOG_Z) << CHUNK_LOG_Z));
 			chunk->second.reset(m_vulk);
 			box.origin = chunk->second.origin;
-			box.len = s_vec3i(1 << CHUNK_LOG_X, 1 << CHUNK_LOG_Y
-					, 1 << CHUNK_LOG_Z);
-			std::lock_guard<std::mutex> guard(m_mesh_mutex);
 			if (mesh_one_chunck(box) != -1)
 				m_update = true;
+		}
+		else if (((block.x >> CHUNK_LOG_X) + 1) << CHUNK_LOG_X
+				== block.x + 1)
+		{
+			std::cout << "mesh adj x + 1" << std::endl;
+			chunk = m_chunk.find(
+					std::make_pair(((block.x >> CHUNK_LOG_X) + 1) << CHUNK_LOG_X
+						, (block.z >> CHUNK_LOG_Z) << CHUNK_LOG_Z));
+			chunk->second.reset(m_vulk);
+			box.origin = chunk->second.origin;
+			if (mesh_one_chunck(box) != -1)
+				m_update = true;
+		}
+		if ((block.z >> CHUNK_LOG_Z) << CHUNK_LOG_Z == block.z)
+		{
+			std::cout << "mesh adj z - 1" << std::endl;
+			chunk = m_chunk.find(
+					std::make_pair((block.x >> CHUNK_LOG_X) << CHUNK_LOG_X
+						, ((block.z >> CHUNK_LOG_Z) - 1) << CHUNK_LOG_Z));
+			chunk->second.reset(m_vulk);
+			box.origin = chunk->second.origin;
+			if (mesh_one_chunck(box) != -1)
+				m_update = true;
+		}
+		else if (((block.z >> CHUNK_LOG_Z) + 1) << CHUNK_LOG_Z
+				== block.z + 1)
+		{
+			std::cout << "mesh adj z + 1" << std::endl;
+			chunk = m_chunk.find(
+					std::make_pair((block.x >> CHUNK_LOG_X) << CHUNK_LOG_X
+						, ((block.z >> CHUNK_LOG_Z) + 1) << CHUNK_LOG_Z));
+			chunk->second.reset(m_vulk);
+			box.origin = chunk->second.origin;
+			if (mesh_one_chunck(box) != -1)
+				m_update = true;
+		}
 	}
 }
-
 
 int		Map_loader::load_pos(s_vec3i pos)
 {
@@ -389,6 +419,7 @@ int		Map_loader::mesh_one_chunck(s_vbox &box)
 int		Map_loader::mesh_one_chunck(s_vbox &box, s_chunk& chunk)
 {
 	m_vdb.mesh(chunk.mesh, box);
+	chunk.is_reset = false;
 	/*
 	auto	time = std::chrono::high_resolution_clock::now();
 	m_vdb.mesh(chunk.mesh, box);

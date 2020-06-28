@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/02 20:38:22 by trobicho          #+#    #+#             */
-/*   Updated: 2019/12/24 19:58:08 by trobicho         ###   ########.fr       */
+/*   Updated: 2020/06/27 21:43:09 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ template <class Value, class Child
 class Internal_node: public Node<Value>
 {
 	public:
-		Internal_node(int32_t x, int32_t y, int32_t z);
+		Internal_node(int32_t x, int32_t y, int32_t z, int value = 0);
 		~Internal_node();
 
 		void		do_set_vox(Value v, int32_t x, int32_t y, int32_t z);
@@ -82,9 +82,18 @@ class Internal_node: public Node<Value>
 
 template <class Value, class Child, int Log2X, int Log2Y, int Log2Z>
 Internal_node<Value, Child, Log2X, Log2Y, Log2Z>
-	::Internal_node(int32_t x, int32_t y, int32_t z): m_x(x), m_y(y), m_z(z)
+	::Internal_node(int32_t x, int32_t y, int32_t z, int value): m_x(x), m_y(y), m_z(z)
 {
-	m_value_mask.reset();
+	if (value > 0)
+	{
+		for (int i = 0; i < sSize; ++i)
+		{
+			m_value_mask.set(i);
+			m_internal_data[i].value = value;
+		}
+	}
+	else
+		m_value_mask.reset();
 	m_child_mask.reset();
 	for (int i = 0; i < sSize; ++i)
 	{
@@ -138,6 +147,14 @@ void	Internal_node<Value, Child, Log2X, Log2Y, Log2Z>
 		m_internal_data[internal_offset].child->unset_vox(x, y, z);
 	else if (m_value_mask[internal_offset])
 	{
+		m_internal_data[internal_offset].child = new Child(
+			(x >> Child::sLog2X) << Child::sLog2X
+			, (y >> Child::sLog2Y) << Child::sLog2Y
+			, (z >> Child::sLog2Z) << Child::sLog2Z
+			, m_internal_data[internal_offset].value);
+		m_child_mask[internal_offset] = true;
+		m_value_mask[internal_offset] = false;
+		m_internal_data[internal_offset].child->unset_vox(x, y, z);
 	}
 }
 

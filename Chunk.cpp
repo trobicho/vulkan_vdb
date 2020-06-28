@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/11 14:27:32 by trobicho          #+#    #+#             */
-/*   Updated: 2019/12/13 17:56:52 by trobicho         ###   ########.fr       */
+/*   Updated: 2020/06/24 07:34:05 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,16 +29,20 @@ void	s_chunk::reset(My_vulkan &vulk)
 {
 	const auto	&device_ref = vulk.get_device_ref();
 
-	vkDestroyBuffer(device_ref, m_vertex_index_buffer, nullptr);
-	vkFreeMemory(device_ref, m_vertex_index_buffer_memory, nullptr);
-	if (has_blend)
+	if (in_vbo)
 	{
-		vkDestroyBuffer(device_ref, m_index_buffer_blend, nullptr);
-		vkFreeMemory(device_ref, m_index_buffer_blend_memory, nullptr);
+		vkDestroyBuffer(device_ref, m_vertex_index_buffer, nullptr);
+		vkFreeMemory(device_ref, m_vertex_index_buffer_memory, nullptr);
+		if (has_blend)
+		{
+			vkDestroyBuffer(device_ref, m_index_buffer_blend, nullptr);
+			vkFreeMemory(device_ref, m_index_buffer_blend_memory, nullptr);
+		}
+		vkDestroyBuffer(device_ref, m_vertex_buffer, nullptr);
+		vkFreeMemory(device_ref, m_vertex_buffer_memory, nullptr);
 	}
-	vkDestroyBuffer(device_ref, m_vertex_buffer, nullptr);
-	vkFreeMemory(device_ref, m_vertex_buffer_memory, nullptr);
 	mesh.reset();
+	is_reset = true;
 }
 
 void	s_chunk::command_buffer_binder(VkCommandBuffer &cmd_buffer)
@@ -141,6 +145,7 @@ int		s_chunk::update(My_vulkan &vulk)
 			, copy_size_idx) == -1)
 		return (-1);
 	in_vbo = true;
+	is_reset = false;
 	return (0);
 }
 

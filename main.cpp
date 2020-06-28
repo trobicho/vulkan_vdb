@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/02 20:39:09 by trobicho          #+#    #+#             */
-/*   Updated: 2020/06/10 14:01:13 by trobicho         ###   ########.fr       */
+/*   Updated: 2020/06/24 06:59:21 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,9 +16,10 @@
 #include "key_call.h"
 #include "Physic.h"
 #include "Enemy_manager.h"
+#include "Dev_gui.h"
 
-static int	main_loop(My_vulkan &my_vulkan, Map_loader &map_loader
-				, GLFWwindow *win, Enemy_manager &enemy_manager)
+static int	main_loop(My_vulkan &my_vulkan, Dev_gui &dev_gui
+		, Map_loader &map_loader, GLFWwindow *win, Enemy_manager &enemy_manager)
 {
 	s_user	*user = (s_user*)glfwGetWindowUserPointer(win);
 	Physic	physic(map_loader.get_vdb_ref());
@@ -56,6 +57,7 @@ static int	main_loop(My_vulkan &my_vulkan, Map_loader &map_loader
 				glm::vec4(enemy_manager.get_spider_ref().get_pos(), 1.0f);
 		enemy_manager.update();
 		user->player.update_ubo();
+		//dev_gui.new_frame();
 		my_vulkan.draw_frame();
 	}
 	map_loader.quit();
@@ -133,6 +135,8 @@ int	main()
 	{
 		std::cout << "Unable to initialize Vulkan !" << std::endl;
 	}
+	//Dev_gui	dev_gui = Dev_gui(my_vulkan, win);
+	Dev_gui	dev_gui = Dev_gui(my_vulkan);
 	Enemy_manager	enemy_manager = Enemy_manager(my_vulkan, my_vdb
 		, player.get_pos() + glm::vec3(0.f, 0.f, 20.f));
 	if (enemy_manager.init() == -1)
@@ -143,7 +147,7 @@ int	main()
 	map_loader.update();
 	std::thread thread(&Map_loader::thread_loader, &map_loader);
 
-	main_loop(my_vulkan, map_loader, win, enemy_manager);
+	main_loop(my_vulkan, dev_gui, map_loader, win, enemy_manager);
 	thread.join();
 	v = player.get_pos();
 	std::cout << "m_pos = {" << v.x << ", "

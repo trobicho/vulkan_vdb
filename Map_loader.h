@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/28 17:47:30 by trobicho          #+#    #+#             */
-/*   Updated: 2019/12/13 20:36:11 by trobicho         ###   ########.fr       */
+/*   Updated: 2020/06/28 14:32:33 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,9 +74,9 @@ class	Map_loader
 		bool			m_quit = false;
 		size_t			m_old_size_vbo = 0;
 		size_t			m_old_size_ibo = 0;
-		uint32_t		m_meshing_radius = 8;
-		uint32_t		m_unload_meshing_radius = 20;
-		uint32_t		m_generate_radius = 20;
+		uint32_t		m_meshing_radius = 30;
+		uint32_t		m_unload_meshing_radius = 50;
+		uint32_t		m_generate_radius = 34;
 		int				m_need_unload = 0;
 		std::mutex		m_mesh_mutex;
 		std::mutex		m_update_mutex;

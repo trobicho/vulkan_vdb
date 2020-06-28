@@ -6,7 +6,7 @@
 /*   By: trobicho <trobicho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/17 23:47:42 by trobicho          #+#    #+#             */
-/*   Updated: 2020/05/27 18:36:30 by trobicho         ###   ########.fr       */
+/*   Updated: 2020/06/28 12:14:45 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,7 +113,7 @@ void	Physic::apply_physic(Physic_entity &entity)
 
 	if (m_vdb.get_vox(vox_p))
 	{
-		std::cout << "PANIC !!" << std::endl;
+		//std::cout << "PANIC !!" << std::endl;
 		//return ;
 	}
 
@@ -155,7 +155,6 @@ void	Physic::apply_physic_to_player(Player &player)
 		p_accel_vec.y = -18.8f;
 
 
-	p_speed_vec += p_accel_vec * time;
 	float l_s = length(p_speed_vec);
 	if (length(p_accel_vec) < 0.1f || l_s > 18.f)
 	{
@@ -163,6 +162,9 @@ void	Physic::apply_physic_to_player(Player &player)
 		if (l_s < 1.f)
 			p_speed_vec *= 0.8f;
 	}
+	p_speed_vec.y += p_accel_vec.y * time;
+	p_speed_vec.x = p_accel_vec.x;
+	p_speed_vec.z = p_accel_vec.z;
 	//std::cout << length(p_speed_vec) << std::endl;
 	//std::cout << "time = " << time << std::endl;
 	//apply_friction(p_speed_vec, p_accel_vec, friction, time);

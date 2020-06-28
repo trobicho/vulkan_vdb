@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/11 06:56:37 by trobicho          #+#    #+#             */
-/*   Updated: 2019/12/25 02:13:53 by trobicho         ###   ########.fr       */
+/*   Updated: 2020/06/28 13:44:14 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ class	Mesh: public Mesh_interface
 		void		add_index(uint32_t idx, bool is_opaque = true);
 		int			add_vertex_with_no_index(Vertex v, uint8_t ao = 3);
 		void		get_needed_face(std::bitset<6> &f_b
-							, s_vec3i v, void *node_ptr);
+							, s_vec3i v, void *node_ptr, uint32_t type);
 		void		get_needed_vertex(std::bitset<8> &v_b);
 		void		add_needed_vertex(Vertex v, uint32_t l
 						, std::bitset<8> &v_b, uint32_t v_idx[8]);
@@ -156,7 +156,8 @@ void	Mesh<Vertex>::remove_vertex(uint32_t offset, uint32_t size)
 }
 
 template <class Vertex>
-void	Mesh<Vertex>::get_needed_face(std::bitset<6> &f_b, s_vec3i v, void *node_ptr)
+void	Mesh<Vertex>::get_needed_face(std::bitset<6> &f_b, s_vec3i v
+			, void *node_ptr, uint32_t type)
 {
 	const Vdb_test	&my_vdb = m_moore_access.get_vdb_ref();
 	const Node_v	*node = (Node_v*)node_ptr;
@@ -169,27 +170,33 @@ void	Mesh<Vertex>::get_needed_face(std::bitset<6> &f_b, s_vec3i v, void *node_pt
 
 	neigh_v = (s_vec3i){v.x, v.y + (1 << node_slog.y) , v.z};
 	moore_node = my_vdb.get_interresting_node(neigh_v, value);
-	if (!value || moore_node->get_child_slog().x < node_slog.x)
+	if (!value || (block_is_opaque(type) && !block_is_opaque(value))
+		|| moore_node->get_child_slog().x < node_slog.x)
 		f_b.set(0);
 	neigh_v = (s_vec3i){v.x, v.y - 1, v.z};
 	moore_node = my_vdb.get_interresting_node(neigh_v, value);
-	if (!value || moore_node->get_child_slog().x < node_slog.x)
+	if (!value || (block_is_opaque(type) && !block_is_opaque(value))
+		|| moore_node->get_child_slog().x < node_slog.x)
 		f_b.set(1);
 	neigh_v = (s_vec3i){v.x, v.y, v.z + (1 << node_slog.z)};
 	moore_node = my_vdb.get_interresting_node(neigh_v, value);
-	if (!value || moore_node->get_child_slog().x < node_slog.x)
+	if (!value || (block_is_opaque(type) && !block_is_opaque(value))
+		|| moore_node->get_child_slog().x < node_slog.x)
 		f_b.set(2);
 	neigh_v = (s_vec3i){v.x, v.y, v.z - 1};
 	moore_node = my_vdb.get_interresting_node(neigh_v, value);
-	if (!value || moore_node->get_child_slog().x < node_slog.x)
+	if (!value || (block_is_opaque(type) && !block_is_opaque(value))
+		|| moore_node->get_child_slog().x < node_slog.x)
 		f_b.set(3);
 	neigh_v = (s_vec3i){v.x + (1 << node_slog.x), v.y, v.z};
 	moore_node = my_vdb.get_interresting_node(neigh_v, value);
-	if (!value || moore_node->get_child_slog().x < node_slog.x)
+	if (!value || (block_is_opaque(type) && !block_is_opaque(value))
+		|| moore_node->get_child_slog().x < node_slog.x)
 		f_b.set(4);
 	neigh_v = (s_vec3i){v.x - 1, v.y, v.z};
 	moore_node = my_vdb.get_interresting_node(neigh_v, value);
-	if (!value || moore_node->get_child_slog().x < node_slog.x)
+	if (!value || (block_is_opaque(type) && !block_is_opaque(value))
+		|| moore_node->get_child_slog().x < node_slog.x)
 		f_b.set(5);
 }
 
@@ -261,7 +268,7 @@ void	Mesh<Vertex>::add_big_cube_from_node(s_vec3i v, uint32_t type, void *node_p
 	s_vec3i			node_slog = node->get_child_slog();
 	s_vec3i			v_add;
 
-	get_needed_face(f_b, v, node_ptr);
+	get_needed_face(f_b, v, node_ptr, type);
 	if (f_b[0])
 	{
 		v_add = v;

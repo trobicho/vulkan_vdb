@@ -6,7 +6,7 @@
 /*   By: trobicho <trobicho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/20 22:08:47 by trobicho          #+#    #+#             */
-/*   Updated: 2020/06/11 13:35:50 by trobicho         ###   ########.fr       */
+/*   Updated: 2020/06/28 12:18:52 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -190,7 +190,7 @@ void	Spider::ik_all()
 	}
 	avg_slope_z /= 4.f;
 	if (avg_slope_z != avg_slope_z)
-		std::cout << nan << std::endl;
+		std::cout << "nan" << std::endl;
 	for (int i = 0; i < 2; i++)
 	{
 		float	dy = m_feet_info[i * 4 + 3].target_world.y
@@ -200,8 +200,8 @@ void	Spider::ik_all()
 		avg_slope_x += dy / dz;
 	}
 	avg_slope_x /= 2.f;
-	std::cout << "(" << avg_slope_x << "[" << atan(avg_slope_x) << "], "
-				<< avg_slope_z << "[" << atan(avg_slope_z) << "])" << std::endl;
+	//std::cout << "(" << avg_slope_x << "[" << atan(avg_slope_x) << "], "
+	//			<< avg_slope_z << "[" << atan(avg_slope_z) << "])" << std::endl;
 	m_bones[0] = glm::translate(glm::mat4(1.0f), m_bones_pos[0]);
 	m_bones[0] = glm::rotate(m_bones[0], glm::atan(avg_slope_x)
 				, glm::vec3(-1.f, 0.f, 0.f));
@@ -213,7 +213,7 @@ next_label:
 	{
 		foot_to_target_world(i, m_feet_info[i].target_world);
 	}
-	std::cout << m_pos.y << std::endl;
+	//std::cout << m_pos.y << std::endl;
 }
 
 void	Spider::foot_to_target_world(int foot_id, glm::vec3 target_world)
@@ -230,6 +230,8 @@ void	Spider::foot_to_target_world(int foot_id, glm::vec3 target_world)
 
 void	Spider::foot_to_target_relative(int leg_id, glm::vec3 target)
 {
+	if (leg_id < 0)
+		return ;
 	int	off = 1 + leg_id * 2;
 	int	off_pos = 1 + leg_id * 3;
 	std::vector<glm::mat4>::const_iterator first = m_bones.begin() + off;

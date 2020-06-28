@@ -6,7 +6,7 @@
 /*   By: trobicho <trobicho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/09 17:05:37 by trobicho          #+#    #+#             */
-/*   Updated: 2020/05/24 13:13:19 by trobicho         ###   ########.fr       */
+/*   Updated: 2020/06/28 12:12:09 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,13 @@
 #include "GLFW/glfw3.h"
 
 #define	MAX_FRAME_IN_FLIGHT	2
+
+
+/* bof*/
+#include "imgui/imgui.h"
+#include "imgui/imgui_impl_vulkan.h"
+#include "imgui/imgui_impl_glfw.h"
+/**/
 
 struct s_ubo
 {
@@ -60,6 +67,7 @@ struct	s_chunk
 	bool			has_unload = false;
 	s_vec3i			origin;
 	bool			has_blend = false;
+	bool			is_reset = false;
 
 	private:
 		VkBuffer		m_vertex_buffer;
@@ -141,10 +149,29 @@ class	My_vulkan
 						, VkBuffer &staging_buffer
 						, VkDeviceMemory &staging_buffer_memory
 						, VkDeviceSize copy_size, uint32_t offset = 0);
+		int			init_imgui(ImGui_ImplVulkan_InitInfo &init_info);
+		static void	check_vk_result(VkResult err);
+		VkFormat	get_swap_chain_img_format()
+						{return (m_swap_chain_img_format);}
 		/*
 		int			copy_vertex_buffer();
 		int			copy_vertex_index_buffer();
 		*/
+		VkResult	create_command_buffer(VkCommandBuffer* command_buffer
+							, uint32_t command_buffer_count
+							, VkCommandPool &command_pool);
+		void		create_command_pool(VkCommandPool* command_pool
+							, VkCommandPoolCreateFlags flags);
+		uint32_t	get_img_index() 
+					{
+						uint32_t	img_index;
+						vkAcquireNextImageKHR(m_device, m_swap_chain
+							, UINT64_MAX, m_semaphore_image_available
+							, VK_NULL_HANDLE, &img_index);
+						return (img_index);
+					}
+		VkExtent2D	get_swapchain_extent(){return (m_swap_chain_extent);}
+		std::vector<VkImageView>&	get_img_view_ref(){return (m_image_view);}
 
 	private:
 		int			create_uniform_buffer();
@@ -235,6 +262,6 @@ class	My_vulkan
 		VkImageView				m_depth_img_view;
 
 		int						m_update;
-		bool					m_debug = true;
+		bool					m_debug = false;
 		s_ubo					&m_ubo;
 };

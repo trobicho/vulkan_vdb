@@ -6,18 +6,21 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/16 17:58:09 by trobicho          #+#    #+#             */
-/*   Updated: 2019/11/28 13:45:52 by trobicho         ###   ########.fr       */
+/*   Updated: 2020/06/24 08:48:57 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
 #include "Mesh.h"
+#include "Noise.h"
 
 class	Perlin_noiser
 {
 	public:
 		Perlin_noiser(){};
+
+		void	shuffle(){Noise noise; noise.shuffle();}
 
 		static double	rand_noise(int t);
 		static double	cerp(double a, double b, double t);

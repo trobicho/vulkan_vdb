@@ -6,7 +6,7 @@
 /*   By: trobicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/28 13:39:08 by trobicho          #+#    #+#             */
-/*   Updated: 2019/12/02 12:08:58 by trobicho         ###   ########.fr       */
+/*   Updated: 2020/06/24 08:56:23 by trobicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,6 +97,15 @@ static void		int_and_frac(double value, int &integer_part,
     if(value < 0)
         integer_part -= 1;
     fractional_part = value - integer_part;
+}
+
+#include <algorithm>
+#include <ctime>
+
+void		Noise::shuffle()
+{
+	std::srand ( unsigned ( std::time(0) ) );
+	std::random_shuffle(&perm[0], &perm[512]);
 }
 
 double		Noise::lerp(double a, double b, double t)
